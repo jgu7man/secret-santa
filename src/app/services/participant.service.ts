@@ -166,6 +166,10 @@ export class ParticipantService {
 
   /**
    * Stores participant session in localStorage
+   * NOTE: For production apps with higher security requirements, consider:
+   * - Using sessionStorage for auto-logout on browser close
+   * - Implementing JWT tokens with expiration
+   * - Using secure HTTP-only cookies
    */
   private storeParticipantSession(eventId: string, participantId: string): void {
     localStorage.setItem(`event_${eventId}_participant`, participantId);

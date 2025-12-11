@@ -5,6 +5,7 @@ import { EventService } from '../../services/event.service';
 import { ParticipantService } from '../../services/participant.service';
 import { Event } from '../../models/event.model';
 import { Participant } from '../../models/participant.model';
+import { MESSAGE_DISPLAY_DURATION, LONG_MESSAGE_DISPLAY_DURATION } from '../../constants';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -64,7 +65,7 @@ export class AdminDashboardComponent implements OnInit {
       await this.eventService.toggleRegistration(this.eventId, newState);
       this.event.isRegistrationOpen = newState;
       this.successMessage = `Registration ${newState ? 'opened' : 'closed'} successfully`;
-      setTimeout(() => this.successMessage = '', 3000);
+      setTimeout(() => this.successMessage = '', MESSAGE_DISPLAY_DURATION);
     } catch (error: any) {
       console.error('Error toggling registration:', error);
       this.errorMessage = 'Failed to toggle registration';
@@ -91,7 +92,7 @@ export class AdminDashboardComponent implements OnInit {
       await this.eventService.runRaffle(this.eventId);
       await this.loadEventData();
       this.successMessage = 'Raffle completed successfully! 🎉';
-      setTimeout(() => this.successMessage = '', 5000);
+      setTimeout(() => this.successMessage = '', LONG_MESSAGE_DISPLAY_DURATION);
     } catch (error: any) {
       console.error('Error running raffle:', error);
       this.errorMessage = error.message || 'Failed to run raffle';
@@ -102,14 +103,14 @@ export class AdminDashboardComponent implements OnInit {
     const link = `${window.location.origin}/event/${this.eventId}`;
     navigator.clipboard.writeText(link);
     this.successMessage = 'Participant link copied to clipboard!';
-    setTimeout(() => this.successMessage = '', 3000);
+    setTimeout(() => this.successMessage = '', MESSAGE_DISPLAY_DURATION);
   }
 
   copyResetLink(participantId: string): void {
     const link = `${window.location.origin}/event/${this.eventId}/reset/${participantId}`;
     navigator.clipboard.writeText(link);
     this.successMessage = 'Reset link copied to clipboard!';
-    setTimeout(() => this.successMessage = '', 3000);
+    setTimeout(() => this.successMessage = '', MESSAGE_DISPLAY_DURATION);
   }
 
   get canRunRaffle(): boolean {

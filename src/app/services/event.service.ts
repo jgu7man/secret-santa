@@ -85,6 +85,8 @@ export class EventService {
     await updateDoc(eventRef, { isRegistrationOpen: isOpen });
   }
 
+  private readonly MAX_RAFFLE_ATTEMPTS = 1000;
+
   /**
    * Runs the raffle algorithm
    * Uses "Shuffle and Verify" method to ensure no self-matches
@@ -106,14 +108,13 @@ export class EventService {
     // Create receivers array and shuffle until no self-matches
     let receivers: Participant[];
     let attempts = 0;
-    const maxAttempts = 1000;
 
     do {
       receivers = [...participants];
       this.shuffleArray(receivers);
       attempts++;
       
-      if (attempts > maxAttempts) {
+      if (attempts > this.MAX_RAFFLE_ATTEMPTS) {
         throw new Error('Could not generate valid raffle after maximum attempts');
       }
     } while (this.hasSelfMatch(participants, receivers));
@@ -151,9 +152,13 @@ export class EventService {
   }
 
   /**
-   * Generates a random admin token
+   * Generates a random admin token using crypto API for security
    */
   private generateAdminToken(): string {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    // Fallback for older browsers
     return Math.random().toString(36).substring(2, 15) + 
            Math.random().toString(36).substring(2, 15);
   }

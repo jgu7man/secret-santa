@@ -6,6 +6,7 @@ import { EventService } from '../../services/event.service';
 import { ParticipantService } from '../../services/participant.service';
 import { Event } from '../../models/event.model';
 import { Participant } from '../../models/participant.model';
+import { MESSAGE_DISPLAY_DURATION } from '../../constants';
 
 @Component({
   selector: 'app-event-landing',
@@ -188,7 +189,7 @@ export class EventLandingComponent implements OnInit {
       this.currentParticipant.preferences = formValue;
       this.successMessage = 'Preferences updated successfully!';
       this.isEditingPreferences = false;
-      setTimeout(() => this.successMessage = '', 3000);
+      setTimeout(() => this.successMessage = '', MESSAGE_DISPLAY_DURATION);
     } catch (error: any) {
       console.error('Error updating preferences:', error);
       this.errorMessage = 'Failed to update preferences';
@@ -202,7 +203,7 @@ export class EventLandingComponent implements OnInit {
     this.currentParticipant = null;
     this.assignedParticipant = null;
     this.successMessage = 'Logged out successfully';
-    setTimeout(() => this.successMessage = '', 3000);
+    setTimeout(() => this.successMessage = '', MESSAGE_DISPLAY_DURATION);
   }
 
   get isRegistrationOpen(): boolean {
