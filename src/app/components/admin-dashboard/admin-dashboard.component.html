@@ -1,0 +1,169 @@
+<div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-12">
+      <p class="text-gray-600">Loading...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage && !isLoading" class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+      {{ successMessage }}
+    </div>
+
+    <!-- Main Content -->
+    <div *ngIf="event && !isLoading">
+      <!-- Header -->
+      <div class="bg-white shadow-xl rounded-2xl p-6 border-t-4 border-christmas-red mb-6">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ event.name }}</h1>
+            <p class="text-gray-600">Admin Dashboard 👑</p>
+          </div>
+          <div class="text-right">
+            <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold"
+                  [class.bg-yellow-100]="event.status === 'CREATED'"
+                  [class.text-yellow-800]="event.status === 'CREATED'"
+                  [class.bg-green-100]="event.status === 'DRAWN'"
+                  [class.text-green-800]="event.status === 'DRAWN'">
+              {{ event.status === 'CREATED' ? '📝 Open for Registration' : '🎁 Raffle Done' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Event Details -->
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span class="text-gray-600">Gift Range:</span>
+            <span class="ml-2 font-semibold">${{ event.minAmount }}{{ event.maxAmount ? ' - $' + event.maxAmount : '+' }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">Participants:</span>
+            <span class="ml-2 font-semibold">{{ participants.length }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="bg-white shadow-xl rounded-2xl p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Actions</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Copy Participant Link -->
+          <button
+            (click)="copyParticipantLink()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105">
+            📋 Copy Participant Link
+          </button>
+
+          <!-- Toggle Registration -->
+          <button
+            (click)="toggleRegistration()"
+            class="font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
+            [class.bg-green-600]="!event.isRegistrationOpen"
+            [class.hover:bg-green-700]="!event.isRegistrationOpen"
+            [class.bg-red-600]="event.isRegistrationOpen"
+            [class.hover:bg-red-700]="event.isRegistrationOpen"
+            [class.text-white]="true">
+            {{ event.isRegistrationOpen ? '🔒 Close Registration' : '🔓 Open Registration' }}
+          </button>
+
+          <!-- Run Raffle -->
+          <button
+            *ngIf="canRunRaffle"
+            (click)="confirmRaffle()"
+            class="bg-christmas-gold hover:bg-yellow-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105">
+            🎲 {{ event.status === 'CREATED' ? 'Run Raffle' : 'Re-run Raffle' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Raffle Confirmation Dialog -->
+      <div *ngIf="showRaffleConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+          <h3 class="text-xl font-bold text-gray-900 mb-4">Confirm Raffle</h3>
+          <p class="text-gray-600 mb-6">
+            Are you sure you want to run the raffle? This will assign Secret Santa matches to all participants.
+            <span *ngIf="isDrawn"> This will replace existing assignments.</span>
+          </p>
+          <div class="flex gap-3">
+            <button
+              (click)="cancelRaffle()"
+              class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-all">
+              Cancel
+            </button>
+            <button
+              (click)="runRaffle()"
+              class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Participants List -->
+      <div class="bg-white shadow-xl rounded-2xl p-6">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">
+          Participants ({{ participants.length }})
+        </h2>
+
+        <!-- No Participants -->
+        <div *ngIf="participants.length === 0" class="text-center py-8 text-gray-500">
+          <p>No participants yet. Share the participant link to get started!</p>
+        </div>
+
+        <!-- Participants Table -->
+        <div *ngIf="participants.length > 0" class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 border-b-2 border-gray-200">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
+                <th *ngIf="canRevealResults" class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Gifts To</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr *ngFor="let participant of participants" class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                  {{ participant.name }}
+                </td>
+                <td class="px-4 py-3 text-sm text-gray-600">
+                  {{ participant.email || '-' }}
+                </td>
+                <td *ngIf="canRevealResults" class="px-4 py-3 text-sm text-gray-900">
+                  <span *ngIf="participant.assignedToName" class="font-medium">
+                    🎁 {{ participant.assignedToName }}
+                  </span>
+                  <span *ngIf="!participant.assignedToName" class="text-gray-400">-</span>
+                </td>
+                <td class="px-4 py-3 text-sm">
+                  <button
+                    (click)="copyResetLink(participant.id)"
+                    class="text-blue-600 hover:text-blue-800 font-medium">
+                    🔑 Reset Link
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-gray-700">
+        <p class="font-semibold mb-2">💡 How it works:</p>
+        <ol class="list-decimal list-inside space-y-1">
+          <li>Share the participant link with everyone who wants to join</li>
+          <li>Once everyone has registered, run the raffle to assign Secret Santa matches</li>
+          <li>Participants can then log in to see who they need to buy a gift for</li>
+          <li>Use the Reset Link if someone forgets their secret word</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
