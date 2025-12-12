@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" target-language="es-MX" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="appTitle" datatype="html">
+        <source>🎅 Secret Santa</source>
+        <target>🎅 Intercambio Secreto</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">5,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createEventSubtitle" datatype="html">
+        <source>Create your gift exchange event</source>
+        <target>Crea tu evento de intercambio de regalos</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">6,9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eventNameLabel" datatype="html">
+        <source> Event Name * </source>
+        <target> Nombre del Evento * </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">15,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eventNamePlaceholder" datatype="html">
+        <source>e.g., Christmas Family 2025</source>
+        <target>ej., Navidad Familiar 2025</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eventNameError" datatype="html">
+        <source> Event name is required (minimum 3 characters) </source>
+        <target> El nombre del evento es requerido (mínimo 3 caracteres) </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">28,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="minAmountLabel" datatype="html">
+        <source> Minimum Gift Amount ($) * </source>
+        <target> Monto Mínimo del Regalo ($) * </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">35,36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="minAmountError" datatype="html">
+        <source> Please enter a valid amount </source>
+        <target> Por favor ingresa un monto válido </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">47,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="maxAmountLabel" datatype="html">
+        <source> Maximum Gift Amount ($) <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;text-gray-500&quot;&gt;"/>(Optional)<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
+        <target> Monto Máximo del Regalo ($) <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;text-gray-500&quot;&gt;"/>(Opcional)<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">54,55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="maxAmountPlaceholder" datatype="html">
+        <source>Leave empty for no maximum</source>
+        <target>Dejar vacío sin máximo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">61,62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="revealToHostLabel" datatype="html">
+        <source> Allow me to see all gift assignments </source>
+        <target> Permitirme ver todas las asignaciones de regalos </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">75,76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="revealToHostHelp" datatype="html">
+        <source> Enable this if you need to see who got whom after the draw </source>
+        <target> Activa esto si necesitas ver quién le tocó a quién después del sorteo </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">79,81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createEventButton" datatype="html">
+        <source>🎁 Create Event</source>
+        <target>🎁 Crear Evento</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">94,95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="creatingButton" datatype="html">
+        <source>Creating...</source>
+        <target>Creando...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">95,97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createEventInfoNote" datatype="html">
+        <source>💡 After creating the event, save the admin link to manage it later!</source>
+        <target>💡 Después de crear el evento, guarda el enlace de administrador para gestionarlo más tarde!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
+          <context context-type="linenumber">102,106</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

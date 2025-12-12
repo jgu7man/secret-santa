@@ -13,6 +13,15 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "es-MX": {
+            "translation": "src/locale/messages.es-MX.xlf",
+            "baseHref": "/es/"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
@@ -21,10 +30,12 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "localize": true,
             "assets": [
               {
                 "glob": "**/*",
@@ -56,6 +67,11 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "es-MX": {
+              "localize": [
+                "es-MX"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -68,6 +84,9 @@
             },
             "development": {
               "buildTarget": "secret-santa:build:development"
+            },
+            "es-MX": {
+              "buildTarget": "secret-santa:build:development,es-MX"
             }
           },
           "defaultConfiguration": "development"
