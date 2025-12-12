@@ -12,6 +12,7 @@ A modern web application for organizing Secret Santa gift exchanges, built with 
 - **Privacy Options**: Admins can choose whether to see the full assignment matrix
 - **Password Recovery**: Built-in reset functionality for forgotten secret words
 - **Preference Sharing**: Participants can add gift preferences and size information
+- **Internationalization (i18n)**: Full support for English and Spanish (Mexican)
 
 ## Technology Stack
 
@@ -20,6 +21,7 @@ A modern web application for organizing Secret Santa gift exchanges, built with 
 - **Styling**: Tailwind CSS v3
 - **Forms**: Angular Reactive Forms
 - **Routing**: Angular Router with Guards
+- **i18n**: Angular Localization (English & Spanish)
 
 ## Getting Started
 
@@ -48,6 +50,15 @@ A modern web application for organizing Secret Santa gift exchanges, built with 
 
 4. Start the development server:
    ```bash
+   # English version
+   npm start
+   
+   # Spanish version
+   npm run start:es
+   ```
+
+   Or alternatively:
+   ```bash
    npm start
    ```
 
@@ -67,7 +78,18 @@ src/app/
 │   └── participant.service.ts # Participant management
 ├── models/              # TypeScript interfaces
 ├── guards/              # Route guards
-└── firebase-config.ts   # Firebase configuration
+├── firebase-config.ts   # Firebase configuration
+└── locale/              # i18n translation files
+```
+
+## Internationalization
+
+The app supports multiple languages. See [I18N.md](I18N.md) for detailed information.
+
+- 🇺🇸 English (default)
+- 🇲🇽 Spanish (Mexican)
+
+To add translations or work with different languages, refer to the [i18n documentation](I18N.md).
 ```
 
 ## Usage

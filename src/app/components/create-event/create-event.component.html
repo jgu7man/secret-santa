@@ -2,8 +2,8 @@
   <div class="max-w-md mx-auto">
     <!-- Header -->
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-christmas-red mb-2">🎅 Secret Santa</h1>
-      <p class="text-gray-600">Create your gift exchange event</p>
+      <h1 class="text-4xl font-bold text-christmas-red mb-2" i18n="@@appTitle">🎅 Secret Santa</h1>
+      <p class="text-gray-600" i18n="@@createEventSubtitle">Create your gift exchange event</p>
     </div>
 
     <!-- Form Card -->
@@ -11,26 +11,27 @@
       <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
         <!-- Event Name -->
         <div class="mb-6">
-          <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-2" i18n="@@eventNameLabel">
             Event Name *
           </label>
           <input
             type="text"
             id="name"
             formControlName="name"
+            i18n-placeholder="@@eventNamePlaceholder"
             placeholder="e.g., Christmas Family 2025"
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
             [class.border-red-500]="eventForm.get('name')?.invalid && eventForm.get('name')?.touched"
           />
           <p *ngIf="eventForm.get('name')?.invalid && eventForm.get('name')?.touched" 
-             class="mt-1 text-sm text-red-600">
+             class="mt-1 text-sm text-red-600" i18n="@@eventNameError">
             Event name is required (minimum 3 characters)
           </p>
         </div>
 
         <!-- Min Amount -->
         <div class="mb-6">
-          <label for="minAmount" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="minAmount" class="block text-sm font-medium text-gray-700 mb-2" i18n="@@minAmountLabel">
             Minimum Gift Amount ($) *
           </label>
           <input
@@ -42,20 +43,21 @@
             [class.border-red-500]="eventForm.get('minAmount')?.invalid && eventForm.get('minAmount')?.touched"
           />
           <p *ngIf="eventForm.get('minAmount')?.invalid && eventForm.get('minAmount')?.touched" 
-             class="mt-1 text-sm text-red-600">
+             class="mt-1 text-sm text-red-600" i18n="@@minAmountError">
             Please enter a valid amount
           </p>
         </div>
 
         <!-- Max Amount -->
         <div class="mb-6">
-          <label for="maxAmount" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="maxAmount" class="block text-sm font-medium text-gray-700 mb-2" i18n="@@maxAmountLabel">
             Maximum Gift Amount ($) <span class="text-gray-500">(Optional)</span>
           </label>
           <input
             type="number"
             id="maxAmount"
             formControlName="maxAmount"
+            i18n-placeholder="@@maxAmountPlaceholder"
             placeholder="Leave empty for no maximum"
             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all"
           />
@@ -69,11 +71,11 @@
               formControlName="revealToHost"
               class="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
             />
-            <span class="ml-3 text-sm text-gray-700">
+            <span class="ml-3 text-sm text-gray-700" i18n="@@revealToHostLabel">
               Allow me to see all gift assignments
             </span>
           </label>
-          <p class="mt-1 text-xs text-gray-500 ml-8">
+          <p class="mt-1 text-xs text-gray-500 ml-8" i18n="@@revealToHostHelp">
             Enable this if you need to see who got whom after the draw
           </p>
         </div>
@@ -89,15 +91,15 @@
           [disabled]="eventForm.invalid || isSubmitting"
           class="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed"
         >
-          <span *ngIf="!isSubmitting">🎁 Create Event</span>
-          <span *ngIf="isSubmitting">Creating...</span>
+          <span *ngIf="!isSubmitting" i18n="@@createEventButton">🎁 Create Event</span>
+          <span *ngIf="isSubmitting" i18n="@@creatingButton">Creating...</span>
         </button>
       </form>
     </div>
 
     <!-- Info Note -->
     <div class="mt-6 text-center text-sm text-gray-600">
-      <p>💡 After creating the event, save the admin link to manage it later!</p>
+      <p i18n="@@createEventInfoNote">💡 After creating the event, save the admin link to manage it later!</p>
     </div>
   </div>
 </div>
