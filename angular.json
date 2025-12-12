@@ -67,6 +67,11 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "es-MX": {
+              "localize": [
+                "es-MX"
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -79,6 +84,9 @@
             },
             "development": {
               "buildTarget": "secret-santa:build:development"
+            },
+            "es-MX": {
+              "buildTarget": "secret-santa:build:development,es-MX"
             }
           },
           "defaultConfiguration": "development"
