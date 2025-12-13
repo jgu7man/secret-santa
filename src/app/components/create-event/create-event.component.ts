@@ -33,6 +33,7 @@ export class CreateEventComponent {
       minAmount: [0, [Validators.required, Validators.min(0)]],
       maxAmount: [null],
       revealToHost: [false],
+      registrationDeadline: [null],
     });
   }
 

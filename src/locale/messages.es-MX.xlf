@@ -66,6 +66,42 @@
           <context context-type="linenumber">54,55</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="maxAmountLabelSimple" datatype="html">
+        <source>Maximum Gift Amount ($)</source>
+        <target>Monto Máximo del Regalo ($)</target>
+      </trans-unit>
+      <trans-unit id="eventNameLabelSimple" datatype="html">
+        <source>Event Name *</source>
+        <target>Nombre del Evento *</target>
+      </trans-unit>
+      <trans-unit id="minAmountLabelSimple" datatype="html">
+        <source>Minimum Gift Amount ($) *</source>
+        <target>Monto Mínimo del Regalo ($) *</target>
+      </trans-unit>
+      <trans-unit id="registrationDeadlineLabelSimple" datatype="html">
+        <source>Registration Deadline</source>
+        <target>Fecha Límite de Registro</target>
+      </trans-unit>
+      <trans-unit id="saveButtonSimple" datatype="html">
+        <source>Save</source>
+        <target>Guardar</target>
+      </trans-unit>
+      <trans-unit id="statusRaffleDone" datatype="html">
+        <source>🎁 Raffle Done</source>
+        <target>🎁 Sorteo Realizado</target>
+      </trans-unit>
+      <trans-unit id="loadEventDataError" datatype="html">
+        <source>Failed to load event data</source>
+        <target>Error al cargar los datos del evento</target>
+      </trans-unit>
+      <trans-unit id="sizesLabelOptional" datatype="html">
+        <source>Sizes (Optional)</source>
+        <target>Tallas (Opcional)</target>
+      </trans-unit>
+      <trans-unit id="logoutButtonLanding" datatype="html">
+        <source>Logout</source>
+        <target>Cerrar Sesión</target>
+      </trans-unit>
       <trans-unit id="maxAmountPlaceholder" datatype="html">
         <source>Leave empty for no maximum</source>
         <target>Dejar vacío sin máximo</target>
@@ -685,6 +721,34 @@
       <trans-unit id="backToDashboard" datatype="html">
         <source>Back to Dashboard</source>
         <target>Volver al Panel</target>
+      </trans-unit>
+      <trans-unit id="registrationDeadlineLabel" datatype="html">
+        <source>Registration Deadline</source>
+        <target>Fecha Límite de Registro</target>
+      </trans-unit>
+      <trans-unit id="registrationDeadlineHelp" datatype="html">
+        <source>Participants won't be able to register after this date</source>
+        <target>Los participantes no podrán registrarse después de esta fecha</target>
+      </trans-unit>
+      <trans-unit id="deadlineLabel" datatype="html">
+        <source>Deadline:</source>
+        <target>Fecha Límite:</target>
+      </trans-unit>
+      <trans-unit id="editEventButton" datatype="html">
+        <source>✏️ Edit Event</source>
+        <target>✏️ Editar Evento</target>
+      </trans-unit>
+      <trans-unit id="editEventTitle" datatype="html">
+        <source>Edit Event</source>
+        <target>Editar Evento</target>
+      </trans-unit>
+      <trans-unit id="eventUpdatedSuccess" datatype="html">
+        <source>Event updated successfully!</source>
+        <target>¡Evento actualizado exitosamente!</target>
+      </trans-unit>
+      <trans-unit id="eventUpdateError" datatype="html">
+        <source>Failed to update event</source>
+        <target>Error al actualizar el evento</target>
       </trans-unit>
     </body>
   </file>

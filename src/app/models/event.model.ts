@@ -13,6 +13,7 @@ export interface Event {
   status: EventStatus;
   createdAt: Timestamp;
   ownerId?: string;
+  registrationDeadline?: Timestamp;
 }
 
 export interface CreateEventData {
@@ -20,4 +21,5 @@ export interface CreateEventData {
   minAmount: number;
   maxAmount?: number;
   revealToHost: boolean;
+  registrationDeadline?: string; // ISO string from form
 }

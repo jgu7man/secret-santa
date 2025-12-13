@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { User } from 'firebase/auth';
 import {
@@ -14,7 +20,7 @@ import { ParticipantService } from '../../services/participant.service';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })
@@ -27,14 +33,24 @@ export class AdminDashboardComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   showRaffleConfirm = false;
+  showEditModal = false;
+  editForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private eventService: EventService,
     private participantService: ParticipantService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private fb: FormBuilder
+  ) {
+    this.editForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      minAmount: [0, [Validators.required, Validators.min(0)]],
+      maxAmount: [null],
+      registrationDeadline: [null],
+    });
+  }
 
   async ngOnInit(): Promise<void> {
     this.eventId = this.route.snapshot.paramMap.get('id') || '';
@@ -64,7 +80,7 @@ export class AdminDashboardComponent implements OnInit {
       );
     } catch (error: any) {
       console.error('Error loading event data:', error);
-      this.errorMessage = $localize`:@@loadEventError:Failed to load event data`;
+      this.errorMessage = $localize`:@@loadEventDataError:Failed to load event data`;
     } finally {
       this.isLoading = false;
     }
@@ -96,6 +112,53 @@ export class AdminDashboardComponent implements OnInit {
 
   cancelRaffle(): void {
     this.showRaffleConfirm = false;
+  }
+
+  openEditModal(): void {
+    if (!this.event) return;
+
+    let deadline = null;
+    if (this.event.registrationDeadline) {
+      const date = this.event.registrationDeadline.toDate();
+      // Format to YYYY-MM-DDThh:mm for datetime-local input
+      const offset = date.getTimezoneOffset() * 60000;
+      deadline = new Date(date.getTime() - offset).toISOString().slice(0, 16);
+    }
+
+    this.editForm.patchValue({
+      name: this.event.name,
+      minAmount: this.event.minAmount,
+      maxAmount: this.event.maxAmount,
+      registrationDeadline: deadline,
+    });
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+  }
+
+  async updateEvent(): Promise<void> {
+    if (this.editForm.invalid || !this.event) return;
+
+    try {
+      const formValue = this.editForm.value;
+      await this.eventService.updateEvent(this.eventId, formValue);
+
+      // Update local state
+      this.event.name = formValue.name;
+      this.event.minAmount = formValue.minAmount;
+      this.event.maxAmount = formValue.maxAmount;
+      // Reload to get proper timestamp
+      await this.loadEventData();
+
+      this.successMessage = $localize`:@@eventUpdatedSuccess:Event updated successfully!`;
+      this.showEditModal = false;
+      setTimeout(() => (this.successMessage = ''), MESSAGE_DISPLAY_DURATION);
+    } catch (error: any) {
+      console.error('Error updating event:', error);
+      this.errorMessage = $localize`:@@eventUpdateError:Failed to update event`;
+    }
   }
 
   navigateToEvent(): void {

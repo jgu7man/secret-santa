@@ -47,6 +47,12 @@ export class EventService {
       ownerId: ownerId || null,
     };
 
+    if (data.registrationDeadline) {
+      newEvent.registrationDeadline = Timestamp.fromDate(
+        new Date(data.registrationDeadline)
+      );
+    }
+
     await setDoc(eventRef, newEvent);
 
     // Store admin token in localStorage
@@ -89,6 +95,28 @@ export class EventService {
   async updateStatus(eventId: string, status: EventStatus): Promise<void> {
     const eventRef = doc(this.eventsCollection, eventId);
     await updateDoc(eventRef, { status });
+  }
+
+  /**
+   * Updates event details
+   */
+  async updateEvent(
+    eventId: string,
+    data: Partial<CreateEventData>
+  ): Promise<void> {
+    const eventRef = doc(this.eventsCollection, eventId);
+    const updates: any = {};
+
+    if (data.name) updates.name = data.name;
+    if (data.minAmount !== undefined) updates.minAmount = data.minAmount;
+    if (data.maxAmount !== undefined) updates.maxAmount = data.maxAmount;
+    if (data.registrationDeadline) {
+      updates.registrationDeadline = Timestamp.fromDate(
+        new Date(data.registrationDeadline)
+      );
+    }
+
+    await updateDoc(eventRef, updates);
   }
 
   /**

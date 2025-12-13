@@ -161,7 +161,7 @@ export class EventLandingComponent implements OnInit {
   async onRegister(): Promise<void> {
     if (this.registerForm.invalid || !this.event) return;
 
-    if (!this.event.isRegistrationOpen) {
+    if (!this.isRegistrationOpen) {
       this.errorMessage = $localize`:@@registrationClosedError:Registration is currently closed`;
       return;
     }
@@ -266,7 +266,15 @@ export class EventLandingComponent implements OnInit {
   }
 
   get isRegistrationOpen(): boolean {
-    return this.event?.isRegistrationOpen === true;
+    if (!this.event?.isRegistrationOpen) return false;
+
+    if (this.event.registrationDeadline) {
+      const now = new Date();
+      const deadline = this.event.registrationDeadline.toDate();
+      if (now > deadline) return false;
+    }
+
+    return true;
   }
 
   get isDrawn(): boolean {
