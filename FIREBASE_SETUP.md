@@ -17,13 +17,22 @@
 3. Choose "Start in test mode" for development (change rules for production later)
 4. Select a location closest to your users
 
-### 3. Register Your Web App
+### 3. Enable Authentication
+1. In the Firebase Console, go to "Build" > "Authentication"
+2. Click "Get started"
+3. Select the "Sign-in method" tab
+4. Click "Google" in the Sign-in providers list
+5. Toggle "Enable" switch
+6. Select a "Project support email"
+7. Click "Save"
+
+### 4. Register Your Web App
 1. In the Firebase Console, click the web icon (</>) to add a web app
 2. Give your app a nickname (e.g., "Secret Santa Web")
 3. Check "Also set up Firebase Hosting" if you want to deploy
 4. Click "Register app"
 
-### 4. Get Your Firebase Configuration
+### 5. Get Your Firebase Configuration
 After registering your app, you'll see something like this:
 
 ```javascript
@@ -37,13 +46,14 @@ const firebaseConfig = {
 };
 ```
 
-### 5. Update the Application Configuration
+### 6. Update the Application Configuration
 1. Open `src/app/firebase-config.ts`
 2. Replace the placeholder values with your actual Firebase configuration
 3. Save the file
 
 ```typescript
 import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -57,6 +67,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
+export const auth = getAuth(app);
 ```
 
 ## Firestore Security Rules (Production)
