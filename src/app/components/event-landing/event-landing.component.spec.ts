@@ -42,6 +42,9 @@ describe('EventLandingComponent', () => {
 
   const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
+    events: of(),
+    createUrlTree: jasmine.createSpy('createUrlTree').and.returnValue({}),
+    serializeUrl: jasmine.createSpy('serializeUrl').and.returnValue(''),
   };
 
   beforeEach(async () => {
