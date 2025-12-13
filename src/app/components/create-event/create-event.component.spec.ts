@@ -10,9 +10,8 @@ describe('CreateEventComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateEventComponent],
-      providers: [provideRouter([])]
-    })
-    .compileComponents();
+      providers: [provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CreateEventComponent);
     component = fixture.componentInstance;
