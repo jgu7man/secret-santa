@@ -12,6 +12,7 @@ export interface Event {
   isRegistrationOpen: boolean;
   status: EventStatus;
   createdAt: Timestamp;
+  ownerId?: string;
 }
 
 export interface CreateEventData {

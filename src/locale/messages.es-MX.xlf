@@ -4,7 +4,7 @@
     <body>
       <trans-unit id="appTitle" datatype="html">
         <source>🎅 Secret Santa</source>
-        <target>🎅 Intercambio Secreto</target>
+        <target>🎅 Mi Santa Secreto</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
           <context context-type="linenumber">5,6</context>
@@ -113,6 +113,578 @@
           <context context-type="sourcefile">src/app/components/create-event/create-event.component.html</context>
           <context context-type="linenumber">102,106</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="loadingMessage" datatype="html">
+        <source>Loading...</source>
+        <target>Cargando...</target>
+      </trans-unit>
+      <trans-unit id="eventNotFound" datatype="html">
+        <source>Event not found</source>
+        <target>Evento no encontrado</target>
+      </trans-unit>
+      <trans-unit id="giftRange" datatype="html">
+        <source>Gift Range:</source>
+        <target>Rango de Regalo:</target>
+      </trans-unit>
+      <trans-unit id="welcomeMessage" datatype="html">
+        <source>Welcome, <x id="INTERPOLATION" equiv-text="{{ currentParticipant.name }}"/>! 👋</source>
+        <target>Bienvenido, <x id="INTERPOLATION" equiv-text="{{ currentParticipant.name }}"/>! 👋</target>
+      </trans-unit>
+      <trans-unit id="logoutButton" datatype="html">
+        <source>Logout</source>
+        <target>Salir</target>
+      </trans-unit>
+      <trans-unit id="secretSantaAssignment" datatype="html">
+        <source>🎁 Your Secret Santa Assignment</source>
+        <target>🎁 Te toca reglarle a:</target>
+      </trans-unit>
+      <trans-unit id="myInterestsLabel" datatype="html">
+        <source> My Interests &amp; Preferences </source>
+        <target> Mis Intereses y Preferencias </target>
+      </trans-unit>
+      <trans-unit id="interestsPlaceholder" datatype="html">
+        <source>e.g., I like books, sports, technology...</source>
+        <target>ej. me gustan los libros, deportes, tecnología...</target>
+      </trans-unit>
+      <trans-unit id="mySizesLabel" datatype="html">
+        <source> My Sizes (Optional) </source>
+        <target> Mis Tallas (Opcional) </target>
+      </trans-unit>
+      <trans-unit id="sizesPlaceholder" datatype="html">
+        <source>e.g., Shirt: M, Shoes: 9</source>
+        <target>ej. Camisa: M, Zapatos: 9</target>
+      </trans-unit>
+      <trans-unit id="cancelButton" datatype="html">
+        <source> Cancel </source>
+        <target> Cancelar </target>
+      </trans-unit>
+      <trans-unit id="saveButton" datatype="html">
+        <source> Save </source>
+        <target> Guardar </target>
+      </trans-unit>
+      <trans-unit id="homeLink" datatype="html">
+        <source>Home</source>
+        <target>Inicio</target>
+      </trans-unit>
+      <trans-unit id="registrationClosedWarning" datatype="html">
+        <source> ⚠️ Registration is currently closed </source>
+        <target> ⚠️ El registro está cerrado actualmente </target>
+      </trans-unit>
+      <trans-unit id="registerTab" datatype="html">
+        <source> Register </source>
+        <target> Registrarse </target>
+      </trans-unit>
+      <trans-unit id="loginTab" datatype="html">
+        <source> Login </source>
+        <target> Entrar </target>
+      </trans-unit>
+      <trans-unit id="nameLabel" datatype="html">
+        <source>Name *</source>
+        <target>Nombre *</target>
+      </trans-unit>
+      <trans-unit id="namePlaceholder" datatype="html">
+        <source>Your full name</source>
+        <target>Tu nombre completo</target>
+      </trans-unit>
+      <trans-unit id="nameRequiredError" datatype="html">
+        <source> Name is required (minimum 2 characters) </source>
+        <target> El nombre es requerido (mínimo 2 caracteres) </target>
+      </trans-unit>
+      <trans-unit id="secretWordLabel" datatype="html">
+        <source>Secret Word *</source>
+        <target>Palabra Secreta *</target>
+      </trans-unit>
+      <trans-unit id="secretWordPlaceholder" datatype="html">
+        <source>Choose a secret word to login later</source>
+        <target>Elige una palabra secreta para entrar después</target>
+      </trans-unit>
+      <trans-unit id="secretWordRequiredError" datatype="html">
+        <source> Secret word is required (minimum 4 characters) </source>
+        <target> La palabra secreta es requerida (mínimo 4 caracteres) </target>
+      </trans-unit>
+      <trans-unit id="rememberSecretWordHint" datatype="html">
+        <source>Remember this word to login later!</source>
+        <target>¡Recuerda esta palabra para entrar después!</target>
+      </trans-unit>
+      <trans-unit id="emailLabel" datatype="html">
+        <source>Email (Optional)</source>
+        <target>Correo (Opcional)</target>
+      </trans-unit>
+      <trans-unit id="giftPreferencesLabel" datatype="html">
+        <source>Gift Preferences</source>
+        <target>Preferencias de Regalo</target>
+      </trans-unit>
+      <trans-unit id="giftPreferencesPlaceholder" datatype="html">
+        <source>What do you like? (e.g., books, sports, technology...)</source>
+        <target>¿Qué te gusta? (ej. libros, deportes, tecnología...)</target>
+      </trans-unit>
+      <trans-unit id="sizesLabel" datatype="html">
+        <source>Sizes (Optional)</source>
+        <target>Tallas (Opcional)</target>
+      </trans-unit>
+      <trans-unit id="registerButton" datatype="html">
+        <source>🎁 Register</source>
+        <target>🎁 Registrarse</target>
+      </trans-unit>
+      <trans-unit id="registeringButton" datatype="html">
+        <source>Registering...</source>
+        <target>Registrando...</target>
+      </trans-unit>
+      <trans-unit id="loginNamePlaceholder" datatype="html">
+        <source>Your name</source>
+        <target>Tu nombre</target>
+      </trans-unit>
+      <trans-unit id="loginSecretWordPlaceholder" datatype="html">
+        <source>Your secret word</source>
+        <target>Tu palabra secreta</target>
+      </trans-unit>
+      <trans-unit id="loginButton" datatype="html">
+        <source>🔓 Login</source>
+        <target>🔓 Entrar</target>
+      </trans-unit>
+      <trans-unit id="loggingInButton" datatype="html">
+        <source>Logging in...</source>
+        <target>Entrando...</target>
+      </trans-unit>
+      <trans-unit id="forgotSecretWordHint" datatype="html">
+        <source> Forgot your secret word? Contact the event organizer for a reset link. </source>
+        <target> ¿Olvidaste tu palabra secreta? Contacta al organizador para un enlace de recuperación. </target>
+      </trans-unit>
+      <trans-unit id="hostDashboardTitle" datatype="html">
+        <source>🎅 Host Dashboard</source>
+        <target>🎅 Panel del Anfitrión</target>
+      </trans-unit>
+      <trans-unit id="createNewEventLink" datatype="html">
+        <source>Create New Event</source>
+        <target>Crear Nuevo Evento</target>
+      </trans-unit>
+      <trans-unit id="loginToViewEventsTitle" datatype="html">
+        <source>Login to view your events</source>
+        <target>Inicia sesión para ver tus eventos</target>
+      </trans-unit>
+      <trans-unit id="loginToViewEventsDesc" datatype="html">
+        <source>Sign in with Google to access your created events and manage them easily.</source>
+        <target>Inicia sesión con Google para acceder a tus eventos creados y administrarlos fácilmente.</target>
+      </trans-unit>
+      <trans-unit id="loginWithGoogleButton" datatype="html">
+        <source>Login with Google</source>
+        <target>Iniciar sesión con Google</target>
+      </trans-unit>
+      <trans-unit id="loadingEventsMessage" datatype="html">
+        <source>Loading your events...</source>
+        <target>Cargando tus eventos...</target>
+      </trans-unit>
+      <trans-unit id="minAmountDisplay" datatype="html">
+        <source>Min: $<x id="INTERPOLATION" equiv-text="{{ event.minAmount }}"/></source>
+        <target>Min: $<x id="INTERPOLATION" equiv-text="{{ event.minAmount }}"/></target>
+      </trans-unit>
+      <trans-unit id="noEventsFoundMessage" datatype="html">
+        <source>You haven't created any events yet.</source>
+        <target>Aún no has creado ningún evento.</target>
+      </trans-unit>
+      <trans-unit id="createFirstEventLink" datatype="html">
+        <source>Create your first event!</source>
+        <target>¡Crea tu primer evento!</target>
+      </trans-unit>
+      <trans-unit id="hostLoginLink" datatype="html">
+        <source>Host Dashboard</source>
+        <target>Panel del Anfitrión</target>
+      </trans-unit>
+      <trans-unit id="dashboardLink" datatype="html">
+        <source>Dashboard</source>
+        <target>Panel de Control</target>
+      </trans-unit>
+      <trans-unit id="manageEventButton" datatype="html">
+        <source>Manage Event</source>
+        <target>Administrar Evento</target>
+      </trans-unit>
+      <trans-unit id="adminLoginTitle" datatype="html">
+        <source>Admin Access 👑</source>
+        <target>Acceso de Administrador 👑</target>
+      </trans-unit>
+      <trans-unit id="adminLoginSubtitle" datatype="html">
+        <source>Login to manage your event</source>
+        <target>Inicia sesión para administrar tu evento</target>
+      </trans-unit>
+      <trans-unit id="loginWithGoogle" datatype="html">
+        <source>Login with Google</source>
+        <target>Iniciar con Google</target>
+      </trans-unit>
+      <trans-unit id="orSeparator" datatype="html">
+        <source>Or</source>
+        <target>O</target>
+      </trans-unit>
+      <trans-unit id="adminTokenLabel" datatype="html">
+        <source>Admin Token</source>
+        <target>Token de Administrador</target>
+      </trans-unit>
+      <trans-unit id="adminTokenPlaceholder" datatype="html">
+        <source>Enter your admin token</source>
+        <target>Ingresa tu token de administrador</target>
+      </trans-unit>
+      <trans-unit id="accessWithToken" datatype="html">
+        <source>Access with Token</source>
+        <target>Acceder con Token</target>
+      </trans-unit>
+      <trans-unit id="backToEvent" datatype="html">
+        <source> ← Back to Event </source>
+        <target> ← Volver al Evento </target>
+      </trans-unit>
+      <trans-unit id="organizerQuestion" datatype="html">
+        <source>Are you the organizer?</source>
+        <target>¿Eres el organizador?</target>
+      </trans-unit>
+      <trans-unit id="manageEventLink" datatype="html">
+        <source> Manage Event </source>
+        <target> Administrar Evento </target>
+      </trans-unit>
+      <trans-unit id="hostLoginButton" datatype="html">
+        <source>Host Login</source>
+        <target>Acceso Anfitrión</target>
+      </trans-unit>
+      <trans-unit id="goToRegisterButton" datatype="html">
+        <source>Register</source>
+        <target>Registrarse</target>
+      </trans-unit>
+      <trans-unit id="logoutButton" datatype="html">
+        <source>Logout</source>
+        <target>Cerrar Sesión</target>
+      </trans-unit>
+      <trans-unit id="loadingMessage" datatype="html">
+        <source>Loading...</source>
+        <target>Cargando...</target>
+      </trans-unit>
+      <trans-unit id="adminDashboardTitle" datatype="html">
+        <source>Admin Dashboard 👑</source>
+        <target>Panel de Administración 👑</target>
+      </trans-unit>
+      <trans-unit id="statusOpen" datatype="html">
+        <source>📝 Open for Registration</source>
+        <target>📝 Abierto para Registro</target>
+      </trans-unit>
+      <trans-unit id="statusDrawn" datatype="html">
+        <source>🎁 Raffle Done</source>
+        <target>🎁 Sorteo Realizado</target>
+      </trans-unit>
+      <trans-unit id="giftRangeLabel" datatype="html">
+        <source>Gift Range:</source>
+        <target>Rango de Regalo:</target>
+      </trans-unit>
+      <trans-unit id="participantsLabel" datatype="html">
+        <source>Participants:</source>
+        <target>Participantes:</target>
+      </trans-unit>
+      <trans-unit id="actionsTitle" datatype="html">
+        <source>Actions</source>
+        <target>Acciones</target>
+      </trans-unit>
+      <trans-unit id="copyLinkButton" datatype="html">
+        <source>📋 Copy Participant Link</source>
+        <target>📋 Copiar Enlace de Participante</target>
+      </trans-unit>
+      <trans-unit id="closeRegistration" datatype="html">
+        <source>🔒 Close Registration</source>
+        <target>🔒 Cerrar Registro</target>
+      </trans-unit>
+      <trans-unit id="openRegistration" datatype="html">
+        <source>🔓 Open Registration</source>
+        <target>🔓 Abrir Registro</target>
+      </trans-unit>
+      <trans-unit id="runRaffle" datatype="html">
+        <source>🎲 Run Raffle</source>
+        <target>🎲 Realizar Sorteo</target>
+      </trans-unit>
+      <trans-unit id="rerunRaffle" datatype="html">
+        <source>🎲 Re-run Raffle</source>
+        <target>🎲 Volver a Sortear</target>
+      </trans-unit>
+      <trans-unit id="confirmRaffleTitle" datatype="html">
+        <source>Confirm Raffle</source>
+        <target>Confirmar Sorteo</target>
+      </trans-unit>
+      <trans-unit id="confirmRaffleMessage" datatype="html">
+        <source>Are you sure you want to run the raffle? This will assign Secret Santa matches to all participants.</source>
+        <target>¿Estás seguro de que quieres realizar el sorteo? Esto asignará los Amigos Secretos a todos los participantes.</target>
+      </trans-unit>
+      <trans-unit id="confirmRaffleWarning" datatype="html">
+        <source> This will replace existing assignments.</source>
+        <target> Esto reemplazará las asignaciones existentes.</target>
+      </trans-unit>
+      <trans-unit id="resetSecretWordTitle" datatype="html">
+        <source>🔑 Reset Secret Word</source>
+        <target>🔑 Restablecer Palabra Secreta</target>
+      </trans-unit>
+      <trans-unit id="secretWordResetSuccessTitle" datatype="html">
+        <source>Secret Word Reset!</source>
+        <target>¡Palabra Secreta Restablecida!</target>
+      </trans-unit>
+      <trans-unit id="secretWordResetSuccessMessage" datatype="html">
+        <source>Your secret word has been successfully updated. You can now login with your new secret word.</source>
+        <target>Tu palabra secreta ha sido actualizada exitosamente. Ahora puedes iniciar sesión con tu nueva palabra secreta.</target>
+      </trans-unit>
+      <trans-unit id="goToEventButton" datatype="html">
+        <source>Go to Event</source>
+        <target>Ir al Evento</target>
+      </trans-unit>
+      <trans-unit id="newSecretWordLabel" datatype="html">
+        <source>New Secret Word *</source>
+        <target>Nueva Palabra Secreta *</target>
+      </trans-unit>
+      <trans-unit id="newSecretWordPlaceholder" datatype="html">
+        <source>Enter new secret word</source>
+        <target>Ingresa nueva palabra secreta</target>
+      </trans-unit>
+      <trans-unit id="secretWordMinLengthError" datatype="html">
+        <source>Secret word must be at least 4 characters</source>
+        <target>La palabra secreta debe tener al menos 4 caracteres</target>
+      </trans-unit>
+      <trans-unit id="confirmSecretWordLabel" datatype="html">
+        <source>Confirm New Secret Word *</source>
+        <target>Confirmar Nueva Palabra Secreta *</target>
+      </trans-unit>
+      <trans-unit id="confirmSecretWordPlaceholder" datatype="html">
+        <source>Confirm new secret word</source>
+        <target>Confirma nueva palabra secreta</target>
+      </trans-unit>
+      <trans-unit id="secretWordsMismatchError" datatype="html">
+        <source>Secret words do not match</source>
+        <target>Las palabras secretas no coinciden</target>
+      </trans-unit>
+      <trans-unit id="resetSecretWordButton" datatype="html">
+        <source>Reset Secret Word</source>
+        <target>Restablecer Palabra Secreta</target>
+      </trans-unit>
+      <trans-unit id="resettingButton" datatype="html">
+        <source>Resetting...</source>
+        <target>Restableciendo...</target>
+      </trans-unit>
+      <trans-unit id="rememberSecretWordTip" datatype="html">
+        <source>💡 Make sure to remember your new secret word!</source>
+        <target>💡 ¡Asegúrate de recordar tu nueva palabra secreta!</target>
+      </trans-unit>
+      <trans-unit id="confirmButton" datatype="html">
+        <source>Confirm</source>
+        <target>Confirmar</target>
+      </trans-unit>
+      <trans-unit id="participantsTitle" datatype="html">
+        <source>Participants</source>
+        <target>Participantes</target>
+      </trans-unit>
+      <trans-unit id="noParticipantsMessage" datatype="html">
+        <source>No participants yet. Share the participant link to get started!</source>
+        <target>Aún no hay participantes. ¡Comparte el enlace de participante para comenzar!</target>
+      </trans-unit>
+      <trans-unit id="nameHeader" datatype="html">
+        <source>Name</source>
+        <target>Nombre</target>
+      </trans-unit>
+      <trans-unit id="emailHeader" datatype="html">
+        <source>Email</source>
+        <target>Correo</target>
+      </trans-unit>
+      <trans-unit id="giftsToHeader" datatype="html">
+        <source>Gifts To</source>
+        <target>Regala a</target>
+      </trans-unit>
+      <trans-unit id="actionsHeader" datatype="html">
+        <source>Actions</source>
+        <target>Acciones</target>
+      </trans-unit>
+      <trans-unit id="resetLinkButton" datatype="html">
+        <source>🔑 Reset Link</source>
+        <target>🔑 Enlace de Recuperación</target>
+      </trans-unit>
+      <trans-unit id="howItWorksTitle" datatype="html">
+        <source>💡 How it works:</source>
+        <target>💡 Cómo funciona:</target>
+      </trans-unit>
+      <trans-unit id="howItWorksStep1" datatype="html">
+        <source>Share the participant link with everyone who wants to join</source>
+        <target>Comparte el enlace de participante con todos los que quieran unirse</target>
+      </trans-unit>
+      <trans-unit id="howItWorksStep2" datatype="html">
+        <source>Once everyone has registered, run the raffle to assign Secret Santa matches</source>
+        <target>Una vez que todos se hayan registrado, realiza el sorteo para asignar los Amigos Secretos</target>
+      </trans-unit>
+      <trans-unit id="howItWorksStep3" datatype="html">
+        <source>Participants can then log in to see who they need to buy a gift for</source>
+        <target>Los participantes podrán iniciar sesión para ver a quién deben regalarle</target>
+      </trans-unit>
+      <trans-unit id="howItWorksStep4" datatype="html">
+        <source>Use the Reset Link if someone forgets their secret word</source>
+        <target>Usa el Enlace de Recuperación si alguien olvida su palabra secreta</target>
+      </trans-unit>
+      <trans-unit id="myPreferencesTitle" datatype="html">
+        <source>My Gift Preferences</source>
+        <target>Mis Preferencias de Regalo</target>
+      </trans-unit>
+      <trans-unit id="theirPreferencesTitle" datatype="html">
+        <source>Their Gift Preferences:</source>
+        <target>Sus Preferencias de Regalo:</target>
+      </trans-unit>
+      <trans-unit id="interestsLabel" datatype="html">
+        <source>Interests:</source>
+        <target>Intereses:</target>
+      </trans-unit>
+      <trans-unit id="sizesLabel" datatype="html">
+        <source>Sizes:</source>
+        <target>Tallas:</target>
+      </trans-unit>
+      <trans-unit id="noPreferencesProvidedMessage" datatype="html">
+        <source>No preferences provided yet</source>
+        <target>Aún no ha proporcionado preferencias</target>
+      </trans-unit>
+      <trans-unit id="waitingForRaffle" datatype="html">
+        <source>⏳ Waiting for the organizer to run the raffle...</source>
+        <target>⏳ Esperando a que el organizador realice el sorteo...</target>
+      </trans-unit>
+      <trans-unit id="editPreferencesButton" datatype="html">
+        <source> ✏️ Edit </source>
+        <target> ✏️ Editar </target>
+      </trans-unit>
+      <trans-unit id="noPreferencesMessage" datatype="html">
+        <source> No preferences added yet </source>
+        <target> Aún no has agregado preferencias </target>
+      </trans-unit>
+      <trans-unit id="loginRecommendationTitle" datatype="html">
+        <source>Login Recommended</source>
+        <target>Inicio de Sesión Recomendado</target>
+      </trans-unit>
+      <trans-unit id="loginRecommendationMessage" datatype="html">
+        <source> Creating an event as a guest means you won't be able to manage it from your dashboard later. We recommend logging in to save your event. </source>
+        <target> Crear un evento como invitado significa que no podrás gestionarlo desde tu panel más tarde. Recomendamos iniciar sesión para guardar tu evento. </target>
+      </trans-unit>
+      <trans-unit id="loginAndCreateButton" datatype="html">
+        <source> Login &amp; Create Event </source>
+        <target> Iniciar Sesión y Crear Evento </target>
+      </trans-unit>
+      <trans-unit id="continueAsGuestButton" datatype="html">
+        <source> Continue as Guest </source>
+        <target> Continuar como Invitado </target>
+      </trans-unit>
+      <trans-unit id="participateButton" datatype="html">
+        <source> 🎁 Participate in Event </source>
+        <target> 🎁 Participar en el Evento </target>
+      </trans-unit>
+      <trans-unit id="claimEventButton" datatype="html">
+        <source> 💾 Save to My Events </source>
+        <target> 💾 Guardar en Mis Eventos </target>
+      </trans-unit>
+      <trans-unit id="manageEventAction" datatype="html">
+        <source>Manage</source>
+        <target>Administrar</target>
+      </trans-unit>
+      <trans-unit id="viewEventAction" datatype="html">
+        <source>View as Participant</source>
+        <target>Ver como Participante</target>
+      </trans-unit>
+      <trans-unit id="deleteEventAction" datatype="html">
+        <source>Delete</source>
+        <target>Eliminar</target>
+      </trans-unit>
+      <trans-unit id="statusCreated" datatype="html">
+        <source>Open</source>
+        <target>Abierto</target>
+      </trans-unit>
+      <trans-unit id="statusDrawn" datatype="html">
+        <source>Drawn</source>
+        <target>Sorteado</target>
+      </trans-unit>
+      <trans-unit id="eventNotFound" datatype="html">
+        <source>Event not found</source>
+        <target>Evento no encontrado</target>
+      </trans-unit>
+      <trans-unit id="loadEventError" datatype="html">
+        <source>Failed to load event data</source>
+        <target>Error al cargar datos del evento</target>
+      </trans-unit>
+      <trans-unit id="registrationOpened" datatype="html">
+        <source>opened</source>
+        <target>abierto</target>
+      </trans-unit>
+      <trans-unit id="registrationClosed" datatype="html">
+        <source>closed</source>
+        <target>cerrado</target>
+      </trans-unit>
+      <trans-unit id="registrationToggleSuccess" datatype="html">
+        <source>Registration <x id="PH" equiv-text="statusText"/> successfully</source>
+        <target>Registro <x id="PH" equiv-text="statusText"/> exitosamente</target>
+      </trans-unit>
+      <trans-unit id="toggleRegistrationError" datatype="html">
+        <source>Failed to toggle registration</source>
+        <target>Error al cambiar estado del registro</target>
+      </trans-unit>
+      <trans-unit id="minParticipantsError" datatype="html">
+        <source>Need at least 2 participants to run the raffle</source>
+        <target>Se necesitan al menos 2 participantes para el sorteo</target>
+      </trans-unit>
+      <trans-unit id="raffleSuccess" datatype="html">
+        <source>Raffle completed successfully! 🎉</source>
+        <target>¡Sorteo completado exitosamente! 🎉</target>
+      </trans-unit>
+      <trans-unit id="raffleError" datatype="html">
+        <source>Failed to run raffle</source>
+        <target>Error al realizar el sorteo</target>
+      </trans-unit>
+      <trans-unit id="copyLinkSuccess" datatype="html">
+        <source>Participant link copied to clipboard!</source>
+        <target>¡Enlace de participante copiado!</target>
+      </trans-unit>
+      <trans-unit id="copyResetLinkSuccess" datatype="html">
+        <source>Reset link copied to clipboard!</source>
+        <target>¡Enlace de restablecimiento copiado!</target>
+      </trans-unit>
+      <trans-unit id="claimEventSuccess" datatype="html">
+        <source>Event successfully linked to your account!</source>
+        <target>¡Evento vinculado exitosamente a tu cuenta!</target>
+      </trans-unit>
+      <trans-unit id="claimEventError" datatype="html">
+        <source>Failed to claim event</source>
+        <target>Error al reclamar el evento</target>
+      </trans-unit>
+      <trans-unit id="registrationClosedError" datatype="html">
+        <source>Registration is currently closed</source>
+        <target>El registro está cerrado actualmente</target>
+      </trans-unit>
+      <trans-unit id="registrationSuccess" datatype="html">
+        <source>Registration successful! 🎉</source>
+        <target>¡Registro exitoso! 🎉</target>
+      </trans-unit>
+      <trans-unit id="registrationError" datatype="html">
+        <source>Failed to register. Please try again.</source>
+        <target>Error al registrarse. Por favor intenta de nuevo.</target>
+      </trans-unit>
+      <trans-unit id="invalidCredentials" datatype="html">
+        <source>Invalid name or secret word</source>
+        <target>Nombre o palabra secreta inválidos</target>
+      </trans-unit>
+      <trans-unit id="loginError" datatype="html">
+        <source>Failed to login. Please try again.</source>
+        <target>Error al iniciar sesión. Por favor intenta de nuevo.</target>
+      </trans-unit>
+      <trans-unit id="preferencesUpdated" datatype="html">
+        <source>Preferences updated successfully!</source>
+        <target>¡Preferencias actualizadas exitosamente!</target>
+      </trans-unit>
+      <trans-unit id="updatePreferencesError" datatype="html">
+        <source>Failed to update preferences</source>
+        <target>Error al actualizar preferencias</target>
+      </trans-unit>
+      <trans-unit id="googleLoginError" datatype="html">
+        <source>Google login failed</source>
+        <target>Error al iniciar sesión con Google</target>
+      </trans-unit>
+      <trans-unit id="logoutSuccess" datatype="html">
+        <source>Logged out successfully</source>
+        <target>Sesión cerrada exitosamente</target>
+      </trans-unit>
+      <trans-unit id="createEventError" datatype="html">
+        <source>Failed to create event. Please try again.</source>
+        <target>Error al crear el evento. Por favor intenta de nuevo.</target>
+      </trans-unit>
+      <trans-unit id="backToDashboard" datatype="html">
+        <source>Back to Dashboard</source>
+        <target>Volver al Panel</target>
       </trans-unit>
     </body>
   </file>

@@ -1,31 +1,40 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { EventService } from '../../services/event.service';
-import { ParticipantService } from '../../services/participant.service';
+import { Component, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { User } from 'firebase/auth';
+import { MESSAGE_DISPLAY_DURATION } from '../../constants';
 import { Event } from '../../models/event.model';
 import { Participant } from '../../models/participant.model';
-import { MESSAGE_DISPLAY_DURATION } from '../../constants';
+import { AuthService } from '../../services/auth.service';
+import { EventService } from '../../services/event.service';
+import { ParticipantService } from '../../services/participant.service';
 
 @Component({
   selector: 'app-event-landing',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './event-landing.component.html',
-  styleUrl: './event-landing.component.scss'
+  styleUrl: './event-landing.component.scss',
 })
 export class EventLandingComponent implements OnInit {
   eventId: string = '';
   event: Event | null = null;
   currentParticipant: Participant | null = null;
   assignedParticipant: Participant | null = null;
+  currentUser: User | null = null;
   isLoading = true;
   activeTab: 'register' | 'login' = 'register';
-  
+  isHost = false;
+
   registerForm: FormGroup;
   loginForm: FormGroup;
   preferencesForm: FormGroup;
-  
+
   isSubmitting = false;
   errorMessage = '';
   successMessage = '';
@@ -36,24 +45,25 @@ export class EventLandingComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private eventService: EventService,
-    private participantService: ParticipantService
+    private participantService: ParticipantService,
+    private authService: AuthService
   ) {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       secretWord: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.email]],
       general: [''],
-      sizes: ['']
+      sizes: [''],
     });
 
     this.loginForm = this.fb.group({
       name: ['', Validators.required],
-      secretWord: ['', Validators.required]
+      secretWord: ['', Validators.required],
     });
 
     this.preferencesForm = this.fb.group({
       general: [''],
-      sizes: ['']
+      sizes: [''],
     });
   }
 
@@ -64,7 +74,29 @@ export class EventLandingComponent implements OnInit {
       return;
     }
 
+    this.checkHostStatus();
     await this.loadEventData();
+  }
+
+  checkHostStatus() {
+    this.authService.user$.subscribe((user) => {
+      this.currentUser = user;
+      this.updateHostStatus();
+    });
+  }
+
+  updateHostStatus() {
+    if (!this.event) return;
+
+    const isOwner =
+      this.currentUser &&
+      this.event.ownerId &&
+      this.currentUser.uid === this.event.ownerId;
+
+    const storedToken = this.eventService.getStoredAdminToken(this.eventId);
+    const isTokenValid = storedToken && storedToken === this.event.adminToken;
+
+    this.isHost = !!(isOwner || isTokenValid);
   }
 
   async loadEventData(): Promise<void> {
@@ -72,18 +104,24 @@ export class EventLandingComponent implements OnInit {
     try {
       this.event = await this.eventService.getEvent(this.eventId);
       if (!this.event) {
-        this.errorMessage = 'Event not found';
+        this.errorMessage = $localize`:@@eventNotFound:Event not found`;
         return;
       }
 
+      this.updateHostStatus();
+
       // Check if participant is already logged in
-      const participantId = this.participantService.getStoredParticipantId(this.eventId);
+
+      // Check if participant is already logged in
+      const participantId = this.participantService.getStoredParticipantId(
+        this.eventId
+      );
       if (participantId) {
         await this.loadParticipantData(participantId);
       }
     } catch (error: any) {
       console.error('Error loading event:', error);
-      this.errorMessage = 'Failed to load event';
+      this.errorMessage = $localize`:@@loadEventError:Failed to load event`;
     } finally {
       this.isLoading = false;
     }
@@ -91,21 +129,28 @@ export class EventLandingComponent implements OnInit {
 
   async loadParticipantData(participantId: string): Promise<void> {
     try {
-      this.currentParticipant = await this.participantService.getParticipant(this.eventId, participantId);
-      
+      this.currentParticipant = await this.participantService.getParticipant(
+        this.eventId,
+        participantId
+      );
+
       if (this.currentParticipant) {
         // Load preferences into form
         this.preferencesForm.patchValue({
           general: this.currentParticipant.preferences.general,
-          sizes: this.currentParticipant.preferences.sizes
+          sizes: this.currentParticipant.preferences.sizes,
         });
 
         // Load assigned participant if raffle is done
-        if (this.event?.status === 'DRAWN' && this.currentParticipant.assignedToId) {
-          this.assignedParticipant = await this.participantService.getAssignedParticipant(
-            this.eventId, 
-            participantId
-          );
+        if (
+          this.event?.status === 'DRAWN' &&
+          this.currentParticipant.assignedToId
+        ) {
+          this.assignedParticipant =
+            await this.participantService.getAssignedParticipant(
+              this.eventId,
+              participantId
+            );
         }
       }
     } catch (error: any) {
@@ -117,7 +162,7 @@ export class EventLandingComponent implements OnInit {
     if (this.registerForm.invalid || !this.event) return;
 
     if (!this.event.isRegistrationOpen) {
-      this.errorMessage = 'Registration is currently closed';
+      this.errorMessage = $localize`:@@registrationClosedError:Registration is currently closed`;
       return;
     }
 
@@ -132,16 +177,18 @@ export class EventLandingComponent implements OnInit {
         email: formValue.email,
         preferences: {
           general: formValue.general,
-          sizes: formValue.sizes
-        }
+          sizes: formValue.sizes,
+        },
       });
 
       this.currentParticipant = participant;
-      this.successMessage = 'Registration successful! 🎉';
+      this.successMessage = $localize`:@@registrationSuccess:Registration successful! 🎉`;
       this.registerForm.reset();
     } catch (error: any) {
       console.error('Error registering:', error);
-      this.errorMessage = error.message || 'Failed to register. Please try again.';
+      this.errorMessage =
+        error.message ||
+        $localize`:@@registrationError:Failed to register. Please try again.`;
     } finally {
       this.isSubmitting = false;
     }
@@ -155,10 +202,13 @@ export class EventLandingComponent implements OnInit {
 
     try {
       const formValue = this.loginForm.value;
-      const participant = await this.participantService.login(this.eventId, formValue);
+      const participant = await this.participantService.login(
+        this.eventId,
+        formValue
+      );
 
       if (!participant) {
-        this.errorMessage = 'Invalid name or secret word';
+        this.errorMessage = $localize`:@@invalidCredentials:Invalid name or secret word`;
         return;
       }
 
@@ -166,7 +216,7 @@ export class EventLandingComponent implements OnInit {
       this.loginForm.reset();
     } catch (error: any) {
       console.error('Error logging in:', error);
-      this.errorMessage = 'Failed to login. Please try again.';
+      this.errorMessage = $localize`:@@loginError:Failed to login. Please try again.`;
     } finally {
       this.isSubmitting = false;
     }
@@ -187,14 +237,23 @@ export class EventLandingComponent implements OnInit {
       );
 
       this.currentParticipant.preferences = formValue;
-      this.successMessage = 'Preferences updated successfully!';
+      this.successMessage = $localize`:@@preferencesUpdated:Preferences updated successfully!`;
       this.isEditingPreferences = false;
-      setTimeout(() => this.successMessage = '', MESSAGE_DISPLAY_DURATION);
+      setTimeout(() => (this.successMessage = ''), MESSAGE_DISPLAY_DURATION);
     } catch (error: any) {
       console.error('Error updating preferences:', error);
-      this.errorMessage = 'Failed to update preferences';
+      this.errorMessage = $localize`:@@updatePreferencesError:Failed to update preferences`;
     } finally {
       this.isSubmitting = false;
+    }
+  }
+
+  async loginWithGoogle() {
+    try {
+      await this.authService.loginWithGoogle();
+    } catch (error) {
+      console.error('Google login failed', error);
+      this.errorMessage = $localize`:@@googleLoginError:Google login failed`;
     }
   }
 
@@ -202,8 +261,8 @@ export class EventLandingComponent implements OnInit {
     this.participantService.clearParticipantSession(this.eventId);
     this.currentParticipant = null;
     this.assignedParticipant = null;
-    this.successMessage = 'Logged out successfully';
-    setTimeout(() => this.successMessage = '', MESSAGE_DISPLAY_DURATION);
+    this.successMessage = $localize`:@@logoutSuccess:Logged out successfully`;
+    setTimeout(() => (this.successMessage = ''), MESSAGE_DISPLAY_DURATION);
   }
 
   get isRegistrationOpen(): boolean {
@@ -212,5 +271,12 @@ export class EventLandingComponent implements OnInit {
 
   get isDrawn(): boolean {
     return this.event?.status === 'DRAWN';
+  }
+
+  scrollToRegister() {
+    this.activeTab = 'register';
+    document
+      .getElementById('register-form')
+      ?.scrollIntoView({ behavior: 'smooth' });
   }
 }

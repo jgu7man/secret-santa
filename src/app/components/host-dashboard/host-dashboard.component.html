@@ -1,0 +1,78 @@
+<div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-christmas-red" i18n="@@hostDashboardTitle">🎅 Host Dashboard</h1>
+      <a [routerLink]="'/'" class="text-gray-600 hover:text-gray-900" i18n="@@createNewEventLink">Create New Event</a>
+    </div>
+
+    <!-- Not Logged In -->
+    <div *ngIf="!user && !isLoading" class="bg-white shadow-xl rounded-2xl p-8 text-center">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4" i18n="@@loginToViewEventsTitle">Login to view your events</h2>
+      <p class="text-gray-600 mb-6" i18n="@@loginToViewEventsDesc">Sign in with Google to access your created events and manage them easily.</p>
+      <button (click)="login()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all transform hover:scale-105">
+        <span i18n="@@loginWithGoogleButton">Login with Google</span>
+      </button>
+    </div>
+
+    <!-- Logged In -->
+    <div *ngIf="user">
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3">
+          <img [src]="user.photoURL" alt="Profile" class="w-10 h-10 rounded-full" *ngIf="user.photoURL">
+          <span class="font-medium text-gray-700">{{ user.displayName }}</span>
+        </div>
+        <button (click)="logout()" class="text-sm text-red-600 hover:text-red-800" i18n="@@logoutButton">Logout</button>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="text-center py-12">
+        <p class="text-gray-600" i18n="@@loadingEventsMessage">Loading your events...</p>
+      </div>
+
+      <!-- Events List -->
+      <div *ngIf="!isLoading && events.length > 0" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div *ngFor="let event of events" class="bg-white shadow-lg rounded-xl p-6 border-t-4 border-green-600 hover:shadow-xl transition-shadow flex flex-col">
+          <div class="flex-grow">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ event.name }}</h3>
+            <div class="flex justify-between text-sm text-gray-600 mb-4">
+              <span>{{ event.createdAt.toDate() | date }}</span>
+              <span [class.text-green-600]="event.status === 'CREATED'" [class.text-red-600]="event.status === 'DRAWN'">
+                {{ event.status | eventStatus }}
+              </span>
+            </div>
+            <div class="text-sm text-gray-500 mb-4">
+              <p i18n="@@minAmountDisplay">Min: ${{ event.minAmount }}</p>
+            </div>
+          </div>
+          
+          <!-- Actions -->
+          <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-gray-100">
+            <button 
+              (click)="goToAdmin(event.id)" 
+              class="w-full bg-christmas-gold hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+              <span>👑</span> <span i18n="@@manageEventAction">Manage</span>
+            </button>
+            <button 
+              (click)="goToEvent(event.id)" 
+              class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+              <span>👀</span> <span i18n="@@viewEventAction">View as Participant</span>
+            </button>
+            <button 
+              (click)="deleteEvent(event)" 
+              class="w-full bg-red-50 hover:bg-red-100 text-red-700 font-semibold py-2 px-4 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+              <span>🗑️</span> <span i18n="@@deleteEventAction">Delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Events -->
+      <div *ngIf="!isLoading && events.length === 0" class="text-center py-12 bg-white rounded-2xl shadow-sm">
+        <p class="text-gray-600 mb-4" i18n="@@noEventsFoundMessage">You haven't created any events yet.</p>
+        <a [routerLink]="'/'" class="text-red-600 hover:text-red-800 font-semibold" i18n="@@createFirstEventLink">Create your first event!</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,31 @@
 <div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50 py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md mx-auto">
+    <!-- Navigation -->
+    <div class="mb-6 flex justify-between items-center">
+      <a [routerLink]="'/'" class="text-christmas-red hover:text-red-700 font-semibold flex items-center gap-2 transition-colors">
+        <span>🏠</span> <span i18n="@@homeLink">Home</span>
+      </a>
+
+      <!-- Host Actions -->
+      <div class="flex gap-2 items-center">
+        <!-- Register Button (Visible if not joined yet) -->
+        <button *ngIf="!currentParticipant" 
+                (click)="scrollToRegister()" 
+                class="text-christmas-green hover:text-green-700 font-semibold flex items-center gap-2 transition-colors mr-4">
+          <span>🎁</span> <span i18n="@@goToRegisterButton">Register</span>
+        </button>
+
+        <div *ngIf="currentUser">
+          <a [routerLink]="'/dashboard'" class="text-christmas-red hover:text-red-700 font-semibold flex items-center gap-2 transition-colors">
+            <span>👤</span> <span i18n="@@dashboardLink">Dashboard</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading State -->
     <div *ngIf="isLoading" class="text-center py-12">
-      <p class="text-gray-600">Loading...</p>
+      <p class="text-gray-600" i18n="@@loadingMessage">Loading...</p>
     </div>
 
     <!-- Error Message -->
@@ -17,7 +40,7 @@
 
     <!-- Event Not Found -->
     <div *ngIf="!event && !isLoading" class="bg-white shadow-xl rounded-2xl p-8 text-center">
-      <p class="text-gray-600">Event not found</p>
+      <p class="text-gray-600" i18n="@@eventNotFound">Event not found</p>
     </div>
 
     <!-- Main Content -->
@@ -25,17 +48,18 @@
       <!-- Header -->
       <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-christmas-red mb-2">🎅 {{ event.name }}</h1>
-        <p class="text-gray-600">Gift Range: ${{ event.minAmount }}{{ event.maxAmount ? ' - $' + event.maxAmount : '+' }}</p>
+        <p class="text-gray-600"><span i18n="@@giftRange">Gift Range:</span> ${{ event.minAmount }}{{ event.maxAmount ? ' - $' + event.maxAmount : '+' }}</p>
       </div>
 
       <!-- Logged In View -->
       <div *ngIf="currentParticipant">
         <div class="bg-white shadow-xl rounded-2xl p-6 border-t-4 border-christmas-green mb-6">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-gray-900">Welcome, {{ currentParticipant.name }}! 👋</h2>
+            <h2 class="text-2xl font-bold text-gray-900" i18n="@@welcomeMessage">Welcome, {{ currentParticipant.name }}! 👋</h2>
             <button
               (click)="logout()"
-              class="text-sm text-gray-600 hover:text-gray-800">
+              class="text-sm text-gray-600 hover:text-gray-800"
+              i18n="@@logoutButton">
               Logout
             </button>
           </div>
@@ -43,23 +67,23 @@
           <!-- Raffle Result -->
           <div *ngIf="isDrawn && assignedParticipant" class="mb-6">
             <div class="bg-gradient-to-r from-red-100 to-green-100 p-6 rounded-xl text-center">
-              <h3 class="text-lg font-semibold text-gray-800 mb-2">🎁 Your Secret Santa Assignment</h3>
+              <h3 class="text-lg font-semibold text-gray-800 mb-2" i18n="@@secretSantaAssignment">🎁 Your Secret Santa Assignment</h3>
               <p class="text-3xl font-bold text-christmas-red mb-4">{{ assignedParticipant.name }}</p>
               
               <!-- Assigned Person's Preferences -->
               <div class="bg-white rounded-lg p-4 mt-4 text-left">
-                <h4 class="font-semibold text-gray-800 mb-2">Their Gift Preferences:</h4>
+                <h4 class="font-semibold text-gray-800 mb-2" i18n="@@theirPreferencesTitle">Their Gift Preferences:</h4>
                 <div class="space-y-2 text-sm">
                   <div *ngIf="assignedParticipant.preferences.general">
-                    <span class="font-medium text-gray-700">Interests:</span>
+                    <span class="font-medium text-gray-700" i18n="@@interestsLabel">Interests:</span>
                     <p class="text-gray-600 mt-1">{{ assignedParticipant.preferences.general }}</p>
                   </div>
                   <div *ngIf="assignedParticipant.preferences.sizes">
-                    <span class="font-medium text-gray-700">Sizes:</span>
+                    <span class="font-medium text-gray-700" i18n="@@sizesLabel">Sizes:</span>
                     <p class="text-gray-600 mt-1">{{ assignedParticipant.preferences.sizes }}</p>
                   </div>
                   <div *ngIf="!assignedParticipant.preferences.general && !assignedParticipant.preferences.sizes">
-                    <p class="text-gray-500 italic">No preferences provided yet</p>
+                    <p class="text-gray-500 italic" i18n="@@noPreferencesProvidedMessage">No preferences provided yet</p>
                   </div>
                 </div>
               </div>
@@ -68,17 +92,18 @@
 
           <!-- Waiting for Raffle -->
           <div *ngIf="!isDrawn" class="bg-yellow-50 p-4 rounded-lg text-center mb-6">
-            <p class="text-yellow-800">⏳ Waiting for the organizer to run the raffle...</p>
+            <p class="text-yellow-800" i18n="@@waitingForRaffle">⏳ Waiting for the organizer to run the raffle...</p>
           </div>
 
           <!-- My Preferences -->
           <div class="border-t pt-4">
             <div class="flex justify-between items-center mb-3">
-              <h4 class="font-semibold text-gray-800">My Gift Preferences</h4>
+              <h4 class="font-semibold text-gray-800" i18n="@@myPreferencesTitle">My Gift Preferences</h4>
               <button
                 *ngIf="!isEditingPreferences"
                 (click)="isEditingPreferences = true"
-                class="text-sm text-blue-600 hover:text-blue-800">
+                class="text-sm text-blue-600 hover:text-blue-800"
+                i18n="@@editPreferencesButton">
                 ✏️ Edit
               </button>
             </div>
@@ -86,15 +111,16 @@
             <!-- View Mode -->
             <div *ngIf="!isEditingPreferences" class="text-sm space-y-2">
               <div *ngIf="currentParticipant.preferences.general">
-                <span class="font-medium text-gray-700">Interests:</span>
+                <span class="font-medium text-gray-700" i18n="@@interestsLabel">Interests:</span>
                 <p class="text-gray-600 mt-1">{{ currentParticipant.preferences.general }}</p>
               </div>
               <div *ngIf="currentParticipant.preferences.sizes">
-                <span class="font-medium text-gray-700">Sizes:</span>
+                <span class="font-medium text-gray-700" i18n="@@sizesLabel">Sizes:</span>
                 <p class="text-gray-600 mt-1">{{ currentParticipant.preferences.sizes }}</p>
               </div>
               <p *ngIf="!currentParticipant.preferences.general && !currentParticipant.preferences.sizes" 
-                 class="text-gray-500 italic">
+                 class="text-gray-500 italic"
+                 i18n="@@noPreferencesMessage">
                 No preferences added yet
               </p>
             </div>
@@ -103,25 +129,27 @@
             <form *ngIf="isEditingPreferences" [formGroup]="preferencesForm" (ngSubmit)="onUpdatePreferences()">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@myInterestsLabel">
                     My Interests & Preferences
                   </label>
                   <textarea
                     formControlName="general"
                     rows="3"
                     placeholder="e.g., I like books, sports, technology..."
+                    i18n-placeholder="@@interestsPlaceholder"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm">
                   </textarea>
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@mySizesLabel">
                     My Sizes (Optional)
                   </label>
                   <input
                     type="text"
                     formControlName="sizes"
                     placeholder="e.g., Shirt: M, Shoes: 9"
+                    i18n-placeholder="@@sizesPlaceholder"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm"
                   />
                 </div>
@@ -130,13 +158,15 @@
                   <button
                     type="button"
                     (click)="isEditingPreferences = false"
-                    class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm transition-all">
+                    class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm transition-all"
+                    i18n="@@cancelButton">
                     Cancel
                   </button>
                   <button
                     type="submit"
                     [disabled]="isSubmitting"
-                    class="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all">
+                    class="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all"
+                    i18n="@@saveButton">
                     Save
                   </button>
                 </div>
@@ -149,7 +179,7 @@
       <!-- Guest View (Not Logged In) -->
       <div *ngIf="!currentParticipant">
         <!-- Registration Closed Warning -->
-        <div *ngIf="!isRegistrationOpen" class="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded-lg">
+        <div *ngIf="!isRegistrationOpen" class="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded-lg" i18n="@@registrationClosedWarning">
           ⚠️ Registration is currently closed
         </div>
 
@@ -163,7 +193,8 @@
               [class.text-red-700]="activeTab === 'register'"
               [class.text-gray-600]="activeTab !== 'register'"
               [class.border-b-2]="activeTab === 'register'"
-              [class.border-red-600]="activeTab === 'register'">
+              [class.border-red-600]="activeTab === 'register'"
+              i18n="@@registerTab">
               Register
             </button>
             <button
@@ -173,48 +204,53 @@
               [class.text-red-700]="activeTab === 'login'"
               [class.text-gray-600]="activeTab !== 'login'"
               [class.border-b-2]="activeTab === 'login'"
-              [class.border-red-600]="activeTab === 'login'">
+              [class.border-red-600]="activeTab === 'login'"
+              i18n="@@loginTab">
               Login
             </button>
           </div>
 
-          <div class="p-6">
+          <div class="p-6" id="register-form">
             <!-- Registration Form -->
             <form *ngIf="activeTab === 'register'" [formGroup]="registerForm" (ngSubmit)="onRegister()">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@nameLabel">Name *</label>
                   <input
                     type="text"
                     formControlName="name"
                     placeholder="Your full name"
+                    i18n-placeholder="@@namePlaceholder"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     [class.border-red-500]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
                   />
                   <p *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" 
-                     class="mt-1 text-sm text-red-600">
+                     class="mt-1 text-sm text-red-600"
+                     i18n="@@nameRequiredError">
                     Name is required (minimum 2 characters)
                   </p>
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Secret Word *</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@secretWordLabel">Secret Word *</label>
                   <input
-                    type="password"
+                    type="text"
                     formControlName="secretWord"
                     placeholder="Choose a secret word to login later"
+                    i18n-placeholder="@@secretWordPlaceholder"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     [class.border-red-500]="registerForm.get('secretWord')?.invalid && registerForm.get('secretWord')?.touched"
                   />
                   <p *ngIf="registerForm.get('secretWord')?.invalid && registerForm.get('secretWord')?.touched" 
-                     class="mt-1 text-sm text-red-600">
+                     class="mt-1 text-sm text-red-600"
+                     i18n="@@secretWordRequiredError">
                     Secret word is required (minimum 4 characters)
                   </p>
-                  <p class="mt-1 text-xs text-gray-500">Remember this word to login later!</p>
+                  <p class="mt-1 text-xs text-gray-500" i18n="@@rememberSecretWordHint">Remember this word to login later!</p>
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Email (Optional)</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@emailLabel">Email (Optional)</label>
                   <input
                     type="email"
                     formControlName="email"
@@ -224,21 +260,23 @@
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Gift Preferences</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@giftPreferencesLabel">Gift Preferences</label>
                   <textarea
                     formControlName="general"
                     rows="3"
                     placeholder="What do you like? (e.g., books, sports, technology...)"
+                    i18n-placeholder="@@giftPreferencesPlaceholder"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500">
                   </textarea>
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Sizes (Optional)</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@sizesLabel">Sizes (Optional)</label>
                   <input
                     type="text"
                     formControlName="sizes"
                     placeholder="e.g., Shirt: M, Shoes: 9"
+                    i18n-placeholder="@@sizesPlaceholder"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
@@ -247,8 +285,8 @@
                   type="submit"
                   [disabled]="registerForm.invalid || isSubmitting || !isRegistrationOpen"
                   class="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed">
-                  <span *ngIf="!isSubmitting">🎁 Register</span>
-                  <span *ngIf="isSubmitting">Registering...</span>
+                  <span *ngIf="!isSubmitting" i18n="@@registerButton">🎁 Register</span>
+                  <span *ngIf="isSubmitting" i18n="@@registeringButton">Registering...</span>
                 </button>
               </div>
             </form>
@@ -257,21 +295,23 @@
             <form *ngIf="activeTab === 'login'" [formGroup]="loginForm" (ngSubmit)="onLogin()">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@nameLabel">Name *</label>
                   <input
                     type="text"
                     formControlName="name"
                     placeholder="Your name"
+                    i18n-placeholder="@@loginNamePlaceholder"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Secret Word *</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@secretWordLabel">Secret Word *</label>
                   <input
-                    type="password"
+                    type="text"
                     formControlName="secretWord"
                     placeholder="Your secret word"
+                    i18n-placeholder="@@loginSecretWordPlaceholder"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
@@ -280,11 +320,11 @@
                   type="submit"
                   [disabled]="loginForm.invalid || isSubmitting"
                   class="w-full bg-christmas-green hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed">
-                  <span *ngIf="!isSubmitting">🔓 Login</span>
-                  <span *ngIf="isSubmitting">Logging in...</span>
+                  <span *ngIf="!isSubmitting" i18n="@@loginButton">🔓 Login</span>
+                  <span *ngIf="isSubmitting" i18n="@@loggingInButton">Logging in...</span>
                 </button>
 
-                <p class="text-xs text-center text-gray-500 mt-2">
+                <p class="text-xs text-center text-gray-500 mt-2" i18n="@@forgotSecretWordHint">
                   Forgot your secret word? Contact the event organizer for a reset link.
                 </p>
               </div>
@@ -292,6 +332,15 @@
           </div>
         </div>
       </div>
+    </div>
+    <!-- Footer -->
+    <div class="mt-12 text-center text-sm text-gray-500 pb-8">
+      <p>
+        <span i18n="@@organizerQuestion">Are you the organizer?</span>
+        <a [routerLink]="['/admin', eventId, 'login']" class="text-christmas-red hover:text-red-700 ml-1 font-medium" i18n="@@manageEventLink">
+          Manage Event
+        </a>
+      </p>
     </div>
   </div>
 </div>

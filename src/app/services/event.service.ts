@@ -1,39 +1,41 @@
 import { Injectable } from '@angular/core';
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  updateDoc, 
-  query, 
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
   getDocs,
-  writeBatch,
+  query,
+  setDoc,
   Timestamp,
-  DocumentReference,
-  CollectionReference
+  updateDoc,
+  where,
+  writeBatch,
 } from 'firebase/firestore';
-import { Observable } from 'rxjs';
 import { firestore } from '../firebase-config';
-import { Event, EventStatus, CreateEventData } from '../models/event.model';
+import { CreateEventData, Event, EventStatus } from '../models/event.model';
 import { Participant } from '../models/participant.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EventService {
   private eventsCollection = collection(firestore, 'events');
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Creates a new event and generates an admin token
    */
-  async createEvent(data: CreateEventData): Promise<{ eventId: string; adminToken: string }> {
+  async createEvent(
+    data: CreateEventData,
+    ownerId?: string
+  ): Promise<{ eventId: string; adminToken: string }> {
     const adminToken = this.generateAdminToken();
     const eventRef = doc(this.eventsCollection);
     const eventId = eventRef.id;
 
-    const newEvent: Omit<Event, 'id'> = {
+    const newEvent: any = {
       adminToken,
       name: data.name,
       minAmount: data.minAmount,
@@ -41,7 +43,8 @@ export class EventService {
       revealToHost: data.revealToHost,
       isRegistrationOpen: true,
       status: 'CREATED',
-      createdAt: Timestamp.now()
+      createdAt: Timestamp.now(),
+      ownerId: ownerId || null,
     };
 
     await setDoc(eventRef, newEvent);
@@ -53,7 +56,18 @@ export class EventService {
   }
 
   /**
-   * Gets an event by ID
+   * Get events owned by a specific user
+   */
+  async getEventsByOwner(ownerId: string): Promise<Event[]> {
+    const q = query(this.eventsCollection, where('ownerId', '==', ownerId));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() } as Event)
+    );
+  }
+
+  /**
+   * Get event by ID
    */
   async getEvent(eventId: string): Promise<Event | null> {
     const eventRef = doc(this.eventsCollection, eventId);
@@ -65,7 +79,7 @@ export class EventService {
 
     return {
       id: eventSnap.id,
-      ...eventSnap.data()
+      ...eventSnap.data(),
     } as Event;
   }
 
@@ -93,16 +107,19 @@ export class EventService {
    */
   async runRaffle(eventId: string): Promise<void> {
     // Get all participants
-    const participantsRef = collection(firestore, `events/${eventId}/participants`);
+    const participantsRef = collection(
+      firestore,
+      `events/${eventId}/participants`
+    );
     const participantsSnap = await getDocs(participantsRef);
-    
+
     if (participantsSnap.empty || participantsSnap.size < 2) {
       throw new Error('Need at least 2 participants to run raffle');
     }
 
-    const participants: Participant[] = participantsSnap.docs.map(doc => ({
+    const participants: Participant[] = participantsSnap.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     })) as Participant[];
 
     // Create receivers array and shuffle until no self-matches
@@ -113,9 +130,11 @@ export class EventService {
       receivers = [...participants];
       this.shuffleArray(receivers);
       attempts++;
-      
+
       if (attempts > this.MAX_RAFFLE_ATTEMPTS) {
-        throw new Error('Could not generate valid raffle after maximum attempts');
+        throw new Error(
+          'Could not generate valid raffle after maximum attempts'
+        );
       }
     } while (this.hasSelfMatch(participants, receivers));
 
@@ -123,10 +142,14 @@ export class EventService {
     const batch = writeBatch(firestore);
 
     participants.forEach((participant, index) => {
-      const participantRef = doc(firestore, `events/${eventId}/participants`, participant.id);
+      const participantRef = doc(
+        firestore,
+        `events/${eventId}/participants`,
+        participant.id
+      );
       batch.update(participantRef, {
         assignedToId: receivers[index].id,
-        assignedToName: receivers[index].name
+        assignedToName: receivers[index].name,
       });
     });
 
@@ -134,6 +157,14 @@ export class EventService {
 
     // Update event status to DRAWN
     await this.updateStatus(eventId, 'DRAWN');
+  }
+
+  /**
+   * Assigns an owner to an event
+   */
+  async assignOwner(eventId: string, ownerId: string): Promise<void> {
+    const eventRef = doc(this.eventsCollection, eventId);
+    await updateDoc(eventRef, { ownerId });
   }
 
   /**
@@ -159,8 +190,18 @@ export class EventService {
       return crypto.randomUUID();
     }
     // Fallback for older browsers
-    return Math.random().toString(36).substring(2, 15) + 
-           Math.random().toString(36).substring(2, 15);
+    return (
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+    );
+  }
+
+  /**
+   * Deletes an event
+   */
+  async deleteEvent(eventId: string): Promise<void> {
+    const eventRef = doc(this.eventsCollection, eventId);
+    await deleteDoc(eventRef);
   }
 
   /**
@@ -176,7 +217,10 @@ export class EventService {
   /**
    * Checks if any participant is assigned to themselves
    */
-  private hasSelfMatch(givers: Participant[], receivers: Participant[]): boolean {
+  private hasSelfMatch(
+    givers: Participant[],
+    receivers: Participant[]
+  ): boolean {
     return givers.some((giver, index) => giver.id === receivers[index].id);
   }
 }
