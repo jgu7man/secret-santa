@@ -2,31 +2,31 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
 
-    - name: Install Dependencies
-      run: npm ci
+      - name: Install Dependencies
+        run: npm ci
 
-    - name: Setup Firebase Config
-      run: cp src/app/firebase-config.example.ts src/app/firebase-config.ts
+      - name: Setup Firebase Config
+        run: cp src/app/firebase-config.example.ts src/app/firebase-config.ts
 
-    - name: Build (ES-MX)
-      run: npm run build:es
+      - name: Build (ES-MX)
+        run: npm run build:es
 
-    - name: Run Tests
-      run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
+      - name: Run Tests
+        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
