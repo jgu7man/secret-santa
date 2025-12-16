@@ -750,6 +750,38 @@
         <source>Failed to update event</source>
         <target>Error al actualizar el evento</target>
       </trans-unit>
+      <trans-unit id="leaveEventConfirm" datatype="html">
+        <source>Are you sure you want to leave this event? This action cannot be undone.</source>
+        <target>¿Estás seguro de que quieres abandonar este evento? Esta acción no se puede deshacer.</target>
+      </trans-unit>
+      <trans-unit id="leaveEventSuccess" datatype="html">
+        <source>You have left the event successfully</source>
+        <target>Has abandonado el evento exitosamente</target>
+      </trans-unit>
+      <trans-unit id="leaveEventError" datatype="html">
+        <source>Failed to leave event</source>
+        <target>Error al abandonar el evento</target>
+      </trans-unit>
+      <trans-unit id="leaveEventButton" datatype="html">
+        <source>Leave Event</source>
+        <target>Abandonar Evento</target>
+      </trans-unit>
+      <trans-unit id="deleteParticipantConfirm" datatype="html">
+        <source>Are you sure you want to remove this participant? This action cannot be undone.</source>
+        <target>¿Estás seguro de que quieres eliminar a este participante? Esta acción no se puede deshacer.</target>
+      </trans-unit>
+      <trans-unit id="deleteParticipantSuccess" datatype="html">
+        <source>Participant removed successfully</source>
+        <target>Participante eliminado exitosamente</target>
+      </trans-unit>
+      <trans-unit id="deleteParticipantError" datatype="html">
+        <source>Failed to remove participant</source>
+        <target>Error al eliminar al participante</target>
+      </trans-unit>
+      <trans-unit id="removeButton" datatype="html">
+        <source>🗑️ Remove</source>
+        <target>🗑️ Eliminar</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

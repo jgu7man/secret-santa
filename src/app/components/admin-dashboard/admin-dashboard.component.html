@@ -227,9 +227,15 @@
                 <td class="px-4 py-3 text-sm">
                   <button
                     (click)="copyResetLink(participant.id)"
-                    class="text-blue-600 hover:text-blue-800 font-medium"
+                    class="text-blue-600 hover:text-blue-800 font-medium mr-3"
                     i18n="@@resetLinkButton">
                     🔑 Reset Link
+                  </button>
+                  <button
+                    (click)="deleteParticipant(participant.id)"
+                    class="text-red-600 hover:text-red-800 font-medium"
+                    i18n="@@removeButton">
+                    🗑️ Remove
                   </button>
                 </td>
               </tr>

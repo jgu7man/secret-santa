@@ -203,7 +203,35 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get canRunRaffle(): boolean {
-    return this.event?.status === 'CREATED' && this.participants.length >= 2;
+    return (
+      (this.event?.status === 'CREATED' || this.event?.status === 'DRAWN') &&
+      this.participants.length >= 2
+    );
+  }
+
+  async deleteParticipant(participantId: string): Promise<void> {
+    if (
+      !confirm(
+        $localize`:@@deleteParticipantConfirm:Are you sure you want to remove this participant? This action cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      this.isLoading = true;
+      await this.eventService.deleteParticipant(this.eventId, participantId);
+      this.successMessage = $localize`:@@deleteParticipantSuccess:Participant removed successfully`;
+      await this.loadEventData(); // Reload to get updated list and status
+    } catch (error: any) {
+      console.error('Error deleting participant:', error);
+      this.errorMessage =
+        error.message ||
+        $localize`:@@deleteParticipantError:Failed to remove participant`;
+    } finally {
+      this.isLoading = false;
+      setTimeout(() => (this.successMessage = ''), MESSAGE_DISPLAY_DURATION);
+    }
   }
 
   get isDrawn(): boolean {

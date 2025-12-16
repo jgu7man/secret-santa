@@ -225,6 +225,29 @@ export class EventService {
   }
 
   /**
+   * Deletes a participant from an event
+   * If the event was already drawn, it resets the status to CREATED
+   */
+  async deleteParticipant(
+    eventId: string,
+    participantId: string
+  ): Promise<void> {
+    const participantRef = doc(
+      firestore,
+      `events/${eventId}/participants`,
+      participantId
+    );
+
+    await deleteDoc(participantRef);
+
+    // Check if event is drawn, if so, reset to CREATED
+    const event = await this.getEvent(eventId);
+    if (event && event.status === 'DRAWN') {
+      await this.updateStatus(eventId, 'CREATED');
+    }
+  }
+
+  /**
    * Deletes an event
    */
   async deleteEvent(eventId: string): Promise<void> {
