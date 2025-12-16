@@ -248,6 +248,39 @@ export class EventLandingComponent implements OnInit {
     }
   }
 
+  async leaveEvent(): Promise<void> {
+    if (!this.currentParticipant) return;
+
+    if (
+      !confirm(
+        $localize`:@@leaveEventConfirm:Are you sure you want to leave this event? This action cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      this.isSubmitting = true;
+      await this.eventService.deleteParticipant(
+        this.eventId,
+        this.currentParticipant.id
+      );
+      this.successMessage = $localize`:@@leaveEventSuccess:You have left the event successfully`;
+      this.currentParticipant = null;
+      this.assignedParticipant = null;
+      this.activeTab = 'register';
+      this.registerForm.reset();
+      await this.loadEventData();
+    } catch (error: any) {
+      console.error('Error leaving event:', error);
+      this.errorMessage =
+        error.message || $localize`:@@leaveEventError:Failed to leave event`;
+    } finally {
+      this.isSubmitting = false;
+      setTimeout(() => (this.successMessage = ''), MESSAGE_DISPLAY_DURATION);
+    }
+  }
+
   async loginWithGoogle() {
     try {
       await this.authService.loginWithGoogle();

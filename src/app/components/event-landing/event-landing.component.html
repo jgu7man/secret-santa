@@ -59,12 +59,21 @@
         <div class="bg-white shadow-xl rounded-2xl p-6 border-t-4 border-christmas-green mb-6">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold text-gray-900" i18n="@@welcomeMessage">Welcome, {{ currentParticipant.name }}! 👋</h2>
-            <button
-              (click)="logout()"
-              class="text-sm text-gray-600 hover:text-gray-800"
-              i18n="@@logoutButtonLanding">
-              Logout
-            </button>
+            <div class="flex gap-3">
+              <button
+                *ngIf="!isDrawn"
+                (click)="leaveEvent()"
+                class="text-sm text-red-600 hover:text-red-800"
+                i18n="@@leaveEventButton">
+                Leave Event
+              </button>
+              <button
+                (click)="logout()"
+                class="text-sm text-gray-600 hover:text-gray-800"
+                i18n="@@logoutButtonLanding">
+                Logout
+              </button>
+            </div>
           </div>
 
           <!-- Raffle Result -->
