@@ -13,6 +13,7 @@ import { Event } from '../../models/event.model';
 import { Participant } from '../../models/participant.model';
 import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/event.service';
+import { MetaService } from '../../services/meta.service';
 import { ParticipantService } from '../../services/participant.service';
 
 @Component({
@@ -46,7 +47,8 @@ export class EventLandingComponent implements OnInit {
     private fb: FormBuilder,
     private eventService: EventService,
     private participantService: ParticipantService,
-    private authService: AuthService
+    private authService: AuthService,
+    private metaService: MetaService
   ) {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -107,6 +109,9 @@ export class EventLandingComponent implements OnInit {
         this.errorMessage = $localize`:@@eventNotFound:Event not found`;
         return;
       }
+
+      // Update meta tags with event name
+      this.metaService.updateEventMeta(this.event.name);
 
       this.updateHostStatus();
 
