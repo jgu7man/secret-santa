@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './guards/admin.guard';
+import { hostGuard } from './guards/host.guard';
 
 export const routes: Routes = [
   {
@@ -10,11 +11,19 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'login',
+    loadComponent: () =>
+      import('./components/host-login/host-login.component').then(
+        (m) => m.HostLoginComponent
+      ),
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./components/host-dashboard/host-dashboard.component').then(
         (m) => m.HostDashboardComponent
       ),
+    canActivate: [hostGuard],
   },
   {
     path: 'event/:id',

@@ -73,6 +73,20 @@ export class EventService {
   }
 
   /**
+   * Get all events where the user is registered as a participant
+   */
+  async getEventsByParticipant(uid: string): Promise<Event[]> {
+    const q = query(
+      this.eventsCollection,
+      where('participantUids', 'array-contains', uid)
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() } as Event)
+    );
+  }
+
+  /**
    * Get event by ID
    */
   async getEvent(eventId: string): Promise<Event | null> {

@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore } from 'firebase/firestore';
 
 // Example configuration - Replace with your own values
 const firebaseConfig = {
@@ -16,6 +16,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
-export const firestore = getFirestore(app);
+// Initialize Firestore (auto-detect long polling avoids 30s WebChannel stalls on some networks)
+export const firestore = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,
+});
 export const auth = getAuth(app);

@@ -1,0 +1,37 @@
+<header class="ss-theme ss-topbar">
+  <a routerLink="/" class="ss-topbar-brand-link">
+    <img
+      class="ss-topbar-brand"
+      [src]="isSpanish ? 'theme/santa-secreto-horizontal.png' : 'theme/secret-santa-horizontal.png'"
+      i18n-alt="@@createBrandName"
+      alt="Secret Santa"
+      width="672"
+      height="224"
+    />
+  </a>
+
+  <nav class="ss-topbar-actions" aria-label="Primary navigation" i18n-aria-label="@@primaryNavLabel">
+    <a
+      [href]="targetLocaleHref"
+      class="ss-topbar-pill ss-topbar-lang"
+      [attr.aria-label]="'Switch language to ' + targetLanguageName"
+      [title]="targetLanguageName"
+    >
+      <svg class="ss-topbar-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 0 0 18M12 3a14 14 0 0 1 0 18" />
+      </svg>
+      <span>{{ targetLanguageShort }}</span>
+    </a>
+
+    <a
+      *ngIf="showHostDashboardLink"
+      routerLink="/dashboard"
+      class="ss-topbar-pill"
+      i18n="@@hostLoginLink"
+    >
+      Host Dashboard
+    </a>
+  </nav>
+</header>
+

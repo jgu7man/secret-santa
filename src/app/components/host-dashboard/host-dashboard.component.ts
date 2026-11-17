@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, NgZone, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterModule } from '@angular/router';
 import { User } from 'firebase/auth';
 import { Event } from '../../models/event.model';
@@ -15,8 +16,13 @@ import { EventService } from '../../services/event.service';
   styleUrl: './host-dashboard.component.scss',
 })
 export class HostDashboardComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly ngZone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   user: User | null = null;
   events: Event[] = [];
+  participatingEvents: Event[] = [];
   isLoading = true;
 
   constructor(
@@ -25,40 +31,57 @@ export class HostDashboardComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.authService.user$.subscribe(async (user) => {
-      this.user = user;
-      if (user) {
-        await this.loadEvents(user.uid);
-      } else {
-        this.events = [];
-        this.isLoading = false;
-      }
-    });
+  async ngOnInit(): Promise<void> {
+    const currentUser = await this.authService.waitForAuthReady();
+    if (!currentUser) {
+      this.ngZone.run(() => {
+        void this.router.navigate(['/login']);
+      });
+      return;
+    }
+
+    this.user = currentUser;
+    await this.loadEvents(currentUser.uid);
+
+    this.authService.user$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        if (!user) {
+          this.user = null;
+          this.events = [];
+          void this.router.navigate(['/login']);
+        }
+      });
   }
 
   async loadEvents(userId: string) {
     this.isLoading = true;
     try {
-      this.events = await this.eventService.getEventsByOwner(userId);
+      const [ownedEvents, participatingEvents] = await Promise.all([
+        this.eventService.getEventsByOwner(userId),
+        this.eventService.getEventsByParticipant(userId),
+      ]);
+      this.ngZone.run(() => {
+        this.events = ownedEvents;
+        this.participatingEvents = participatingEvents;
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      });
     } catch (error) {
       console.error('Error loading events', error);
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  async login() {
-    try {
-      await this.authService.loginWithGoogle();
-    } catch (error) {
-      console.error('Login failed', error);
+      this.ngZone.run(() => {
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      });
     }
   }
 
   async logout() {
     try {
       await this.authService.logout();
+      this.ngZone.run(() => {
+        void this.router.navigate(['/login']);
+      });
     } catch (error) {
       console.error('Logout failed', error);
     }

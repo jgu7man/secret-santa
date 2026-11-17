@@ -13,6 +13,7 @@ export interface Event {
   status: EventStatus;
   createdAt: Timestamp;
   ownerId?: string;
+  participantUids?: string[];
   registrationDeadline?: Timestamp;
 }
 

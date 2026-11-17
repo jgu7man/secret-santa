@@ -1,23 +1,23 @@
-<div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="ss-theme ss-backdrop--dark ss-backdrop--pine min-h-screen py-8 px-4 sm:px-6">
   <div class="max-w-md mx-auto">
     <!-- Navigation -->
-    <div class="mb-6 flex justify-between items-center">
-      <a [routerLink]="'/'" class="text-christmas-red hover:text-red-700 font-semibold flex items-center gap-2 transition-colors">
-        <span>🏠</span> <span i18n="@@homeLink">Home</span>
+    <div class="mb-6 flex flex-wrap justify-between items-center gap-2">
+      <a [routerLink]="'/'" class="ss-button-secondary event-action">
+        <span i18n="@@homeLink">Home</span>
       </a>
 
       <!-- Host Actions -->
       <div class="flex gap-2 items-center">
         <!-- Register Button (Visible if not joined yet) -->
-        <button *ngIf="!currentParticipant" 
+        <button *ngIf="!currentParticipant && isRegistrationOpen"
                 (click)="scrollToRegister()" 
-                class="text-christmas-green hover:text-green-700 font-semibold flex items-center gap-2 transition-colors mr-4">
-          <span>🎁</span> <span i18n="@@goToRegisterButton">Register</span>
+                class="ss-button-secondary event-action">
+          <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="theme/secret-santa-iconos.svg#ss-regalo"></use></svg> <span i18n="@@goToRegisterButton">Register</span>
         </button>
 
         <div *ngIf="currentUser">
-          <a [routerLink]="'/dashboard'" class="text-christmas-red hover:text-red-700 font-semibold flex items-center gap-2 transition-colors">
-            <span>👤</span> <span i18n="@@dashboardLink">Dashboard</span>
+          <a [routerLink]="'/dashboard'" class="ss-button-secondary event-action">
+            <span i18n="@@dashboardLink">Dashboard</span>
           </a>
         </div>
       </div>
@@ -25,278 +25,311 @@
 
     <!-- Loading State -->
     <div *ngIf="isLoading" class="text-center py-12">
-      <p class="text-gray-600" i18n="@@loadingMessage">Loading...</p>
+      <p class="event-meta justify-center" i18n="@@loadingMessage">Loading...</p>
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage && !isLoading" class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+    <div *ngIf="errorMessage && !isLoading" class="event-notice event-notice--error mb-4" role="alert">
       {{ errorMessage }}
     </div>
 
     <!-- Success Message -->
-    <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+    <div *ngIf="successMessage" class="event-notice event-notice--success mb-4" role="status">
       {{ successMessage }}
     </div>
 
     <!-- Event Not Found -->
-    <div *ngIf="!event && !isLoading" class="bg-white shadow-xl rounded-2xl p-8 text-center">
-      <p class="text-gray-600" i18n="@@eventNotFound">Event not found</p>
+    <div *ngIf="!event && !isLoading" class="ss-card text-center">
+      <p class="event-muted" i18n="@@eventNotFound">Event not found</p>
     </div>
 
     <!-- Main Content -->
     <div *ngIf="event && !isLoading">
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-christmas-red mb-2">🎅 {{ event.name }}</h1>
-        <p class="text-gray-600"><span i18n="@@giftRange">Gift Range:</span> ${{ event.minAmount }}{{ event.maxAmount ? ' - $' + event.maxAmount : '+' }}</p>
-        <div *ngIf="event.registrationDeadline" class="mt-2 text-sm font-medium text-red-600 bg-red-50 inline-block px-3 py-1 rounded-full">
-          <span i18n="@@deadlineLabel">Deadline:</span> {{ event.registrationDeadline.toDate() | date:'medium' }}
+      <header class="event-header mb-8">
+        <img *ngIf="!currentParticipant && !isDrawn" class="event-gift" src="theme/secret-santa-caja-regalo-frontal.png" width="1254" height="1254" alt="">
+        <h1 class="ss-heading mb-4">{{ event.name }}</h1>
+        <p class="event-meta">
+          <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="theme/secret-santa-iconos.svg#ss-presupuesto"></use></svg>
+          <span><span i18n="@@giftRange">Gift Range:</span> ${{ event.minAmount }}{{ event.maxAmount ? ' - $' + event.maxAmount : '+' }}</span>
+        </p>
+        <p *ngIf="event.registrationDeadline && !isDrawn" class="event-meta">
+          <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="theme/secret-santa-iconos.svg#ss-calendario"></use></svg>
+          <span><span i18n="@@deadlineLabel">Deadline:</span> {{ event.registrationDeadline.toDate() | date:'medium' }}</span>
+        </p>
+        <p *ngIf="isDrawn" class="event-meta">
+          <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="theme/secret-santa-iconos.svg#ss-sorteo-realizado"></use></svg>
+          <span i18n="@@eventDrawnStatus">Draw completed</span>
+        </p>
+      </header>
+
+      <section *ngIf="isDrawn && currentParticipant && assignedParticipant as recipient"
+               class="event-reveal mb-8" aria-labelledby="event-reveal-title">
+        <h2 id="event-reveal-title" class="event-welcome" i18n="@@secretSantaAssignment">You’re giving a gift to</h2>
+        <div class="event-reveal-tag">
+          <p class="ss-heading">{{ recipient.name }}</p>
         </div>
-      </div>
+        <div class="event-preferences p-4 text-left">
+          <div class="flex items-center gap-2 mb-2"><svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="theme/secret-santa-iconos.svg#ss-regalo"></use></svg><h3 class="font-semibold" i18n="@@theirPreferencesTitle">Their Gift Preferences:</h3></div>
+          <div class="space-y-2 text-sm">
+            <div *ngIf="recipient.preferences.general">
+              <span class="font-medium" i18n="@@interestsLabel">Interests:</span>
+              <p class="event-muted mt-1">{{ recipient.preferences.general }}</p>
+            </div>
+            <div *ngIf="recipient.preferences.sizes">
+              <span class="font-medium" i18n="@@sizesLabel">Sizes:</span>
+              <p class="event-muted mt-1">{{ recipient.preferences.sizes }}</p>
+            </div>
+            <div *ngIf="!recipient.preferences.general && !recipient.preferences.sizes">
+              <p class="event-muted italic" i18n="@@noPreferencesProvidedMessage">No preferences provided yet</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section *ngIf="currentParticipant && (!isDrawn || !assignedParticipant)"
+               class="event-reveal mb-8">
+        <img class="event-reveal-hat" src="theme/secret-santa-gorro-interrogacion.png"
+             width="1024" height="1536" alt="">
+        <p *ngIf="!isDrawn" class="event-notice event-notice--waiting" i18n="@@waitingForRaffle">⏳ Waiting for the organizer to run the raffle...</p>
+        <p *ngIf="isDrawn" class="event-notice event-notice--waiting" i18n="@@assignmentUnavailable">Your gift assignment is not available yet.</p>
+      </section>
 
       <!-- Logged In View -->
       <div *ngIf="currentParticipant">
-        <div class="bg-white shadow-xl rounded-2xl p-6 border-t-4 border-christmas-green mb-6">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-gray-900" i18n="@@welcomeMessage">Welcome, {{ currentParticipant.name }}! 👋</h2>
-            <div class="flex gap-3">
-              <button
-                *ngIf="!isDrawn"
-                (click)="leaveEvent()"
-                class="text-sm text-red-600 hover:text-red-800"
-                i18n="@@leaveEventButton">
-                Leave Event
-              </button>
-              <button
-                (click)="logout()"
-                class="text-sm text-gray-600 hover:text-gray-800"
-                i18n="@@logoutButtonLanding">
-                Logout
-              </button>
-            </div>
-          </div>
-
-          <!-- Raffle Result -->
-          <div *ngIf="isDrawn && assignedParticipant" class="mb-6">
-            <div class="bg-gradient-to-r from-red-100 to-green-100 p-6 rounded-xl text-center">
-              <h3 class="text-lg font-semibold text-gray-800 mb-2" i18n="@@secretSantaAssignment">🎁 Your Secret Santa Assignment</h3>
-              <p class="text-3xl font-bold text-christmas-red mb-4">{{ assignedParticipant.name }}</p>
-              
-              <!-- Assigned Person's Preferences -->
-              <div class="bg-white rounded-lg p-4 mt-4 text-left">
-                <h4 class="font-semibold text-gray-800 mb-2" i18n="@@theirPreferencesTitle">Their Gift Preferences:</h4>
-                <div class="space-y-2 text-sm">
-                  <div *ngIf="assignedParticipant.preferences.general">
-                    <span class="font-medium text-gray-700" i18n="@@interestsLabel">Interests:</span>
-                    <p class="text-gray-600 mt-1">{{ assignedParticipant.preferences.general }}</p>
-                  </div>
-                  <div *ngIf="assignedParticipant.preferences.sizes">
-                    <span class="font-medium text-gray-700" i18n="@@sizesLabel">Sizes:</span>
-                    <p class="text-gray-600 mt-1">{{ assignedParticipant.preferences.sizes }}</p>
-                  </div>
-                  <div *ngIf="!assignedParticipant.preferences.general && !assignedParticipant.preferences.sizes">
-                    <p class="text-gray-500 italic" i18n="@@noPreferencesProvidedMessage">No preferences provided yet</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Waiting for Raffle -->
-          <div *ngIf="!isDrawn" class="bg-yellow-50 p-4 rounded-lg text-center mb-6">
-            <p class="text-yellow-800" i18n="@@waitingForRaffle">⏳ Waiting for the organizer to run the raffle...</p>
-          </div>
-
-          <!-- My Preferences -->
-          <div class="border-t pt-4">
-            <div class="flex justify-between items-center mb-3">
-              <h4 class="font-semibold text-gray-800" i18n="@@myPreferencesTitle">My Gift Preferences</h4>
-              <button
-                *ngIf="!isEditingPreferences"
-                (click)="isEditingPreferences = true"
-                class="text-sm text-blue-600 hover:text-blue-800"
-                i18n="@@editPreferencesButton">
-                ✏️ Edit
-              </button>
-            </div>
-
-            <!-- View Mode -->
-            <div *ngIf="!isEditingPreferences" class="text-sm space-y-2">
-              <div *ngIf="currentParticipant.preferences.general">
-                <span class="font-medium text-gray-700" i18n="@@interestsLabel">Interests:</span>
-                <p class="text-gray-600 mt-1">{{ currentParticipant.preferences.general }}</p>
-              </div>
-              <div *ngIf="currentParticipant.preferences.sizes">
-                <span class="font-medium text-gray-700" i18n="@@sizesLabel">Sizes:</span>
-                <p class="text-gray-600 mt-1">{{ currentParticipant.preferences.sizes }}</p>
-              </div>
-              <p *ngIf="!currentParticipant.preferences.general && !currentParticipant.preferences.sizes" 
-                 class="text-gray-500 italic"
-                 i18n="@@noPreferencesMessage">
-                No preferences added yet
-              </p>
-            </div>
-
-            <!-- Edit Mode -->
-            <form *ngIf="isEditingPreferences" [formGroup]="preferencesForm" (ngSubmit)="onUpdatePreferences()">
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@myInterestsLabel">
-                    My Interests & Preferences
-                  </label>
-                  <textarea
-                    formControlName="general"
-                    rows="3"
-                    placeholder="e.g., I like books, sports, technology..."
-                    i18n-placeholder="@@interestsPlaceholder"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm">
-                  </textarea>
-                </div>
-
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@mySizesLabel">
-                    My Sizes (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    formControlName="sizes"
-                    placeholder="e.g., Shirt: M, Shoes: 9"
-                    i18n-placeholder="@@sizesPlaceholder"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm"
-                  />
-                </div>
-
-                <div class="flex gap-2">
-                  <button
-                    type="button"
-                    (click)="isEditingPreferences = false"
-                    class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm transition-all"
-                    i18n="@@cancelButton">
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    [disabled]="isSubmitting"
-                    class="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all"
-                    i18n="@@saveButton">
-                    Save
-                  </button>
-                </div>
-              </div>
-            </form>
+        <div class="event-participant-heading mb-4">
+          <h2 class="event-welcome" i18n="@@welcomeMessage">Welcome, {{ currentParticipant.name }}! 👋</h2>
+          <div class="event-actions">
+            <button
+              *ngIf="!isDrawn"
+              (click)="leaveEvent()"
+              class="ss-button-secondary event-action event-action--danger"
+              i18n="@@leaveEventButton">
+              Leave Event
+            </button>
+            <button
+              (click)="logout()"
+              class="ss-button-secondary event-action"
+              i18n="@@logoutButtonLanding">
+              Logout
+            </button>
           </div>
         </div>
+
+        <!-- My Preferences -->
+        <section class="ss-card ss-card--dark event-panel mb-6">
+          <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+            <h2 class="font-semibold" i18n="@@myPreferencesTitle">My Gift Preferences</h2>
+            <button
+              *ngIf="!isEditingPreferences"
+              (click)="isEditingPreferences = true"
+              class="ss-button-secondary event-action"
+              i18n="@@editPreferencesButton">
+              ✏️ Edit
+            </button>
+          </div>
+
+          <!-- View Mode -->
+          <div *ngIf="!isEditingPreferences" class="text-sm space-y-2">
+            <div *ngIf="currentParticipant.preferences.general">
+              <span class="font-medium" i18n="@@interestsLabel">Interests:</span>
+              <p class="event-muted mt-1">{{ currentParticipant.preferences.general }}</p>
+            </div>
+            <div *ngIf="currentParticipant.preferences.sizes">
+              <span class="font-medium" i18n="@@sizesLabel">Sizes:</span>
+              <p class="event-muted mt-1">{{ currentParticipant.preferences.sizes }}</p>
+            </div>
+            <p *ngIf="!currentParticipant.preferences.general && !currentParticipant.preferences.sizes"
+               class="event-muted italic"
+               i18n="@@noPreferencesMessage">
+              No preferences added yet
+            </p>
+          </div>
+
+          <!-- Edit Mode -->
+          <form *ngIf="isEditingPreferences" [formGroup]="preferencesForm" (ngSubmit)="onUpdatePreferences()">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1" i18n="@@myInterestsLabel">
+                  My Interests & Preferences
+                </label>
+                <textarea
+                  formControlName="general"
+                  rows="3"
+                  placeholder="e.g., I like books, sports, technology..."
+                  i18n-placeholder="@@interestsPlaceholder"
+                  class="ss-field w-full text-sm">
+                </textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1" i18n="@@mySizesLabel">
+                  My Sizes (Optional)
+                </label>
+                <input
+                  type="text"
+                  formControlName="sizes"
+                  placeholder="e.g., Shirt: M, Shoes: 9"
+                  i18n-placeholder="@@sizesPlaceholder"
+                  class="ss-field w-full text-sm"
+                />
+              </div>
+
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  (click)="isEditingPreferences = false"
+                  class="ss-button-secondary flex-1"
+                  i18n="@@cancelButton">
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  [disabled]="isSubmitting"
+                  class="ss-button-primary flex-1"
+                  i18n="@@saveButton">
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
       </div>
 
       <!-- Guest View (Not Logged In) -->
       <div *ngIf="!currentParticipant">
         <!-- Registration Closed Warning -->
-        <div *ngIf="!isRegistrationOpen" class="mb-4 p-4 bg-yellow-100 text-yellow-800 rounded-lg" i18n="@@registrationClosedWarning">
+        <div *ngIf="!isRegistrationOpen" class="event-notice event-notice--waiting mb-4" i18n="@@registrationClosedWarning">
           ⚠️ Registration is currently closed
         </div>
 
         <!-- Tabs -->
-        <div class="bg-white shadow-xl rounded-2xl overflow-hidden border-t-4 border-christmas-red">
-          <div class="flex border-b">
+        <div class="ss-card ss-card--dark event-panel">
+          <div class="event-tabs">
             <button
+              type="button"
+              [disabled]="!isRegistrationOpen"
               (click)="activeTab = 'register'"
-              class="flex-1 py-3 font-semibold transition-all"
-              [class.bg-red-50]="activeTab === 'register'"
-              [class.text-red-700]="activeTab === 'register'"
-              [class.text-gray-600]="activeTab !== 'register'"
-              [class.border-b-2]="activeTab === 'register'"
-              [class.border-red-600]="activeTab === 'register'"
+              class="event-tab"
+              [class.event-tab--active]="activeTab === 'register'"
+              [attr.aria-pressed]="activeTab === 'register'"
               i18n="@@registerTab">
               Register
             </button>
             <button
+              type="button"
               (click)="activeTab = 'login'"
-              class="flex-1 py-3 font-semibold transition-all"
-              [class.bg-red-50]="activeTab === 'login'"
-              [class.text-red-700]="activeTab === 'login'"
-              [class.text-gray-600]="activeTab !== 'login'"
-              [class.border-b-2]="activeTab === 'login'"
-              [class.border-red-600]="activeTab === 'login'"
+              class="event-tab"
+              [class.event-tab--active]="activeTab === 'login'"
+              [attr.aria-pressed]="activeTab === 'login'"
               i18n="@@loginTab">
               Login
             </button>
           </div>
 
-          <div class="p-6" id="register-form">
+          <div class="pt-6" id="register-form">
             <!-- Registration Form -->
             <form *ngIf="activeTab === 'register'" [formGroup]="registerForm" (ngSubmit)="onRegister()">
               <div class="space-y-4">
+                <div *ngIf="!isGoogleLinked">
+                  <button
+                    type="button"
+                    (click)="continueWithGoogleForRegister()"
+                    [disabled]="isSubmitting || !isRegistrationOpen"
+                    class="ss-button-secondary w-full">
+                    <span i18n="@@continueWithGoogleButton">Continue with Google</span>
+                  </button>
+                  <div class="flex items-center gap-3 my-3">
+                    <span class="h-px flex-1 bg-white/15"></span>
+                    <span class="text-xs event-muted" i18n="@@orDivider">or</span>
+                    <span class="h-px flex-1 bg-white/15"></span>
+                  </div>
+                </div>
+
+                <div *ngIf="isGoogleLinked" class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/10 text-xs">
+                  <span>
+                    <span i18n="@@googleLinkedPrefix">Linked with Google:</span>
+                    <strong> {{ currentUser?.email || currentUser?.displayName }}</strong>
+                  </span>
+                  <button type="button" (click)="unlinkGoogle()" class="underline opacity-80 hover:opacity-100" i18n="@@unlinkGoogleButton">Change</button>
+                </div>
+
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@nameLabel">Name *</label>
+                  <label class="block text-sm font-medium mb-1" i18n="@@nameLabel">Name *</label>
                   <input
                     type="text"
                     formControlName="name"
                     placeholder="Your full name"
                     i18n-placeholder="@@namePlaceholder"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    class="ss-field w-full"
                     [class.border-red-500]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
                   />
                   <p *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" 
-                     class="mt-1 text-sm text-red-600"
+                     class="mt-1 text-sm event-validation"
                      i18n="@@nameRequiredError">
                     Name is required (minimum 2 characters)
                   </p>
                 </div>
 
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@secretWordLabel">Secret Word *</label>
+                <div *ngIf="!isGoogleLinked">
+                  <label class="block text-sm font-medium mb-1" i18n="@@secretWordLabel">Secret Word *</label>
                   <input
                     type="text"
                     formControlName="secretWord"
                     placeholder="Choose a secret word to login later"
                     i18n-placeholder="@@secretWordPlaceholder"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    class="ss-field w-full"
                     [class.border-red-500]="registerForm.get('secretWord')?.invalid && registerForm.get('secretWord')?.touched"
                   />
                   <p *ngIf="registerForm.get('secretWord')?.invalid && registerForm.get('secretWord')?.touched" 
-                     class="mt-1 text-sm text-red-600"
+                     class="mt-1 text-sm event-validation"
                      i18n="@@secretWordRequiredError">
                     Secret word is required (minimum 4 characters)
                   </p>
-                  <p class="mt-1 text-xs text-gray-500" i18n="@@rememberSecretWordHint">Remember this word to login later!</p>
+                  <p class="mt-1 text-xs event-muted" i18n="@@rememberSecretWordHint">Remember this word to login later!</p>
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@emailLabel">Email (Optional)</label>
+                  <label class="block text-sm font-medium mb-1" i18n="@@emailLabel">Email (Optional)</label>
                   <input
                     type="email"
                     formControlName="email"
                     placeholder="your@email.com"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    class="ss-field w-full"
+                    [class.border-red-500]="registerForm.get('email')?.invalid && (registerForm.get('email')?.touched || registerForm.get('email')?.dirty)"
                   />
+                  <p *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.touched || registerForm.get('email')?.dirty)"
+                     class="mt-1 text-sm event-validation"
+                     i18n="@@emailInvalidError">
+                    Please enter a valid email address (without accents or special characters)
+                  </p>
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@giftPreferencesLabel">Gift Preferences</label>
+                  <label class="block text-sm font-medium mb-1" i18n="@@giftPreferencesLabel">Gift Preferences</label>
                   <textarea
                     formControlName="general"
                     rows="3"
                     placeholder="What do you like? (e.g., books, sports, technology...)"
                     i18n-placeholder="@@giftPreferencesPlaceholder"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    class="ss-field w-full">
                   </textarea>
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@sizesLabelOptional">Sizes (Optional)</label>
+                  <label class="block text-sm font-medium mb-1" i18n="@@sizesLabelOptional">Sizes (Optional)</label>
                   <input
                     type="text"
                     formControlName="sizes"
                     placeholder="e.g., Shirt: M, Shoes: 9"
                     i18n-placeholder="@@sizesPlaceholder"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    class="ss-field w-full"
                   />
                 </div>
 
                 <button
                   type="submit"
                   [disabled]="registerForm.invalid || isSubmitting || !isRegistrationOpen"
-                  class="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed">
+                  class="ss-button-primary w-full">
                   <span *ngIf="!isSubmitting" i18n="@@registerButton">🎁 Register</span>
                   <span *ngIf="isSubmitting" i18n="@@registeringButton">Registering...</span>
                 </button>
@@ -307,36 +340,50 @@
             <form *ngIf="activeTab === 'login'" [formGroup]="loginForm" (ngSubmit)="onLogin()">
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@nameLabel">Name *</label>
+                  <label class="block text-sm font-medium mb-1" i18n="@@nameLabel">Name *</label>
                   <input
                     type="text"
                     formControlName="name"
                     placeholder="Your name"
                     i18n-placeholder="@@loginNamePlaceholder"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    class="ss-field w-full"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@secretWordLabel">Secret Word *</label>
+                  <label class="block text-sm font-medium mb-1" i18n="@@secretWordLabel">Secret Word *</label>
                   <input
                     type="text"
                     formControlName="secretWord"
                     placeholder="Your secret word"
                     i18n-placeholder="@@loginSecretWordPlaceholder"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    class="ss-field w-full"
                   />
                 </div>
 
                 <button
                   type="submit"
                   [disabled]="loginForm.invalid || isSubmitting"
-                  class="w-full bg-christmas-green hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed">
+                  class="ss-button-primary w-full">
                   <span *ngIf="!isSubmitting" i18n="@@loginButton">🔓 Login</span>
                   <span *ngIf="isSubmitting" i18n="@@loggingInButton">Logging in...</span>
                 </button>
 
-                <p class="text-xs text-center text-gray-500 mt-2" i18n="@@forgotSecretWordHint">
+                <div class="flex items-center gap-3 my-2">
+                  <span class="h-px flex-1 bg-white/15"></span>
+                  <span class="text-xs event-muted" i18n="@@orDivider">or</span>
+                  <span class="h-px flex-1 bg-white/15"></span>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="loginWithGoogleParticipant()"
+                  [disabled]="isSubmitting"
+                  class="ss-button-secondary w-full">
+                  <span i18n="@@loginWithGoogleButton">Login with Google</span>
+                </button>
+
+                <p class="text-xs text-center event-muted mt-2" i18n="@@forgotSecretWordHint">
                   Forgot your secret word? Contact the event organizer for a reset link.
                 </p>
               </div>
@@ -346,10 +393,10 @@
       </div>
     </div>
     <!-- Footer -->
-    <div class="mt-12 text-center text-sm text-gray-500 pb-8">
+    <div class="event-footer mt-12 text-center text-sm pb-8">
       <p>
         <span i18n="@@organizerQuestion">Are you the organizer?</span>
-        <a [routerLink]="['/admin', eventId, 'login']" class="text-christmas-red hover:text-red-700 ml-1 font-medium" i18n="@@manageEventLink">
+        <a [routerLink]="['/admin', eventId, 'login']" class="event-nav-link ml-1 font-medium" i18n="@@manageEventLink">
           Manage Event
         </a>
       </p>

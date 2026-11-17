@@ -28,8 +28,17 @@ export class EventLandingComponent implements OnInit {
   currentParticipant: Participant | null = null;
   assignedParticipant: Participant | null = null;
   currentUser: User | null = null;
+  isGoogleLinked = false;
   isLoading = true;
-  activeTab: 'register' | 'login' = 'register';
+  private selectedTab: 'register' | 'login' = 'register';
+
+  get activeTab(): 'register' | 'login' {
+    return this.isRegistrationOpen ? this.selectedTab : 'login';
+  }
+
+  set activeTab(tab: 'register' | 'login') {
+    this.selectedTab = tab;
+  }
   isHost = false;
 
   registerForm: FormGroup;
@@ -116,13 +125,25 @@ export class EventLandingComponent implements OnInit {
       this.updateHostStatus();
 
       // Check if participant is already logged in
-
-      // Check if participant is already logged in
       const participantId = this.participantService.getStoredParticipantId(
         this.eventId
       );
       if (participantId) {
         await this.loadParticipantData(participantId);
+      } else {
+        const authUser = await this.authService.waitForAuthReady();
+        if (authUser) {
+          this.currentUser = authUser;
+          this.updateHostStatus();
+          const matched = await this.participantService.loginWithUid(
+            this.eventId,
+            authUser.uid,
+            authUser.email
+          );
+          if (matched) {
+            await this.loadParticipantData(matched.id);
+          }
+        }
       }
     } catch (error: any) {
       console.error('Error loading event:', error);
@@ -177,8 +198,9 @@ export class EventLandingComponent implements OnInit {
     try {
       const formValue = this.registerForm.value;
       const participant = await this.participantService.register(this.eventId, {
+        uid: this.isGoogleLinked ? this.currentUser?.uid : undefined,
         name: formValue.name,
-        secretWord: formValue.secretWord,
+        secretWord: this.isGoogleLinked ? undefined : formValue.secretWord,
         email: formValue.email,
         preferences: {
           general: formValue.general,
@@ -189,11 +211,87 @@ export class EventLandingComponent implements OnInit {
       this.currentParticipant = participant;
       this.successMessage = $localize`:@@registrationSuccess:Registration successful! 🎉`;
       this.registerForm.reset();
+      this.isGoogleLinked = false;
     } catch (error: any) {
       console.error('Error registering:', error);
       this.errorMessage =
         error.message ||
         $localize`:@@registrationError:Failed to register. Please try again.`;
+    } finally {
+      this.isSubmitting = false;
+    }
+  }
+
+  async continueWithGoogleForRegister(): Promise<void> {
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    try {
+      if (!this.currentUser) {
+        await this.authService.loginWithGoogle();
+        this.currentUser = this.authService.getCurrentUser();
+      }
+      if (!this.currentUser) return;
+
+      const existing = await this.participantService.loginWithUid(
+        this.eventId,
+        this.currentUser.uid,
+        this.currentUser.email
+      );
+      if (existing) {
+        await this.loadParticipantData(existing.id);
+        return;
+      }
+
+      this.isGoogleLinked = true;
+      const secretCtrl = this.registerForm.get('secretWord');
+      secretCtrl?.clearValidators();
+      secretCtrl?.setValue('');
+      secretCtrl?.updateValueAndValidity();
+
+      if (!this.registerForm.get('name')?.value && this.currentUser.displayName) {
+        this.registerForm.patchValue({ name: this.currentUser.displayName });
+      }
+      if (this.currentUser.email) {
+        this.registerForm.patchValue({ email: this.currentUser.email });
+      }
+    } catch (error) {
+      console.error('Google register link failed:', error);
+      this.errorMessage = $localize`:@@hostLoginError:Could not sign in with Google. Please try again.`;
+    } finally {
+      this.isSubmitting = false;
+    }
+  }
+
+  unlinkGoogle(): void {
+    this.isGoogleLinked = false;
+    const secretCtrl = this.registerForm.get('secretWord');
+    secretCtrl?.setValidators([Validators.required, Validators.minLength(4)]);
+    secretCtrl?.updateValueAndValidity();
+  }
+
+  async loginWithGoogleParticipant(): Promise<void> {
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    try {
+      if (!this.currentUser) {
+        await this.authService.loginWithGoogle();
+        this.currentUser = this.authService.getCurrentUser();
+      }
+      if (!this.currentUser) return;
+
+      const participant = await this.participantService.loginWithUid(
+        this.eventId,
+        this.currentUser.uid,
+        this.currentUser.email
+      );
+      if (!participant) {
+        this.errorMessage = $localize`:@@googleNotRegisteredError:No registration found for this Google account in this event.`;
+        return;
+      }
+      await this.loadParticipantData(participant.id);
+    } catch (error) {
+      console.error('Google participant login failed:', error);
+      this.errorMessage = $localize`:@@loginError:Failed to login. Please try again.`;
     } finally {
       this.isSubmitting = false;
     }

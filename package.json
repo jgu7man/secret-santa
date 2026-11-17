@@ -4,9 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:es": "ng serve --configuration=es-MX",
+    "start:es": "ng serve --configuration=es-MX --port 4201",
+    "start:hosting": "npm run build:hosting && firebase emulators:start --only hosting --project secret-santa-jgu7man",
     "build": "ng build",
     "build:es": "ng build --localize=es-MX",
+    "build:hosting": "ng build && node --experimental-strip-types scripts/prepare-hosting.ts",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "extract-i18n": "ng extract-i18n --output-path src/locale"

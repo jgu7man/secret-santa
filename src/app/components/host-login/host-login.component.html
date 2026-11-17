@@ -1,0 +1,18 @@
+<div class="ss-theme ss-backdrop--dark ss-backdrop--pine min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+      <h1 class="ss-heading" i18n="@@hostDashboardTitle">Host Dashboard</h1>
+      <a [routerLink]="'/'" class="ss-button-primary inline-flex items-center" i18n="@@createNewEventLink">Create New Event</a>
+    </div>
+
+    <div class="ss-card text-center">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4" i18n="@@loginToViewEventsTitle">Login to view your events</h2>
+      <p class="text-gray-600 mb-6" i18n="@@loginToViewEventsDesc">Sign in with Google to access your created events and manage them easily.</p>
+      <p *ngIf="errorMessage" class="text-sm text-red-600 mb-4">{{ errorMessage }}</p>
+      <button (click)="login()" [disabled]="isLoggingIn" class="ss-button-primary">
+        <span i18n="@@loginWithGoogleButton">Login with Google</span>
+      </button>
+    </div>
+  </div>
+</div>
+

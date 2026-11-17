@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, LOCALE_ID } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -17,6 +17,7 @@ import { EventService } from '../../services/event.service';
   styleUrl: './create-event.component.scss',
 })
 export class CreateEventComponent {
+  readonly isSpanish = /^es(?:-|$)/i.test(inject(LOCALE_ID));
   eventForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
