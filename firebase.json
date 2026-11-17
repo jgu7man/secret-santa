@@ -3,19 +3,59 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "emulators": {
+    "hosting": {
+      "port": 5050
+    }
+  },
   "hosting": [
     {
       "target": "secret-santa",
-      "public": "dist/secret-santa/browser/en-US",
+      "public": "dist/secret-santa/hosting",
       "ignore": [
         "firebase.json",
         "**/.*",
         "**/node_modules/**"
       ],
+      "redirects": [
+        {
+          "source": "/",
+          "destination": "/en/",
+          "type": 302
+        },
+        {
+          "source": "/event/:rest*",
+          "destination": "/en/event/:rest*",
+          "type": 302
+        },
+        {
+          "source": "/admin/:rest*",
+          "destination": "/en/admin/:rest*",
+          "type": 302
+        },
+        {
+          "source": "/dashboard",
+          "destination": "/en/dashboard",
+          "type": 302
+        },
+        {
+          "source": "/login",
+          "destination": "/en/login",
+          "type": 302
+        }
+      ],
       "rewrites": [
         {
+          "source": "/en/**",
+          "destination": "/en/index.html"
+        },
+        {
+          "source": "/es/**",
+          "destination": "/es/index.html"
+        },
+        {
           "source": "**",
-          "destination": "/index.html"
+          "destination": "/en/index.html"
         }
       ]
     },

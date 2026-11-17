@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  getDoc, 
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
   getDocs,
-  query, 
+  query,
+  setDoc,
+  updateDoc,
   where,
-  updateDoc
 } from 'firebase/firestore';
 import { firestore } from '../firebase-config';
 import { Participant, ParticipantRegistration, ParticipantLogin } from '../models/participant.model';
@@ -46,27 +47,82 @@ export class ParticipantService {
     const participantId = participantRef.id;
 
     const newParticipant: Omit<Participant, 'id'> = {
+      ...(data.uid ? { uid: data.uid } : {}),
       name: data.name.trim(),
       normalizedName: data.name.toLowerCase().trim(),
-      secretWord: data.secretWord,
-      email: data.email,
+      ...(data.secretWord ? { secretWord: data.secretWord } : {}),
+      ...(data.email ? { email: data.email } : {}),
       preferences: {
         general: data.preferences?.general || '',
-        sizes: data.preferences?.sizes || ''
+        sizes: data.preferences?.sizes || '',
       },
       assignedToId: null,
-      assignedToName: null
+      assignedToName: null,
     };
 
     await setDoc(participantRef, newParticipant);
+
+    if (data.uid) {
+      const eventRef = doc(firestore, 'events', eventId);
+      await updateDoc(eventRef, {
+        participantUids: arrayUnion(data.uid),
+      });
+    }
 
     // Store participant session
     this.storeParticipantSession(eventId, participantId);
 
     return {
       id: participantId,
-      ...newParticipant
+      ...newParticipant,
     };
+  }
+
+  /**
+   * Finds or links a participant using their Firebase Auth UID (or fallback email).
+   */
+  async loginWithUid(
+    eventId: string,
+    uid: string,
+    email?: string | null
+  ): Promise<Participant | null> {
+    const participantsRef = collection(
+      firestore,
+      `events/${eventId}/participants`
+    );
+
+    const uidSnap = await getDocs(query(participantsRef, where('uid', '==', uid)));
+    if (!uidSnap.empty) {
+      const participantDoc = uidSnap.docs[0];
+      const participant = {
+        id: participantDoc.id,
+        ...participantDoc.data(),
+      } as Participant;
+      this.storeParticipantSession(eventId, participant.id);
+      return participant;
+    }
+
+    if (email) {
+      const emailSnap = await getDocs(
+        query(participantsRef, where('email', '==', email))
+      );
+      if (!emailSnap.empty) {
+        const participantDoc = emailSnap.docs[0];
+        await updateDoc(participantDoc.ref, { uid });
+        await updateDoc(doc(firestore, 'events', eventId), {
+          participantUids: arrayUnion(uid),
+        });
+        const participant = {
+          id: participantDoc.id,
+          ...participantDoc.data(),
+          uid,
+        } as Participant;
+        this.storeParticipantSession(eventId, participant.id);
+        return participant;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -91,7 +147,7 @@ export class ParticipantService {
     } as Participant;
 
     // Verify secret word
-    if (participant.secretWord !== credentials.secretWord) {
+    if (!participant.secretWord || participant.secretWord !== credentials.secretWord) {
       return null;
     }
 

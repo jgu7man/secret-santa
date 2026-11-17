@@ -1,8 +1,8 @@
-<div class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50 py-8 px-4 sm:px-6 lg:px-8">
+<div class="ss-theme ss-backdrop--dark ss-backdrop--pine admin-page min-h-screen py-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-4xl mx-auto">
     <!-- Loading State -->
     <div *ngIf="isLoading" class="text-center py-12">
-      <p class="text-gray-600" i18n="@@loadingMessage">Loading...</p>
+      <p class="admin-muted" i18n="@@loadingMessage">Loading...</p>
     </div>
 
     <!-- Error Message -->
@@ -18,16 +18,16 @@
     <!-- Main Content -->
     <div *ngIf="event && !isLoading">
       <!-- Header -->
-      <div class="bg-white shadow-xl rounded-2xl p-6 border-t-4 border-christmas-red mb-6">
+      <div class="ss-card ss-card--dark mb-6">
         <div class="mb-4">
-          <a [routerLink]="['/dashboard']" class="text-gray-600 hover:text-gray-900 flex items-center gap-2 text-sm font-medium transition-colors hover:text-christmas-red">
+          <a [routerLink]="['/dashboard']" class="admin-back-link flex items-center gap-2 text-sm font-medium">
             <span>←</span> <span i18n="@@backToDashboard">Back to Dashboard</span>
           </a>
         </div>
-        <div class="flex justify-between flex-col-reverse md:flex-row items-start mb-4">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ event.name }}</h1>
-            <p i18n="@@adminDashboardTitle" class="text-gray-600">Admin Dashboard 👑</p>
+        <div class="flex justify-between flex-col-reverse md:flex-row items-start gap-3 mb-4">
+          <div class="min-w-0">
+            <h1 class="ss-heading mb-2 break-words">{{ event.name }}</h1>
+            <p i18n="@@adminDashboardTitle" class="admin-muted">Admin Dashboard 👑</p>
           </div>
           <div class="text-right">
             <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold"
@@ -44,29 +44,29 @@
         <!-- Event Details -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <span class="text-gray-600" i18n="@@giftRangeLabel">Gift Range:</span>
+            <span class="admin-muted" i18n="@@giftRangeLabel">Gift Range:</span>
             <span class="ml-2 font-semibold">${{ event.minAmount }}{{ event.maxAmount ? ' - $' + event.maxAmount : '+' }}</span>
           </div>
           <div>
-            <span class="text-gray-600" i18n="@@participantsLabel">Participants:</span>
+            <span class="admin-muted" i18n="@@participantsLabel">Participants:</span>
             <span class="ml-2 font-semibold">{{ participants.length }}</span>
           </div>
           <div *ngIf="event.registrationDeadline">
-            <span class="text-gray-600" i18n="@@deadlineLabel">Deadline:</span>
+            <span class="admin-muted" i18n="@@deadlineLabel">Deadline:</span>
             <span class="ml-2 font-semibold">{{ event.registrationDeadline.toDate() | date:'medium' }}</span>
           </div>
         </div>
       </div>
 
       <!-- Action Buttons -->
-      <div class="bg-white shadow-xl rounded-2xl p-6 mb-6">
+      <div class="ss-card mb-6">
         <h2 class="text-xl font-bold text-gray-900 mb-4" i18n="@@actionsTitle">Actions</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Edit Event -->
           <button
             (click)="openEditModal()"
-            class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
+            class="ss-button-secondary"
             i18n="@@editEventButton">
             ✏️ Edit Event
           </button>
@@ -74,7 +74,7 @@
           <!-- Copy Participant Link -->
           <button
             (click)="copyParticipantLink()"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
+            class="ss-button-secondary"
             i18n="@@copyLinkButton">
             📋 Copy Participant Link
           </button>
@@ -82,12 +82,8 @@
           <!-- Toggle Registration -->
           <button
             (click)="toggleRegistration()"
-            class="font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
-            [class.bg-green-600]="!event.isRegistrationOpen"
-            [class.hover:bg-green-700]="!event.isRegistrationOpen"
-            [class.bg-red-600]="event.isRegistrationOpen"
-            [class.hover:bg-red-700]="event.isRegistrationOpen"
-            [class.text-white]="true">
+            [class.ss-button-primary]="event.isRegistrationOpen"
+            [class.ss-button-secondary]="!event.isRegistrationOpen">
             <ng-container *ngIf="event.isRegistrationOpen" i18n="@@closeRegistration">🔒 Close Registration</ng-container>
             <ng-container *ngIf="!event.isRegistrationOpen" i18n="@@openRegistration">🔓 Open Registration</ng-container>
           </button>
@@ -96,7 +92,7 @@
           <button
             *ngIf="canRunRaffle"
             (click)="confirmRaffle()"
-            class="bg-christmas-gold hover:bg-yellow-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105">
+            class="ss-button-primary">
             <ng-container *ngIf="event.status === 'CREATED'" i18n="@@runRaffle">🎲 Run Raffle</ng-container>
             <ng-container *ngIf="event.status !== 'CREATED'" i18n="@@rerunRaffle">🎲 Re-run Raffle</ng-container>
           </button>
@@ -104,7 +100,7 @@
           <!-- Participate -->
           <button
             (click)="navigateToEvent()"
-            class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
+            class="ss-button-secondary"
             i18n="@@participateButton">
             🎁 Participate in Event
           </button>
@@ -113,7 +109,7 @@
           <button
             *ngIf="canClaimEvent"
             (click)="claimEvent()"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition-all transform hover:scale-105"
+            class="ss-button-secondary"
             i18n="@@claimEventButton">
             💾 Save to My Events
           </button>
@@ -123,39 +119,39 @@
       <!-- Raffle Confirmation Dialog -->
           <!-- Edit Modal -->
     <div *ngIf="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all">
+      <div class="ss-card ss-dialog max-w-md w-full">
         <h2 class="text-2xl font-bold text-gray-900 mb-6" i18n="@@editEventTitle">Edit Event</h2>
         
         <form [formGroup]="editForm" (ngSubmit)="updateEvent()">
           <!-- Event Name -->
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@eventNameLabelSimple">Event Name *</label>
-            <input type="text" formControlName="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
+            <input type="text" formControlName="name" class="ss-field w-full">
           </div>
 
           <!-- Min Amount -->
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@minAmountLabelSimple">Minimum Gift Amount ($) *</label>
-            <input type="number" formControlName="minAmount" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
+            <input type="number" formControlName="minAmount" class="ss-field w-full">
           </div>
 
           <!-- Max Amount -->
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@maxAmountLabelSimple">Maximum Gift Amount ($)</label>
-            <input type="number" formControlName="maxAmount" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
+            <input type="number" formControlName="maxAmount" class="ss-field w-full">
           </div>
 
           <!-- Registration Deadline -->
           <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 mb-1" i18n="@@registrationDeadlineLabelSimple">Registration Deadline</label>
-            <input type="datetime-local" formControlName="registrationDeadline" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500">
+            <input type="datetime-local" formControlName="registrationDeadline" class="ss-field w-full">
           </div>
 
           <div class="flex gap-3">
-            <button type="button" (click)="closeEditModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg" i18n="@@cancelButton">
+            <button type="button" (click)="closeEditModal()" class="ss-button-secondary flex-1" i18n="@@cancelButton">
               Cancel
             </button>
-            <button type="submit" [disabled]="editForm.invalid" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg disabled:bg-gray-400">
+            <button type="submit" [disabled]="editForm.invalid" class="ss-button-primary flex-1">
               <span i18n="@@saveButtonSimple">Save</span>
             </button>
           </div>
@@ -165,7 +161,7 @@
 
     <!-- Raffle Confirmation Modal -->
     <div *ngIf="showRaffleConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+        <div class="ss-card ss-dialog max-w-md w-full">
           <h3 class="text-xl font-bold text-gray-900 mb-4" i18n="@@confirmRaffleTitle">Confirm Raffle</h3>
           <p class="text-gray-600 mb-6">
             <span i18n="@@confirmRaffleMessage">Are you sure you want to run the raffle? This will assign Secret Santa matches to all participants.</span>
@@ -174,13 +170,13 @@
           <div class="flex gap-3">
             <button
               (click)="cancelRaffle()"
-              class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-all"
+              class="ss-button-secondary flex-1"
               i18n="@@cancelButton">
               Cancel
             </button>
             <button
               (click)="runRaffle()"
-              class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-all"
+              class="ss-button-primary flex-1"
               i18n="@@confirmButton">
               Confirm
             </button>
@@ -189,7 +185,7 @@
       </div>
 
       <!-- Participants List -->
-      <div class="bg-white shadow-xl rounded-2xl p-6">
+      <div class="ss-card">
         <h2 class="text-xl font-bold text-gray-900 mb-4">
           <span i18n="@@participantsTitle">Participants</span> ({{ participants.length }})
         </h2>
@@ -202,7 +198,7 @@
         <!-- Participants Table -->
         <div *ngIf="participants.length > 0" class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-gray-50 border-b-2 border-gray-200">
+            <thead class="bg-white/40 border-b border-green-900/[.15]">
               <tr>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" i18n="@@nameHeader">Name</th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" i18n="@@emailHeader">Email</th>
@@ -210,8 +206,8 @@
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" i18n="@@actionsHeader">Actions</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
-              <tr *ngFor="let participant of participants" class="hover:bg-gray-50">
+            <tbody class="divide-y divide-green-900/[.15]">
+              <tr *ngFor="let participant of participants" class="hover:bg-white/40">
                 <td class="px-4 py-3 text-sm font-medium text-gray-900">
                   {{ participant.name }}
                 </td>
@@ -227,13 +223,13 @@
                 <td class="px-4 py-3 text-sm">
                   <button
                     (click)="copyResetLink(participant.id)"
-                    class="text-blue-600 hover:text-blue-800 font-medium mr-3"
+                    class="admin-table-link font-medium mr-3"
                     i18n="@@resetLinkButton">
                     🔑 Reset Link
                   </button>
                   <button
                     (click)="deleteParticipant(participant.id)"
-                    class="text-red-600 hover:text-red-800 font-medium"
+                    class="admin-table-link admin-table-link--danger font-medium"
                     i18n="@@removeButton">
                     🗑️ Remove
                   </button>
@@ -245,7 +241,7 @@
       </div>
 
       <!-- Instructions -->
-      <div class="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-gray-700">
+      <div class="ss-card ss-card--dark mt-6 text-sm">
         <p class="font-semibold mb-2" i18n="@@howItWorksTitle">💡 How it works:</p>
         <ol class="list-decimal list-inside space-y-1">
           <li i18n="@@howItWorksStep1">Share the participant link with everyone who wants to join</li>

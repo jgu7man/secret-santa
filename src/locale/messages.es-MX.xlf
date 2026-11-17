@@ -171,8 +171,8 @@
         <target>Salir</target>
       </trans-unit>
       <trans-unit id="secretSantaAssignment" datatype="html">
-        <source>🎁 Your Secret Santa Assignment</source>
-        <target>🎁 Te toca reglarle a:</target>
+        <source>You’re giving a gift to</source>
+        <target>Te toca regalarle a</target>
       </trans-unit>
       <trans-unit id="myInterestsLabel" datatype="html">
         <source> My Interests &amp; Preferences </source>
@@ -246,6 +246,10 @@
         <source>Email (Optional)</source>
         <target>Correo (Opcional)</target>
       </trans-unit>
+      <trans-unit id="emailInvalidError" datatype="html">
+        <source> Please enter a valid email address (without accents or special characters) </source>
+        <target> Ingresa un correo electrónico válido (sin acentos ni caracteres especiales) </target>
+      </trans-unit>
       <trans-unit id="giftPreferencesLabel" datatype="html">
         <source>Gift Preferences</source>
         <target>Preferencias de Regalo</target>
@@ -287,8 +291,8 @@
         <target> ¿Olvidaste tu palabra secreta? Contacta al organizador para un enlace de recuperación. </target>
       </trans-unit>
       <trans-unit id="hostDashboardTitle" datatype="html">
-        <source>🎅 Host Dashboard</source>
-        <target>🎅 Panel del Anfitrión</target>
+        <source>Host Dashboard</source>
+        <target>Panel del Anfitrión</target>
       </trans-unit>
       <trans-unit id="createNewEventLink" datatype="html">
         <source>Create New Event</source>
@@ -305,6 +309,38 @@
       <trans-unit id="loginWithGoogleButton" datatype="html">
         <source>Login with Google</source>
         <target>Iniciar sesión con Google</target>
+      </trans-unit>
+      <trans-unit id="hostLoginError" datatype="html">
+        <source>Could not sign in with Google. Please try again.</source>
+        <target>No se pudo iniciar sesión con Google. Intenta de nuevo.</target>
+      </trans-unit>
+      <trans-unit id="continueWithGoogleButton" datatype="html">
+        <source>Continue with Google</source>
+        <target>Continuar con Google</target>
+      </trans-unit>
+      <trans-unit id="orDivider" datatype="html">
+        <source>or</source>
+        <target>o</target>
+      </trans-unit>
+      <trans-unit id="googleLinkedPrefix" datatype="html">
+        <source>Linked with Google:</source>
+        <target>Vinculado con Google:</target>
+      </trans-unit>
+      <trans-unit id="unlinkGoogleButton" datatype="html">
+        <source>Change</source>
+        <target>Cambiar</target>
+      </trans-unit>
+      <trans-unit id="googleNotRegisteredError" datatype="html">
+        <source>No registration found for this Google account in this event.</source>
+        <target>No encontramos un registro con esta cuenta de Google en este evento.</target>
+      </trans-unit>
+      <trans-unit id="participatingEventsTitle" datatype="html">
+        <source>Events I'm Invited To</source>
+        <target>Eventos donde participo</target>
+      </trans-unit>
+      <trans-unit id="openExchangeAction" datatype="html">
+        <source>Open Exchange</source>
+        <target>Ver intercambio</target>
       </trans-unit>
       <trans-unit id="loadingEventsMessage" datatype="html">
         <source>Loading your events...</source>
@@ -325,6 +361,10 @@
       <trans-unit id="hostLoginLink" datatype="html">
         <source>Host Dashboard</source>
         <target>Panel del Anfitrión</target>
+      </trans-unit>
+      <trans-unit id="primaryNavLabel" datatype="html">
+        <source>Primary navigation</source>
+        <target>Navegación principal</target>
       </trans-unit>
       <trans-unit id="dashboardLink" datatype="html">
         <source>Dashboard</source>
@@ -570,6 +610,10 @@
         <source>No preferences provided yet</source>
         <target>Aún no ha proporcionado preferencias</target>
       </trans-unit>
+      <trans-unit id="assignmentUnavailable" datatype="html">
+        <source>Your gift assignment is not available yet.</source>
+        <target>Tu asignación de regalo aún no está disponible.</target>
+      </trans-unit>
       <trans-unit id="waitingForRaffle" datatype="html">
         <source>⏳ Waiting for the organizer to run the raffle...</source>
         <target>⏳ Esperando a que el organizador realice el sorteo...</target>
@@ -804,6 +848,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/services/meta.service.ts</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="eventDrawnStatus" datatype="html">
+        <source>Draw completed</source>
+        <target>Sorteo realizado</target>
+      </trans-unit>
+      <trans-unit id="createBrandName" datatype="html">
+        <source>Secret Santa</source>
+        <target>Santa Secreto</target>
       </trans-unit>
     </body>
   </file>

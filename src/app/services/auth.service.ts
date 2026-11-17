@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 import {
   GoogleAuthProvider,
   onAuthStateChanged,
@@ -13,12 +13,14 @@ import { auth } from '../firebase-config';
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly ngZone = inject(NgZone);
   user$: Observable<User | null>;
 
   constructor() {
     this.user$ = new Observable((subscriber) => {
       return onAuthStateChanged(auth, (user) => {
-        subscriber.next(user);
+        // Firebase Auth callbacks run outside Angular's zone; re-enter so UI updates immediately.
+        this.ngZone.run(() => subscriber.next(user));
       });
     });
   }
@@ -43,6 +45,11 @@ export class AuthService {
   }
 
   getCurrentUser(): User | null {
+    return auth.currentUser;
+  }
+
+  async waitForAuthReady(): Promise<User | null> {
+    await auth.authStateReady();
     return auth.currentUser;
   }
 }

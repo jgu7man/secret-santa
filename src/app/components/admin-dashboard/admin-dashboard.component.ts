@@ -189,14 +189,17 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   copyParticipantLink(): void {
-    const link = `${window.location.origin}/event/${this.eventId}`;
+    const link = new URL(`event/${this.eventId}`, document.baseURI).href;
     navigator.clipboard.writeText(link);
     this.successMessage = $localize`:@@copyLinkSuccess:Participant link copied to clipboard!`;
     setTimeout(() => (this.successMessage = ''), MESSAGE_DISPLAY_DURATION);
   }
 
   copyResetLink(participantId: string): void {
-    const link = `${window.location.origin}/event/${this.eventId}/reset/${participantId}`;
+    const link = new URL(
+      `event/${this.eventId}/reset/${participantId}`,
+      document.baseURI
+    ).href;
     navigator.clipboard.writeText(link);
     this.successMessage = $localize`:@@copyResetLinkSuccess:Reset link copied to clipboard!`;
     setTimeout(() => (this.successMessage = ''), MESSAGE_DISPLAY_DURATION);

@@ -16,13 +16,13 @@ import { EventService } from '../../services/event.service';
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   template: `
     <div
-      class="min-h-screen bg-gradient-to-br from-red-50 via-white to-green-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center"
+      class="ss-theme ss-backdrop--dark min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center"
     >
       <div
-        class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border-t-4 border-christmas-gold"
+        class="ss-card max-w-md w-full space-y-8"
       >
         <div class="text-center">
-          <h2 class="text-3xl font-bold text-gray-900" i18n="@@adminLoginTitle">
+          <h2 class="ss-heading" i18n="@@adminLoginTitle">
             Admin Access 👑
           </h2>
           <p class="mt-2 text-gray-600" i18n="@@adminLoginSubtitle">
@@ -41,7 +41,7 @@ import { EventService } from '../../services/event.service';
           <!-- Google Login -->
           <button
             (click)="loginWithGoogle()"
-            class="w-full flex justify-center items-center gap-3 px-4 py-3 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all transform hover:scale-105"
+            class="ss-button-secondary w-full flex justify-center items-center gap-3"
           >
             <img
               src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
@@ -51,16 +51,7 @@ import { EventService } from '../../services/event.service';
             <span i18n="@@loginWithGoogle">Login with Google</span>
           </button>
 
-          <div class="relative">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-gray-300"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-              <span class="px-2 bg-white text-gray-500" i18n="@@orSeparator"
-                >Or</span
-              >
-            </div>
-          </div>
+          <div class="ss-separator text-sm" i18n="@@orSeparator">Or</div>
 
           <!-- Token Login -->
           <form [formGroup]="tokenForm" (ngSubmit)="loginWithToken()">
@@ -76,7 +67,7 @@ import { EventService } from '../../services/event.service';
                   type="text"
                   id="token"
                   formControlName="token"
-                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  class="ss-field mt-1 block w-full"
                   placeholder="Enter your admin token"
                   i18n-placeholder="@@adminTokenPlaceholder"
                 />
@@ -84,7 +75,7 @@ import { EventService } from '../../services/event.service';
               <button
                 type="submit"
                 [disabled]="tokenForm.invalid || isLoading"
-                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-christmas-gold hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50 transition-all"
+                class="ss-button-primary w-full"
               >
                 <span i18n="@@accessWithToken">Access with Token</span>
               </button>

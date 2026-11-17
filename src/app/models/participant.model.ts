@@ -1,8 +1,9 @@
 export interface Participant {
   id: string;
+  uid?: string;
   name: string;
   normalizedName: string;
-  secretWord: string;
+  secretWord?: string;
   email?: string;
   preferences: {
     general: string;
@@ -13,8 +14,9 @@ export interface Participant {
 }
 
 export interface ParticipantRegistration {
+  uid?: string;
   name: string;
-  secretWord: string;
+  secretWord?: string;
   email?: string;
   preferences?: {
     general?: string;
