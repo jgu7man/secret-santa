@@ -857,6 +857,26 @@
         <source>Secret Santa</source>
         <target>Santa Secreto</target>
       </trans-unit>
+      <trans-unit id="footerCredit" datatype="html">
+        <source> A free tool by <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;ss-footer-brand&quot;&gt;"/>Marxa Digital<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> — We create custom web experiences </source>
+        <target> Una herramienta gratuita de <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;ss-footer-brand&quot;&gt;"/>Marxa Digital<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> — Creamos experiencias web a la medida </target>
+      </trans-unit>
+      <trans-unit id="footerWhatsappLabel" datatype="html">
+        <source>WhatsApp:</source>
+        <target>WhatsApp:</target>
+      </trans-unit>
+      <trans-unit id="footerEmailLabel" datatype="html">
+        <source>Email:</source>
+        <target>Correo:</target>
+      </trans-unit>
+      <trans-unit id="footerWebsiteLabel" datatype="html">
+        <source>Website:</source>
+        <target>Sitio:</target>
+      </trans-unit>
+      <trans-unit id="opensInNewTab" datatype="html">
+        <source> (opens in a new tab)</source>
+        <target> (se abre en una nueva pestaña)</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

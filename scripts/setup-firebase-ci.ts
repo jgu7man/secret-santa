@@ -100,6 +100,48 @@ export const auth = getAuth(app);
 `;
 }
 
+function parseHostingTargets(
+  rawTargets: string | undefined,
+  fallbackTarget: string,
+  fallbackSiteId: string
+): Record<string, string[]> {
+  const trimmed = rawTargets?.trim();
+  if (!trimmed) {
+    return { [fallbackTarget]: [fallbackSiteId] };
+  }
+
+  const targets: Record<string, string[]> = {};
+  for (const entry of trimmed.split(',')) {
+    const pair = entry.trim();
+    if (!pair) continue;
+
+    const separatorIndex = pair.indexOf('=');
+    if (separatorIndex <= 0 || separatorIndex === pair.length - 1) {
+      throw new Error(
+        `Invalid FIREBASE_HOSTING_TARGETS entry "${pair}". Expected "target=siteId".`
+      );
+    }
+
+    const target = pair.slice(0, separatorIndex).trim();
+    const siteId = pair.slice(separatorIndex + 1).trim();
+    if (!target || !siteId) {
+      throw new Error(
+        `Invalid FIREBASE_HOSTING_TARGETS entry "${pair}". Target and siteId must be non-empty.`
+      );
+    }
+
+    targets[target] = [siteId];
+  }
+
+  if (Object.keys(targets).length === 0) {
+    throw new Error(
+      'FIREBASE_HOSTING_TARGETS must define at least one target=siteId pair.'
+    );
+  }
+
+  return targets;
+}
+
 function resolveRootDir(argv: ReadonlyArray<string>): string {
   const flagIndex = argv.indexOf('--root');
   if (flagIndex === -1) {
@@ -129,6 +171,11 @@ function main(): void {
     process.env['FIREBASE_HOSTING_TARGET']?.trim() || 'secret-santa';
   const hostingSiteId =
     process.env['FIREBASE_HOSTING_SITE_ID']?.trim() || projectId;
+  const hostingTargets = parseHostingTargets(
+    process.env['FIREBASE_HOSTING_TARGETS'],
+    hostingTarget,
+    hostingSiteId
+  );
 
   const firebaseConfigPath = join(rootDir, 'src', 'app', 'firebase-config.ts');
   mkdirSync(dirname(firebaseConfigPath), { recursive: true });
@@ -141,9 +188,7 @@ function main(): void {
     },
     targets: {
       [projectId]: {
-        hosting: {
-          [hostingTarget]: [hostingSiteId],
-        },
+        hosting: hostingTargets,
       },
     },
   };
@@ -153,8 +198,11 @@ function main(): void {
     'utf8'
   );
 
+  const targetsSummary = Object.entries(hostingTargets)
+    .map(([target, sites]) => `${target}->${sites.join('|')}`)
+    .join(', ');
   console.log(
-    `Generated CI Firebase config and .firebaserc (project=${projectId}, target=${hostingTarget}, site=${hostingSiteId})`
+    `Generated CI Firebase config and .firebaserc (project=${projectId}, targets=[${targetsSummary}])`
   );
 }
 

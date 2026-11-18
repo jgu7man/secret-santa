@@ -10,3 +10,14 @@ a {
     cursor: pointer;
   }
 }
+
+.ss-app-content > :not(router-outlet) {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.ss-app-content > :not(router-outlet) > .min-h-screen {
+  min-block-size: 0;
+  flex: 1 0 auto;
+}
