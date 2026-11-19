@@ -21,4 +21,12 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     expect(app.title).toEqual('secret-santa');
   });
+
+  it('should render the site footer', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const footer = fixture.nativeElement.querySelector('app-footer footer');
+    expect(footer).toBeTruthy();
+    expect(footer.textContent).toContain('Marxa Digital');
+  });
 });

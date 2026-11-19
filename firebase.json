@@ -61,16 +61,51 @@
     },
     {
       "target": "santa-secreto",
-      "public": "dist/secret-santa/browser/es-MX",
+      "public": "dist/secret-santa/hosting",
       "ignore": [
         "firebase.json",
         "**/.*",
         "**/node_modules/**"
       ],
+      "redirects": [
+        {
+          "source": "/",
+          "destination": "/es/",
+          "type": 302
+        },
+        {
+          "source": "/event/:rest*",
+          "destination": "/es/event/:rest*",
+          "type": 302
+        },
+        {
+          "source": "/admin/:rest*",
+          "destination": "/es/admin/:rest*",
+          "type": 302
+        },
+        {
+          "source": "/dashboard",
+          "destination": "/es/dashboard",
+          "type": 302
+        },
+        {
+          "source": "/login",
+          "destination": "/es/login",
+          "type": 302
+        }
+      ],
       "rewrites": [
         {
+          "source": "/es/**",
+          "destination": "/es/index.html"
+        },
+        {
+          "source": "/en/**",
+          "destination": "/en/index.html"
+        },
+        {
           "source": "**",
-          "destination": "/index.html"
+          "destination": "/es/index.html"
         }
       ]
     }
