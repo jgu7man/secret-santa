@@ -67,7 +67,7 @@ jobs:
         env:
           FIREBASE_WEB_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
           FIREBASE_PROJECT_ID: secret-santa-jgu7man
-          FIREBASE_HOSTING_TARGETS: secret-santa=secret-santa-jgu7man,santa-secreto=santa-secreto
+          FIREBASE_HOSTING_TARGETS: santa-secreto=santa-secreto
         run: node --experimental-strip-types scripts/setup-firebase-ci.ts
 
       - name: Typecheck production config
@@ -75,15 +75,6 @@ jobs:
 
       - name: Build unified hosting bundle
         run: npm run build:hosting
-
-      - name: Deploy to Firebase Hosting (secret-santa)
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SECRET_SANTA_JGU7MAN }}
-          projectId: secret-santa-jgu7man
-          target: secret-santa
-          channelId: live
 
       - name: Deploy to Firebase Hosting (santa-secreto)
         uses: FirebaseExtended/action-hosting-deploy@v0

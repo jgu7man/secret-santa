@@ -168,7 +168,7 @@ function main(): void {
   const projectId =
     process.env['FIREBASE_PROJECT_ID']?.trim() || config.projectId;
   const hostingTarget =
-    process.env['FIREBASE_HOSTING_TARGET']?.trim() || 'secret-santa';
+    process.env['FIREBASE_HOSTING_TARGET']?.trim() || 'santa-secreto';
   const hostingSiteId =
     process.env['FIREBASE_HOSTING_SITE_ID']?.trim() || projectId;
   const hostingTargets = parseHostingTargets(
