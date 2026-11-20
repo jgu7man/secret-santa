@@ -77,6 +77,49 @@
   color: var(--ss-text-muted-on-dark);
 }
 
+.create-support {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgb(255 245 218 / 18%);
+}
+
+.create-bmc-link {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.75rem;
+  transition:
+    transform var(--ss-motion-fast) var(--ss-motion-ease),
+    filter var(--ss-motion-fast) var(--ss-motion-ease);
+}
+
+.create-bmc-link:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+.create-bmc-link:focus-visible {
+  outline: 2px solid var(--ss-focus-light);
+  outline-offset: 4px;
+}
+
+.create-bmc-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
 @media (max-width: 767px) {
   .create-layout {
     grid-template-columns: minmax(0, 1fr);

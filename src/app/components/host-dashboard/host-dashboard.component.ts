@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { User } from 'firebase/auth';
 import { Event } from '../../models/event.model';
 import { EventStatusPipe } from '../../pipes/event-status.pipe';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core';
 import { EventService } from '../../services/event.service';
 
 @Component({
