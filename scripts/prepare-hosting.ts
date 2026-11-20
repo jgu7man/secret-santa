@@ -23,6 +23,11 @@ if (existsSync(sharedThemeDir)) {
   cpSync(sharedThemeDir, join(hostingDir, 'theme'), { recursive: true });
 }
 
+const rootRobotsPath = join(enDir, 'robots.txt');
+if (existsSync(rootRobotsPath)) {
+  cpSync(rootRobotsPath, join(hostingDir, 'robots.txt'));
+}
+
 console.log(
   `Prepared unified hosting bundle at ${hostingDir} (en-US at /en/, es-MX at /es/)`
 );

@@ -830,14 +830,14 @@
         <source>Secret Santa</source>
         <target>Mi Santa Secreto</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/constants.ts</context>
+          <context context-type="sourcefile">src/app/core/config/core.constants.ts</context>
         </context-group>
       </trans-unit>
       <trans-unit id="appDescription" datatype="html">
         <source>Organize your secret santa gift exchange easily and fun.</source>
         <target>Organiza tu intercambio de regalos de amigo secreto de forma fácil y divertida.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/constants.ts</context>
+          <context context-type="sourcefile">src/app/core/config/core.constants.ts</context>
         </context-group>
       </trans-unit>
       <trans-unit id="eventMetaDescription" datatype="html">
@@ -846,7 +846,7 @@
         <target>Únete al intercambio de regalos "<ph name="EVENT_NAME"/>".
  Regístrate para participar en el amigo secreto.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/services/meta.service.ts</context>
+          <context context-type="sourcefile">src/app/core/services/meta.service.ts</context>
         </context-group>
       </trans-unit>
       <trans-unit id="eventDrawnStatus" datatype="html">
@@ -876,6 +876,38 @@
       <trans-unit id="opensInNewTab" datatype="html">
         <source> (opens in a new tab)</source>
         <target> (se abre en una nueva pestaña)</target>
+      </trans-unit>
+      <trans-unit id="seoLoginTitle" datatype="html">
+        <source>Host Sign In</source>
+        <target>Iniciar sesión de anfitrión</target>
+      </trans-unit>
+      <trans-unit id="seoDashboardTitle" datatype="html">
+        <source>Host Dashboard</source>
+        <target>Panel de anfitrión</target>
+      </trans-unit>
+      <trans-unit id="seoAdminLoginTitle" datatype="html">
+        <source>Admin Access</source>
+        <target>Acceso de administración</target>
+      </trans-unit>
+      <trans-unit id="seoAdminDashboardTitle" datatype="html">
+        <source>Event Administration</source>
+        <target>Administración del evento</target>
+      </trans-unit>
+      <trans-unit id="seoPasswordResetTitle" datatype="html">
+        <source>Reset Secret Word</source>
+        <target>Restablecer palabra secreta</target>
+      </trans-unit>
+      <trans-unit id="bmcWidgetDescription" datatype="html">
+        <source>Support me on Buy me a coffee!</source>
+        <target>¡Apóyame en Buy me a coffee!</target>
+      </trans-unit>
+      <trans-unit id="bmcWidgetMessage" datatype="html">
+        <source>Thank you so much for your support! ☕💻 Messages and gifts like yours motivate me to keep building free, useful tools. Enjoy! 🎁🙌</source>
+        <target>¡Muchas gracias por tu apoyo! ☕💻 Mensajes y detalles como el tuyo me motivan muchísimo a seguir creando herramientas gratuitas y útiles. ¡Sigue disfrutando! 🎁🙌</target>
+      </trans-unit>
+      <trans-unit id="bmcButtonAlt" datatype="html">
+        <source>Buy me a coffee</source>
+        <target>Cómprame un café</target>
       </trans-unit>
     </body>
   </file>

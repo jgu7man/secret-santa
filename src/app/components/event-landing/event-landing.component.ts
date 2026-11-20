@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -8,12 +8,15 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { User } from 'firebase/auth';
-import { MESSAGE_DISPLAY_DURATION } from '../../constants';
+import {
+  AnalyticsService,
+  AuthService,
+  MESSAGE_DISPLAY_DURATION,
+  MetaService,
+} from '../../core';
 import { Event } from '../../models/event.model';
 import { Participant } from '../../models/participant.model';
-import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/event.service';
-import { MetaService } from '../../services/meta.service';
 import { ParticipantService } from '../../services/participant.service';
 
 @Component({
@@ -23,6 +26,7 @@ import { ParticipantService } from '../../services/participant.service';
   styleUrl: './event-landing.component.scss',
 })
 export class EventLandingComponent implements OnInit {
+  private readonly analyticsService = inject(AnalyticsService);
   eventId: string = '';
   event: Event | null = null;
   currentParticipant: Participant | null = null;
@@ -177,6 +181,9 @@ export class EventLandingComponent implements OnInit {
               this.eventId,
               participantId
             );
+          if (this.assignedParticipant) {
+            void this.analyticsService.trackMatchRevealed();
+          }
         }
       }
     } catch (error: any) {
@@ -208,10 +215,12 @@ export class EventLandingComponent implements OnInit {
         },
       });
 
+      const wasGoogleLinked = this.isGoogleLinked;
       this.currentParticipant = participant;
       this.successMessage = $localize`:@@registrationSuccess:Registration successful! 🎉`;
       this.registerForm.reset();
       this.isGoogleLinked = false;
+      void this.analyticsService.trackParticipantRegistered(wasGoogleLinked);
     } catch (error: any) {
       console.error('Error registering:', error);
       this.errorMessage =

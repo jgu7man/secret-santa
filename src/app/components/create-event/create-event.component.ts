@@ -7,7 +7,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import {
+  AnalyticsService,
+  AuthService,
+  SeoLocale,
+  buildBuyMeACoffeeButtonConfig,
+  resolveLocaleFromId,
+} from '../../core';
 import { EventService } from '../../services/event.service';
 
 @Component({
@@ -17,7 +23,10 @@ import { EventService } from '../../services/event.service';
   styleUrl: './create-event.component.scss',
 })
 export class CreateEventComponent {
-  readonly isSpanish = /^es(?:-|$)/i.test(inject(LOCALE_ID));
+  private readonly analyticsService = inject(AnalyticsService);
+  private readonly activeLocale = resolveLocaleFromId(inject(LOCALE_ID));
+  readonly isSpanish = this.activeLocale === SeoLocale.ES_MX;
+  readonly bmcButton = buildBuyMeACoffeeButtonConfig(this.activeLocale);
   eventForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
@@ -62,6 +71,7 @@ export class CreateEventComponent {
         formValue,
         uid
       );
+      void this.analyticsService.trackEventCreated(!uid);
 
       // Navigate to admin dashboard
       this.router.navigate(['/admin', eventId]);

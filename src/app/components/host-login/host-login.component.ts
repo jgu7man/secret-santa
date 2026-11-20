@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgZone, OnInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core';
 
 @Component({
   selector: 'app-host-login',

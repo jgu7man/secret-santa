@@ -2,9 +2,12 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { EventService } from '../../services/event.service';
 import { AuthService } from '../services/auth.service';
-import { EventService } from '../services/event.service';
 
+/**
+ * Protects event administration routes via stored admin token or verified Firebase owner auth.
+ */
 export const adminGuard: CanActivateFn = async (
   route: ActivatedRouteSnapshot
 ) => {
@@ -39,3 +42,4 @@ export const adminGuard: CanActivateFn = async (
   router.navigate(['/admin', eventId, 'login']);
   return false;
 };
+

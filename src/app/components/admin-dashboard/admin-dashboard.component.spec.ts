@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../core';
 import { EventService } from '../../services/event.service';
 import { ParticipantService } from '../../services/participant.service';
 import { AdminDashboardComponent } from './admin-dashboard.component';

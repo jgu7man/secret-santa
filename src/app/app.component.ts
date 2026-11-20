@@ -4,7 +4,6 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { FooterComponent } from './components/footer/footer.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
-import { MetaService } from './services/meta.service';
 
 @Component({
   selector: 'app-root',
@@ -19,11 +18,7 @@ export class AppComponent implements OnInit {
   title = 'secret-santa';
   showTopbar = true;
 
-  constructor(private metaService: MetaService) {}
-
   ngOnInit(): void {
-    // Set default meta tags on app initialization
-    this.metaService.resetToDefault();
     this.updateTopbarVisibility(this.router.url);
 
     this.router.events

@@ -21,3 +21,12 @@ a {
   min-block-size: 0;
   flex: 1 0 auto;
 }
+
+body[data-bmc-widget="hidden"] #bmc-wbtn,
+body[data-bmc-widget="hidden"] #bmc-wbtn + div,
+body[data-bmc-widget="hidden"] #bmc-close-btn,
+body[data-bmc-widget="hidden"] #bmc-iframe,
+body[data-bmc-widget="hidden"] div:has(> #bmc-iframe) {
+  display: none !important;
+  visibility: hidden !important;
+}

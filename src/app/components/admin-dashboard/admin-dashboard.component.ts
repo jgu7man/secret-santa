@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,12 +9,13 @@ import {
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { User } from 'firebase/auth';
 import {
+  AnalyticsService,
+  AuthService,
   LONG_MESSAGE_DISPLAY_DURATION,
   MESSAGE_DISPLAY_DURATION,
-} from '../../constants';
+} from '../../core';
 import { Event } from '../../models/event.model';
 import { Participant } from '../../models/participant.model';
-import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/event.service';
 import { ParticipantService } from '../../services/participant.service';
 
@@ -25,6 +26,7 @@ import { ParticipantService } from '../../services/participant.service';
   styleUrl: './admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent implements OnInit {
+  private readonly analyticsService = inject(AnalyticsService);
   eventId: string = '';
   event: Event | null = null;
   participants: Participant[] = [];
@@ -175,6 +177,7 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       await this.eventService.runRaffle(this.eventId);
+      void this.analyticsService.trackRaffleDrawn(this.participants.length);
       await this.loadEventData();
       this.successMessage = $localize`:@@raffleSuccess:Raffle completed successfully! 🎉`;
       setTimeout(

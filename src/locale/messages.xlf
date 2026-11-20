@@ -103,20 +103,68 @@
       <trans-unit id="appName" datatype="html">
         <source>Secret Santa</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/constants.ts</context>
+          <context context-type="sourcefile">src/app/core/config/core.constants.ts</context>
         </context-group>
       </trans-unit>
       <trans-unit id="appDescription" datatype="html">
         <source>Organize your secret santa gift exchange easily and fun.</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/constants.ts</context>
+          <context context-type="sourcefile">src/app/core/config/core.constants.ts</context>
         </context-group>
       </trans-unit>
       <trans-unit id="eventMetaDescription" datatype="html">
         <source>Join the gift exchange "<ph name="EVENT_NAME"/>".
  Register to participate in the secret santa.</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/services/meta.service.ts</context>
+          <context context-type="sourcefile">src/app/core/services/meta.service.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seoLoginTitle" datatype="html">
+        <source>Host Sign In</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/seo.config.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seoDashboardTitle" datatype="html">
+        <source>Host Dashboard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/seo.config.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seoAdminLoginTitle" datatype="html">
+        <source>Admin Access</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/seo.config.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seoAdminDashboardTitle" datatype="html">
+        <source>Event Administration</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/seo.config.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seoPasswordResetTitle" datatype="html">
+        <source>Reset Secret Word</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/seo.config.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bmcWidgetDescription" datatype="html">
+        <source>Support me on Buy me a coffee!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/buy-me-a-coffee.config.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bmcWidgetMessage" datatype="html">
+        <source>Thank you so much for your support! ☕💻 Messages and gifts like yours motivate me to keep building free, useful tools. Enjoy! 🎁🙌</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/buy-me-a-coffee.config.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bmcButtonAlt" datatype="html">
+        <source>Buy me a coffee</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/config/buy-me-a-coffee.config.ts</context>
         </context-group>
       </trans-unit>
     </body>
