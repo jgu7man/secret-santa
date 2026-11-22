@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { BackofficeStats } from '@secret-santa/shared-models';
+import { BackofficeStats } from '../../models/backoffice-stats.model';
 import { EVENT_STATUS_BADGES } from '../../models/backoffice-ui.model';
 
 /**

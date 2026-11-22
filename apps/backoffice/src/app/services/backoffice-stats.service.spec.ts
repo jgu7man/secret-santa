@@ -1,10 +1,5 @@
-import {
-  AppUser,
-  Event,
-  EventStatus,
-  UserRole,
-  UserStatus,
-} from '@secret-santa/shared-models';
+import { Event, EventStatus } from '@secret-santa/domain';
+import { AppUser, UserRole, UserStatus } from '@marxa/auth-domain';
 import { Timestamp } from 'firebase/firestore';
 import { computeBackofficeStats } from './backoffice-stats.service';
 

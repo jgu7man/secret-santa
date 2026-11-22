@@ -1,13 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { AuthRuntimeConfigService } from '@marxa/auth-engine';
-import { AuthService } from '@secret-santa/shared-core';
-import { AppRegistryService } from '@secret-santa/shared-firebase';
+import { AuthRuntimeConfigService, AuthService } from '@marxa/auth-engine';
 import {
   AppEnvironment,
   AppRegistryDocument,
+  AppRegistryService,
   AppRegistryUpdateInput,
   AppRelease,
-} from '@secret-santa/shared-models';
+} from '@secret-santa/shared-data-access';
 
 /**
  * Backoffice configuration service managing `apps/{appId}` documents and
@@ -20,6 +19,11 @@ export class BackofficeConfigService {
   private readonly appRegistryService = inject(AppRegistryService);
   private readonly authService = inject(AuthService);
   private readonly authRuntimeConfig = inject(AuthRuntimeConfigService);
+
+  /** Resolves injected default settings for `appId`. */
+  getDefaultApp(appId: string): AppRegistryDocument {
+    return this.appRegistryService.getDefaultApp(appId);
+  }
 
   /** Loads `apps/{appId}` configuration from Firestore. */
   loadApp(appId: string): Promise<AppRegistryDocument> {

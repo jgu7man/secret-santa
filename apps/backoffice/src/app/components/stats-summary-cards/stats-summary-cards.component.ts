@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { BackofficeStats } from '@secret-santa/shared-models';
+import { BackofficeStats } from '../../models/backoffice-stats.model';
 
 /**
  * Presentational grid of platform KPI summary cards for the Backoffice dashboard.

@@ -1,18 +1,12 @@
 import { Injectable, inject } from '@angular/core';
+import { AppUser, UserRole, UserStatus } from '@marxa/auth-domain';
+import { UserProfileService } from '@marxa/auth-engine';
+import { EventService, ParticipantService } from '@secret-santa/data-access';
+import { Event, EventStatus } from '@secret-santa/domain';
 import {
-  EventService,
-  ParticipantService,
-  UserProfileService,
-} from '@secret-santa/shared-firebase';
-import {
-  AppUser,
   BackofficeStats,
-  Event,
-  EventStatus,
   EventSummaryStat,
-  UserRole,
-  UserStatus,
-} from '@secret-santa/shared-models';
+} from '../models/backoffice-stats.model';
 
 const MAX_RECENT_EVENTS = 10;
 
@@ -20,24 +14,26 @@ const MAX_RECENT_EVENTS = 10;
 export function computeBackofficeStats(
   users: ReadonlyArray<AppUser>,
   events: ReadonlyArray<Event>,
-  participantCounts: ReadonlyMap<string, number>
+  participantCounts: ReadonlyMap<string, number>,
 ): BackofficeStats {
   const activeUsers = users.filter(
-    (user) => user.status === UserStatus.ACTIVE
+    (user) => user.status === UserStatus.ACTIVE,
   ).length;
   const suspendedUsers = users.filter(
-    (user) => user.status === UserStatus.SUSPENDED
+    (user) => user.status === UserStatus.SUSPENDED,
   ).length;
-  const adminUsers = users.filter((user) => user.role === UserRole.ADMIN).length;
+  const adminUsers = users.filter(
+    (user) => user.role === UserRole.ADMIN,
+  ).length;
 
   const drawnEvents = events.filter(
-    (event) => event.status === EventStatus.DRAWN
+    (event) => event.status === EventStatus.DRAWN,
   ).length;
   const openEvents = events.filter(
-    (event) => event.status === EventStatus.CREATED
+    (event) => event.status === EventStatus.CREATED,
   ).length;
   const openRegistrationEvents = events.filter(
-    (event) => event.isRegistrationOpen
+    (event) => event.isRegistrationOpen,
   ).length;
   const guestEvents = events.filter((event) => !event.ownerId).length;
 
@@ -111,10 +107,10 @@ export class BackofficeStatsService {
     const participantResults = await Promise.allSettled(
       events.map(async (event) => {
         const participants = await this.participantService.getParticipants(
-          event.id
+          event.id,
         );
         return { eventId: event.id, count: participants.length };
-      })
+      }),
     );
 
     const participantCounts = new Map<string, number>();

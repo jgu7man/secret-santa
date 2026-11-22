@@ -1,4 +1,4 @@
-import { EventStatus } from '@secret-santa/shared-models';
+import { EventStatus } from '@secret-santa/domain';
 
 /** Visual badge configuration for event lifecycle states in Backoffice stats. */
 export interface EventStatusBadgeConfig {

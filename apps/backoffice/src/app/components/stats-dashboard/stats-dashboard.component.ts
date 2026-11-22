@@ -5,7 +5,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { BackofficeStats } from '@secret-santa/shared-models';
+import { BackofficeStats } from '../../models/backoffice-stats.model';
 import { BackofficeStatsService } from '../../services/backoffice-stats.service';
 import { StatsRecentEventsTableComponent } from '../stats-recent-events-table/stats-recent-events-table.component';
 import { StatsSummaryCardsComponent } from '../stats-summary-cards/stats-summary-cards.component';
