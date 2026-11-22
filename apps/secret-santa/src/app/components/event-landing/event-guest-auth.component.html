@@ -1,0 +1,56 @@
+@if (!isRegistrationOpen()) {
+  <div
+    class="event-notice event-notice--waiting mb-4"
+    i18n="@@registrationClosedWarning"
+  >
+    ⚠️ Registration is currently closed
+  </div>
+}
+
+<div class="ss-card ss-card--dark event-panel">
+  @let tab = activeTab();
+  <div class="event-tabs">
+    <button
+      type="button"
+      [disabled]="!isRegistrationOpen()"
+      (click)="tabChange.emit(EventLandingTab.REGISTER)"
+      class="event-tab"
+      [class.event-tab--active]="tab === EventLandingTab.REGISTER"
+      [attr.aria-pressed]="tab === EventLandingTab.REGISTER"
+      i18n="@@registerTab"
+    >
+      Register
+    </button>
+    <button
+      type="button"
+      (click)="tabChange.emit(EventLandingTab.LOGIN)"
+      class="event-tab"
+      [class.event-tab--active]="tab === EventLandingTab.LOGIN"
+      [attr.aria-pressed]="tab === EventLandingTab.LOGIN"
+      i18n="@@loginTab"
+    >
+      Login
+    </button>
+  </div>
+
+  <div class="pt-6" id="register-form">
+    @if (tab === EventLandingTab.REGISTER) {
+      <app-event-guest-register-form
+        [isRegistrationOpen]="isRegistrationOpen()"
+        [isSubmitting]="isSubmitting()"
+        [isGoogleLinked]="isGoogleLinked()"
+        [currentUser]="currentUser()"
+        [googlePrefill]="googlePrefill()"
+        (registerSubmit)="registerSubmit.emit($event)"
+        (continueWithGoogleRegister)="continueWithGoogleRegister.emit()"
+        (unlinkGoogle)="unlinkGoogle.emit()"
+      />
+    } @else {
+      <app-event-guest-login-form
+        [isSubmitting]="isSubmitting()"
+        (loginSubmit)="loginSubmit.emit($event)"
+        (loginWithGoogle)="loginWithGoogle.emit()"
+      />
+    }
+  </div>
+</div>

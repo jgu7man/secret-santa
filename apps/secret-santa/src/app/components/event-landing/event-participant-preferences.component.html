@@ -1,0 +1,99 @@
+<section class="ss-card ss-card--dark event-panel mb-6">
+  <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+    <h2 class="font-semibold" i18n="@@myPreferencesTitle">
+      My Gift Preferences
+    </h2>
+    @if (!isEditing()) {
+      <button
+        type="button"
+        (click)="startEditing()"
+        class="ss-button-secondary event-action"
+        i18n="@@editPreferencesButton"
+      >
+        ✏️ Edit
+      </button>
+    }
+  </div>
+
+  @if (!isEditing()) {
+    @let prefs = preferences();
+    <div class="text-sm space-y-2">
+      @if (prefs.general) {
+        <div>
+          <span class="font-medium" i18n="@@interestsLabel">Interests:</span>
+          <p class="event-muted mt-1">{{ prefs.general }}</p>
+        </div>
+      }
+      @if (prefs.sizes) {
+        <div>
+          <span class="font-medium" i18n="@@sizesLabel">Sizes:</span>
+          <p class="event-muted mt-1">{{ prefs.sizes }}</p>
+        </div>
+      }
+      @if (!prefs.general && !prefs.sizes) {
+        <p class="event-muted italic" i18n="@@noPreferencesMessage">
+          No preferences added yet
+        </p>
+      }
+    </div>
+  } @else {
+    <form [formGroup]="preferencesForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <div>
+          <label
+            for="pref-general"
+            class="block text-sm font-medium mb-1"
+            i18n="@@myInterestsLabel"
+          >
+            My Interests & Preferences
+          </label>
+          <textarea
+            id="pref-general"
+            formControlName="general"
+            rows="3"
+            placeholder="e.g., I like books, sports, technology..."
+            i18n-placeholder="@@interestsPlaceholder"
+            class="ss-field w-full text-sm"
+          ></textarea>
+        </div>
+
+        <div>
+          <label
+            for="pref-sizes"
+            class="block text-sm font-medium mb-1"
+            i18n="@@mySizesLabel"
+          >
+            My Sizes (Optional)
+          </label>
+          <input
+            id="pref-sizes"
+            type="text"
+            formControlName="sizes"
+            placeholder="e.g., Shirt: M, Shoes: 9"
+            i18n-placeholder="@@sizesPlaceholder"
+            class="ss-field w-full text-sm"
+          />
+        </div>
+
+        <div class="flex gap-2">
+          <button
+            type="button"
+            (click)="cancelEditing()"
+            class="ss-button-secondary flex-1"
+            i18n="@@cancelButton"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="isSubmitting()"
+            class="ss-button-primary flex-1"
+            i18n="@@saveButton"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  }
+</section>

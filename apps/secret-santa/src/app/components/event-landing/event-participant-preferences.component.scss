@@ -1,0 +1,13 @@
+.event-panel {
+  --ss-glass-dark: rgb(6 48 37 / 90%);
+  overflow-wrap: anywhere;
+}
+
+.event-action {
+  padding-inline: var(--ss-space-3);
+  font-size: var(--ss-type-label);
+}
+
+.event-panel .event-muted {
+  color: var(--ss-text-muted-on-dark);
+}

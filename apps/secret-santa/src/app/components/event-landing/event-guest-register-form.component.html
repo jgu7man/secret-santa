@@ -1,0 +1,172 @@
+@let nameCtrl = registerForm.controls.name;
+@let secretCtrl = registerForm.controls.secretWord;
+@let emailCtrl = registerForm.controls.email;
+
+<form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+  <div class="space-y-4">
+    @if (!isGoogleLinked()) {
+      <div>
+        <button
+          type="button"
+          (click)="continueWithGoogleRegister.emit()"
+          [disabled]="isSubmitting() || !isRegistrationOpen()"
+          class="ss-button-secondary w-full"
+        >
+          <span i18n="@@continueWithGoogleButton">Continue with Google</span>
+        </button>
+        <div class="flex items-center gap-3 my-3">
+          <span class="h-px flex-1 bg-white/15"></span>
+          <span class="text-xs event-muted" i18n="@@orDivider">or</span>
+          <span class="h-px flex-1 bg-white/15"></span>
+        </div>
+      </div>
+    } @else {
+      <div
+        class="flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/10 text-xs"
+      >
+        <span>
+          <span i18n="@@googleLinkedPrefix">Linked with Google:</span>
+          <strong>
+            {{ currentUser()?.email || currentUser()?.displayName }}
+          </strong>
+        </span>
+        <button
+          type="button"
+          (click)="unlinkGoogle.emit()"
+          class="underline opacity-80 hover:opacity-100"
+          i18n="@@unlinkGoogleButton"
+        >
+          Change
+        </button>
+      </div>
+    }
+
+    <div>
+      <label
+        for="reg-name"
+        class="block text-sm font-medium mb-1"
+        i18n="@@nameLabel"
+        >Name *</label
+      >
+      <input
+        id="reg-name"
+        type="text"
+        formControlName="name"
+        placeholder="Your full name"
+        i18n-placeholder="@@namePlaceholder"
+        class="ss-field w-full"
+        [class.border-red-500]="nameCtrl.invalid && nameCtrl.touched"
+      />
+      @if (nameCtrl.invalid && nameCtrl.touched) {
+        <p class="mt-1 text-sm event-validation" i18n="@@nameRequiredError">
+          Name is required (minimum 2 characters)
+        </p>
+      }
+    </div>
+
+    @if (!isGoogleLinked()) {
+      <div>
+        <label
+          for="reg-secret-word"
+          class="block text-sm font-medium mb-1"
+          i18n="@@secretWordLabel"
+          >Secret Word *</label
+        >
+        <input
+          id="reg-secret-word"
+          type="text"
+          formControlName="secretWord"
+          placeholder="Choose a secret word to login later"
+          i18n-placeholder="@@secretWordPlaceholder"
+          class="ss-field w-full"
+          [class.border-red-500]="secretCtrl.invalid && secretCtrl.touched"
+        />
+        @if (secretCtrl.invalid && secretCtrl.touched) {
+          <p
+            class="mt-1 text-sm event-validation"
+            i18n="@@secretWordRequiredError"
+          >
+            Secret word is required (minimum 4 characters)
+          </p>
+        }
+        <p class="mt-1 text-xs event-muted" i18n="@@rememberSecretWordHint">
+          Remember this word to login later!
+        </p>
+      </div>
+    }
+
+    <div>
+      <label
+        for="reg-email"
+        class="block text-sm font-medium mb-1"
+        i18n="@@emailLabel"
+        >Email (Optional)</label
+      >
+      <input
+        id="reg-email"
+        type="email"
+        formControlName="email"
+        placeholder="your@email.com"
+        i18n-placeholder="@@emailPlaceholder"
+        class="ss-field w-full"
+        [class.border-red-500]="
+          emailCtrl.invalid && (emailCtrl.touched || emailCtrl.dirty)
+        "
+      />
+      @if (emailCtrl.invalid && (emailCtrl.touched || emailCtrl.dirty)) {
+        <p class="mt-1 text-sm event-validation" i18n="@@emailInvalidError">
+          Please enter a valid email address (without accents or special
+          characters)
+        </p>
+      }
+    </div>
+
+    <div>
+      <label
+        for="reg-general"
+        class="block text-sm font-medium mb-1"
+        i18n="@@giftPreferencesLabel"
+        >Gift Preferences</label
+      >
+      <textarea
+        id="reg-general"
+        formControlName="general"
+        rows="3"
+        placeholder="What do you like? (e.g., books, sports, technology...)"
+        i18n-placeholder="@@giftPreferencesPlaceholder"
+        class="ss-field w-full"
+      ></textarea>
+    </div>
+
+    <div>
+      <label
+        for="reg-sizes"
+        class="block text-sm font-medium mb-1"
+        i18n="@@sizesLabelOptional"
+        >Sizes (Optional)</label
+      >
+      <input
+        id="reg-sizes"
+        type="text"
+        formControlName="sizes"
+        placeholder="e.g., Shirt: M, Shoes: 9"
+        i18n-placeholder="@@sizesPlaceholder"
+        class="ss-field w-full"
+      />
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="
+        registerForm.invalid || isSubmitting() || !isRegistrationOpen()
+      "
+      class="ss-button-primary w-full"
+    >
+      @if (isSubmitting()) {
+        <span i18n="@@registeringButton">Registering...</span>
+      } @else {
+        <span i18n="@@registerButton">🎁 Register</span>
+      }
+    </button>
+  </div>
+</form>

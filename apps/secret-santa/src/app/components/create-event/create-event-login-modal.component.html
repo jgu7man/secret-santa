@@ -1,0 +1,46 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="login-recommendation-title"
+>
+  <div class="ss-card ss-dialog max-w-md mx-4">
+    <h3
+      id="login-recommendation-title"
+      class="text-xl font-bold text-gray-900 mb-4"
+      i18n="@@loginRecommendationTitle"
+    >
+      Login Recommended
+    </h3>
+    <p class="text-gray-600 mb-6" i18n="@@loginRecommendationMessage">
+      Creating an event as a guest means you won't be able to manage it from
+      your dashboard later. We recommend logging in to save your event.
+    </p>
+    <div class="flex flex-col gap-3">
+      <button
+        type="button"
+        (click)="loginAndContinue.emit()"
+        class="ss-button-primary w-full"
+        i18n="@@loginAndCreateButton"
+      >
+        Login & Create Event
+      </button>
+      <button
+        type="button"
+        (click)="continueAsGuest.emit()"
+        class="ss-button-secondary w-full"
+        i18n="@@continueAsGuestButton"
+      >
+        Continue as Guest
+      </button>
+      <button
+        type="button"
+        (click)="cancelModal.emit()"
+        class="text-sm text-gray-500 hover:text-gray-700 mt-2"
+        i18n="@@cancelButton"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

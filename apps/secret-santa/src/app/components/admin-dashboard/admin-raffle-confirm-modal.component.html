@@ -1,0 +1,45 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="confirm-raffle-title"
+>
+  <div class="ss-card ss-dialog max-w-md w-full">
+    <h3
+      id="confirm-raffle-title"
+      class="text-xl font-bold text-gray-900 mb-4"
+      i18n="@@confirmRaffleTitle"
+    >
+      Confirm Raffle
+    </h3>
+    <p class="text-gray-600 mb-6">
+      <span i18n="@@confirmRaffleMessage">
+        Are you sure you want to run the raffle? This will assign Secret Santa
+        matches to all participants.
+      </span>
+      @if (isDrawn()) {
+        <span i18n="@@confirmRaffleWarning">
+          This will replace existing assignments.
+        </span>
+      }
+    </p>
+    <div class="flex gap-3">
+      <button
+        type="button"
+        (click)="cancelRaffle.emit()"
+        class="ss-button-secondary flex-1"
+        i18n="@@cancelButton"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="confirmRaffle.emit()"
+        class="ss-button-primary flex-1"
+        i18n="@@confirmButton"
+      >
+        Confirm
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,164 @@
+<div class="ss-theme ss-backdrop--dark create-page min-h-screen">
+  <main class="create-layout">
+    <div class="create-art" aria-hidden="true">
+      <svg class="create-star create-star--first" viewBox="0 0 24 24"><use href="theme/secret-santa-iconos.svg#ss-estrella"></use></svg>
+      <picture>
+        @if (isSpanish) {
+          <source srcset="theme/santa-secreto-titulo-champana.png">
+        } @else {
+          <source media="(max-width: 639px)" srcset="theme/secret-santa-titulo.svg">
+        }
+        <img class="create-title" src="theme/secret-santa-titulo-champana.png" width="1536" height="1024" alt="">
+      </picture>
+      <svg class="create-star create-star--second" viewBox="0 0 24 24"><use href="theme/secret-santa-iconos.svg#ss-estrella"></use></svg>
+      <img class="create-beard" src="theme/santa-barba-champana.png" width="1278" height="1230" alt="">
+    </div>
+
+    <section class="ss-card ss-card--dark create-card" aria-labelledby="create-heading">
+      <h1 id="create-heading" class="ss-heading mb-8" i18n="@@createEventSubtitle">Create your gift exchange event</h1>
+      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+        @let nameCtrl = eventForm.controls.name;
+        @let minAmountCtrl = eventForm.controls.minAmount;
+
+        <!-- Event Name -->
+        <div class="mb-6">
+          <label for="name" class="block font-semibold mb-2" i18n="@@eventNameLabel">
+            Event Name *
+          </label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            i18n-placeholder="@@eventNamePlaceholder"
+            placeholder="e.g., Christmas Family 2025"
+            class="ss-field w-full"
+            [class.border-red-500]="nameCtrl.invalid && nameCtrl.touched"
+          />
+          @if (nameCtrl.invalid && nameCtrl.touched) {
+            <p class="mt-1 text-sm create-error" i18n="@@eventNameError">
+              Event name is required (minimum 3 characters)
+            </p>
+          }
+        </div>
+
+        <div class="create-budget">
+          <!-- Min Amount -->
+          <div class="mb-6">
+            <label for="minAmount" class="block font-semibold mb-2" i18n="@@minAmountLabel">
+              Minimum Gift Amount ($) *
+            </label>
+            <input
+              type="number"
+              id="minAmount"
+              formControlName="minAmount"
+              placeholder="0"
+              class="ss-field w-full"
+              [class.border-red-500]="minAmountCtrl.invalid && minAmountCtrl.touched"
+            />
+            @if (minAmountCtrl.invalid && minAmountCtrl.touched) {
+              <p class="mt-1 text-sm create-error" i18n="@@minAmountError">
+                Please enter a valid amount
+              </p>
+            }
+          </div>
+
+          <!-- Max Amount -->
+          <div class="mb-6">
+            <label for="maxAmount" class="block font-semibold mb-2" i18n="@@maxAmountLabel">
+              Maximum Gift Amount ($) <span class="text-current opacity-80">(Optional)</span>
+            </label>
+            <input
+              type="number"
+              id="maxAmount"
+              formControlName="maxAmount"
+              i18n-placeholder="@@maxAmountPlaceholder"
+              placeholder="Leave empty for no maximum"
+              class="ss-field w-full"
+            />
+          </div>
+        </div>
+
+        <!-- Registration Deadline -->
+        <div class="mb-6">
+          <label for="registrationDeadline" class="block font-semibold mb-2" i18n="@@registrationDeadlineLabel">
+            Registration Deadline <span class="text-current opacity-80">(Optional)</span>
+          </label>
+          <input
+            type="datetime-local"
+            id="registrationDeadline"
+            formControlName="registrationDeadline"
+            class="ss-field w-full"
+          />
+          <p class="mt-1 text-xs text-current opacity-80" i18n="@@registrationDeadlineHelp">
+            Participants won't be able to register after this date
+          </p>
+        </div>
+
+        <!-- Reveal to Host -->
+        <div class="mb-6">
+          <label for="revealToHost" class="flex items-center cursor-pointer">
+            <input
+              id="revealToHost"
+              type="checkbox"
+              formControlName="revealToHost"
+              class="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
+            />
+            <span class="ml-3 text-sm" i18n="@@revealToHostLabel">
+              Allow me to see all gift assignments
+            </span>
+          </label>
+          <p class="mt-1 text-xs text-current opacity-80 ml-8" i18n="@@revealToHostHelp">
+            Enable this if you need to see who got whom after the draw
+          </p>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm" role="alert">
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="eventForm.invalid || isSubmitting()"
+          class="ss-button-primary w-full"
+        >
+          @if (isSubmitting()) {
+            <span i18n="@@creatingButton">Creating...</span>
+          } @else {
+            <span i18n="@@createEventButton">🎁 Create Event</span>
+          }
+        </button>
+      </form>
+      <p class="mt-5 text-sm create-note" i18n="@@createEventInfoNote">💡 After creating the event, save the admin link to manage it later!</p>
+      <div class="create-support mt-6 pt-5">
+        <a
+          class="create-bmc-link"
+          [href]="bmcButton.href"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            [src]="bmcButton.imageSrc"
+            [alt]="bmcButton.alt"
+            [attr.width]="bmcButton.width"
+            [attr.height]="bmcButton.height"
+            loading="lazy"
+            decoding="async"
+            referrerpolicy="no-referrer"
+            class="create-bmc-img"
+          />
+          <span class="visually-hidden" i18n="@@opensInNewTab"> (opens in a new tab)</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  @if (showLoginModal()) {
+    <app-create-event-login-modal
+      (loginAndContinue)="loginAndContinue()"
+      (continueAsGuest)="continueAsGuest()"
+      (cancelModal)="cancelModal()"
+    />
+  }
+</div>

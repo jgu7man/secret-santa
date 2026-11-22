@@ -1,0 +1,33 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="confirm-dialog-title"
+>
+  <div class="ss-card ss-dialog max-w-md w-full">
+    <h3
+      id="confirm-dialog-title"
+      class="text-xl font-bold text-gray-900 mb-4"
+    >
+      {{ title() }}
+    </h3>
+    <p class="text-gray-600 mb-6">{{ message() }}</p>
+    <div class="flex gap-3">
+      <button
+        type="button"
+        (click)="cancelAction.emit()"
+        class="ss-button-secondary flex-1"
+        i18n="@@cancelButton"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="confirmAction.emit()"
+        class="ss-button-primary flex-1"
+      >
+        {{ confirmLabel() }}
+      </button>
+    </div>
+  </div>
+</div>

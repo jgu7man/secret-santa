@@ -1,0 +1,71 @@
+<form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+  <div class="space-y-4">
+    <div>
+      <label
+        for="login-name"
+        class="block text-sm font-medium mb-1"
+        i18n="@@nameLabel"
+        >Name *</label
+      >
+      <input
+        id="login-name"
+        type="text"
+        formControlName="name"
+        placeholder="Your name"
+        i18n-placeholder="@@loginNamePlaceholder"
+        class="ss-field w-full"
+      />
+    </div>
+
+    <div>
+      <label
+        for="login-secret-word"
+        class="block text-sm font-medium mb-1"
+        i18n="@@secretWordLabel"
+        >Secret Word *</label
+      >
+      <input
+        id="login-secret-word"
+        type="text"
+        formControlName="secretWord"
+        placeholder="Your secret word"
+        i18n-placeholder="@@loginSecretWordPlaceholder"
+        class="ss-field w-full"
+      />
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="loginForm.invalid || isSubmitting()"
+      class="ss-button-primary w-full"
+    >
+      @if (isSubmitting()) {
+        <span i18n="@@loggingInButton">Logging in...</span>
+      } @else {
+        <span i18n="@@loginButton">🔓 Login</span>
+      }
+    </button>
+
+    <div class="flex items-center gap-3 my-2">
+      <span class="h-px flex-1 bg-white/15"></span>
+      <span class="text-xs event-muted" i18n="@@orDivider">or</span>
+      <span class="h-px flex-1 bg-white/15"></span>
+    </div>
+
+    <button
+      type="button"
+      (click)="loginWithGoogle.emit()"
+      [disabled]="isSubmitting()"
+      class="ss-button-secondary w-full"
+    >
+      <span i18n="@@loginWithGoogleButton">Login with Google</span>
+    </button>
+
+    <p
+      class="text-xs text-center event-muted mt-2"
+      i18n="@@forgotSecretWordHint"
+    >
+      Forgot your secret word? Contact the event organizer for a reset link.
+    </p>
+  </div>
+</form>
