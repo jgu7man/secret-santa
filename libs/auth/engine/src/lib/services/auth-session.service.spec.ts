@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthService } from '@secret-santa/shared-core';
-import { UserProfileService } from '@secret-santa/shared-firebase';
-import { UserRole, UserStatus } from '@secret-santa/shared-models';
+import { AuthSessionStatus, UserRole, UserStatus } from '@marxa/auth-domain';
 import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
-import { AuthSessionStatus } from '../models/access-onboarding.model';
 import { createDefaultAuthEngineConfig } from '../config/auth-engine.tokens';
 import { AuthRuntimeConfigService } from './auth-runtime-config.service';
 import { AuthSessionService } from './auth-session.service';
+import { AuthService } from './auth.service';
+import { UserProfileService } from './user-profile.service';
 
 describe('AuthSessionService', () => {
   const authSpy = {
@@ -38,7 +37,7 @@ describe('AuthSessionService', () => {
     const service = TestBed.inject(AuthSessionService);
 
     expect(await service.verifyOrLogoutAdmin()).toBe(
-      AuthSessionStatus.UNAUTHENTICATED
+      AuthSessionStatus.UNAUTHENTICATED,
     );
     expect(authSpy.logout).not.toHaveBeenCalled();
   });
@@ -57,7 +56,7 @@ describe('AuthSessionService', () => {
 
     const service = TestBed.inject(AuthSessionService);
     expect(await service.verifyOrLogoutAdmin()).toBe(
-      AuthSessionStatus.AUTHORIZED
+      AuthSessionStatus.AUTHORIZED,
     );
     expect(authSpy.logout).not.toHaveBeenCalled();
   });
@@ -76,7 +75,7 @@ describe('AuthSessionService', () => {
 
     const service = TestBed.inject(AuthSessionService);
     expect(await service.verifyOrLogoutAdmin()).toBe(
-      AuthSessionStatus.UNAUTHORIZED
+      AuthSessionStatus.UNAUTHORIZED,
     );
     expect(authSpy.logout).toHaveBeenCalledTimes(1);
   });
@@ -95,7 +94,7 @@ describe('AuthSessionService', () => {
 
     const service = TestBed.inject(AuthSessionService);
     expect(await service.verifyOrLogoutAdmin()).toBe(
-      AuthSessionStatus.UNAUTHORIZED
+      AuthSessionStatus.UNAUTHORIZED,
     );
     expect(authSpy.logout).toHaveBeenCalledTimes(1);
   });
@@ -106,7 +105,7 @@ describe('AuthSessionService', () => {
 
     const service = TestBed.inject(AuthSessionService);
     expect(await service.verifyOrLogoutAdmin()).toBe(
-      AuthSessionStatus.UNAUTHORIZED
+      AuthSessionStatus.UNAUTHORIZED,
     );
     expect(authSpy.logout).toHaveBeenCalledTimes(1);
   });
@@ -131,7 +130,7 @@ describe('AuthSessionService', () => {
 
     const service = TestBed.inject(AuthSessionService);
     expect(await service.verifyOrLogoutAdmin()).toBe(
-      AuthSessionStatus.AUTHORIZED
+      AuthSessionStatus.AUTHORIZED,
     );
     expect(authSpy.logout).not.toHaveBeenCalled();
   });

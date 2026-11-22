@@ -1,23 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthService } from '@secret-santa/shared-core';
-import { FIRESTORE_DB } from '@secret-santa/shared-firebase';
-import { UserRole } from '@secret-santa/shared-models';
-import { initializeApp } from 'firebase/app';
-import { Timestamp, getFirestore } from 'firebase/firestore';
 import {
   AccessRequestSource,
   AccessRequestStatus,
   AdminInvite,
   AdminInviteStatus,
-} from '../models/access-onboarding.model';
-import {
+  UserRole,
   accessRequestSchema,
   adminInviteSchema,
-} from '../schemas/access-onboarding.schemas';
+} from '@marxa/auth-domain';
+import { FIRESTORE_DB } from '@secret-santa/shared-firebase';
+import { initializeApp } from 'firebase/app';
+import { Timestamp, getFirestore } from 'firebase/firestore';
 import {
   AccessOnboardingService,
   isInviteActive,
 } from './access-onboarding.service';
+import { AuthService } from './auth.service';
 
 describe('access-onboarding domain rules & service', () => {
   const nowMs = 1_700_000_000_000;
@@ -49,10 +47,10 @@ describe('access-onboarding domain rules & service', () => {
 
   it('should prevent reusing an invitation that was already accepted or revoked by an admin', () => {
     expect(
-      isInviteActive(makeInvite({ status: AdminInviteStatus.ACCEPTED }), nowMs)
+      isInviteActive(makeInvite({ status: AdminInviteStatus.ACCEPTED }), nowMs),
     ).toBeFalse();
     expect(
-      isInviteActive(makeInvite({ status: AdminInviteStatus.REVOKED }), nowMs)
+      isInviteActive(makeInvite({ status: AdminInviteStatus.REVOKED }), nowMs),
     ).toBeFalse();
   });
 
@@ -92,7 +90,7 @@ describe('access-onboarding domain rules & service', () => {
         expiresAt: Timestamp.fromMillis(nowMs + 1000),
         createdBy: 'admin@example.com',
         id: 'inv-bad',
-      })
+      }),
     ).toThrowError(/targetRole/);
 
     expect(() =>
@@ -103,7 +101,7 @@ describe('access-onboarding domain rules & service', () => {
         status: AccessRequestStatus.PENDING,
         createdAt: Timestamp.fromMillis(nowMs),
         id: 'req-bad',
-      })
+      }),
     ).toThrowError(/email/);
   });
 
@@ -124,7 +122,7 @@ describe('access-onboarding domain rules & service', () => {
           apiKey: 'test-api-key',
           appId: '1:1:web:test',
         },
-        `auth-onboarding-spec-${Math.random()}`
+        `auth-onboarding-spec-${Math.random()}`,
       );
 
       TestBed.configureTestingModule({
@@ -140,17 +138,17 @@ describe('access-onboarding domain rules & service', () => {
 
     it('should reject a Google access request when the Google account has no valid email', async () => {
       await expectAsync(
-        service.submitGoogleAccessRequest({ uid: 'u-1', email: '   ' })
+        service.submitGoogleAccessRequest({ uid: 'u-1', email: '   ' }),
       ).toBeRejectedWithError(/correo válido/);
     });
 
     it('should reject an email access request when displayName or email is missing', async () => {
       await expectAsync(
-        service.submitEmailAccessRequest('   ', 'Ana Pérez')
+        service.submitEmailAccessRequest('   ', 'Ana Pérez'),
       ).toBeRejectedWithError(/obligatorios/);
 
       await expectAsync(
-        service.submitEmailAccessRequest('ana@example.com', '   ')
+        service.submitEmailAccessRequest('ana@example.com', '   '),
       ).toBeRejectedWithError(/obligatorios/);
     });
 
@@ -160,7 +158,7 @@ describe('access-onboarding domain rules & service', () => {
 
     it('should require an active admin session before creating a direct invitation', async () => {
       await expectAsync(
-        service.createDirectInvite('guest@example.com', UserRole.ADMIN, false)
+        service.createDirectInvite('guest@example.com', UserRole.ADMIN, false),
       ).toBeRejectedWithError(/sesión de administrador/);
     });
 
@@ -173,7 +171,7 @@ describe('access-onboarding domain rules & service', () => {
         service.acceptInviteForAuthenticatedUser(expiredInvite, {
           uid: 'u-1',
           email: 'user@example.com',
-        })
+        }),
       ).toBeRejectedWithError(/ya no es válida/);
     });
 
@@ -187,7 +185,7 @@ describe('access-onboarding domain rules & service', () => {
         service.acceptInviteForAuthenticatedUser(activeInvite, {
           uid: 'u-other',
           email: 'other@example.com',
-        })
+        }),
       ).toBeRejectedWithError(/correo invitado/);
     });
   });

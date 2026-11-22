@@ -1,0 +1,7 @@
+{
+  "name": "secret-santa-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/secret-santa/data-access/src",
+  "projectType": "library",
+  "tags": ["scope:secret-santa", "type:data-access"]
+}

@@ -13,21 +13,19 @@ import {
   AccessRequestStatus,
   AdminInvite,
   AdminInviteStatus,
-  AuthRuntimeConfigService,
-} from '@marxa/auth-engine';
-import {
-  ActiveClassPipe,
-  AuthService,
-  MESSAGE_DISPLAY_DURATION,
-} from '@secret-santa/shared-core';
-import { UserProfileService } from '@secret-santa/shared-firebase';
-import {
   AppUser,
+  AuthRuntimeConfigService,
+  AuthService,
+  UserProfileService,
   UserRole,
   UserStatus,
   isUserRole,
   isUserStatus,
-} from '@secret-santa/shared-models';
+} from '@marxa/auth-engine';
+import {
+  ActiveClassPipe,
+  MESSAGE_DISPLAY_DURATION,
+} from '@secret-santa/shared-core';
 import { CrewFilterAll, CrewTab } from '../../models/crew-ui.model';
 import {
   CrewDirectoryTabComponent,
@@ -81,9 +79,7 @@ export class CrewManagerComponent implements OnInit {
   readonly savingId = signal<string | null>(null);
   readonly searchQuery = signal('');
   readonly roleFilter = signal<UserRole | CrewFilterAll>(CrewFilterAll.ALL);
-  readonly statusFilter = signal<UserStatus | CrewFilterAll>(
-    CrewFilterAll.ALL
-  );
+  readonly statusFilter = signal<UserStatus | CrewFilterAll>(CrewFilterAll.ALL);
   readonly currentUid = signal<string | null>(null);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
@@ -113,19 +109,20 @@ export class CrewManagerComponent implements OnInit {
   });
 
   readonly adminCount = computed(
-    () => this.users().filter((user) => user.role === UserRole.ADMIN).length
+    () => this.users().filter((user) => user.role === UserRole.ADMIN).length,
   );
 
   readonly suspendedCount = computed(
     () =>
-      this.users().filter((user) => user.status === UserStatus.SUSPENDED).length
+      this.users().filter((user) => user.status === UserStatus.SUSPENDED)
+        .length,
   );
 
   readonly pendingRequestsCount = computed(
     () =>
       this.accessRequests().filter(
-        (req) => req.status === AccessRequestStatus.PENDING
-      ).length
+        (req) => req.status === AccessRequestStatus.PENDING,
+      ).length,
   );
 
   async ngOnInit(): Promise<void> {
@@ -152,7 +149,7 @@ export class CrewManagerComponent implements OnInit {
       this.invites.set(invitesList);
     } catch {
       this.errorMessage.set(
-        'No se pudo cargar la información del equipo desde Firestore.'
+        'No se pudo cargar la información del equipo desde Firestore.',
       );
     } finally {
       this.isLoading.set(false);
@@ -174,7 +171,7 @@ export class CrewManagerComponent implements OnInit {
     }
     if (this.currentUid() === user.uid && rawRole !== UserRole.ADMIN) {
       this.errorMessage.set(
-        'No puedes quitarte el rol de administrador a tu propia cuenta.'
+        'No puedes quitarte el rol de administrador a tu propia cuenta.',
       );
       return;
     }
@@ -187,8 +184,8 @@ export class CrewManagerComponent implements OnInit {
       });
       this.users.update((list) =>
         list.map((entry) =>
-          entry.uid === user.uid ? { ...entry, role: rawRole } : entry
-        )
+          entry.uid === user.uid ? { ...entry, role: rawRole } : entry,
+        ),
       );
       this.flashSuccess(`Rol actualizado para ${user.displayName}.`);
     } catch {
@@ -217,13 +214,13 @@ export class CrewManagerComponent implements OnInit {
       });
       this.users.update((list) =>
         list.map((entry) =>
-          entry.uid === user.uid ? { ...entry, status: nextStatus } : entry
-        )
+          entry.uid === user.uid ? { ...entry, status: nextStatus } : entry,
+        ),
       );
       this.flashSuccess(
         nextStatus === UserStatus.SUSPENDED
           ? `${user.displayName} fue suspendido.`
-          : `${user.displayName} fue reactivado.`
+          : `${user.displayName} fue reactivado.`,
       );
     } catch {
       this.errorMessage.set('No se pudo actualizar el estado del usuario.');
@@ -242,8 +239,8 @@ export class CrewManagerComponent implements OnInit {
         list.map((entry) =>
           entry.uid === user.uid
             ? { ...entry, notes: notes.length > 0 ? notes : undefined }
-            : entry
-        )
+            : entry,
+        ),
       );
       this.flashSuccess(`Notas guardadas para ${user.displayName}.`);
     } catch {
@@ -260,14 +257,14 @@ export class CrewManagerComponent implements OnInit {
       const result = await this.onboardingService.createDirectInvite(
         event.email,
         event.targetRole,
-        event.requiresProfileCompletion
+        event.requiresProfileCompletion,
       );
       this.invites.update((list) => [result.invite, ...list]);
       const fullUrl = this.buildAbsoluteInviteUrl(result.invitePath);
       this.lastGeneratedInviteUrl.set(fullUrl);
       this.copyToClipboard(fullUrl);
       this.flashSuccess(
-        `Invitación generada y copiada para ${result.invite.email}.`
+        `Invitación generada y copiada para ${result.invite.email}.`,
       );
     } catch {
       this.errorMessage.set('No se pudo crear la invitación.');
@@ -284,7 +281,7 @@ export class CrewManagerComponent implements OnInit {
       const result = await this.onboardingService.approveAccessRequest(
         request,
         activeConfig.defaultTargetRole,
-        activeConfig.requiresProfileCompletionByDefault
+        activeConfig.requiresProfileCompletionByDefault,
       );
       this.accessRequests.update((list) =>
         list.map((entry) =>
@@ -294,15 +291,15 @@ export class CrewManagerComponent implements OnInit {
                 status: AccessRequestStatus.APPROVED,
                 inviteId: result.invite.id,
               }
-            : entry
-        )
+            : entry,
+        ),
       );
       this.invites.update((list) => [result.invite, ...list]);
       const fullUrl = this.buildAbsoluteInviteUrl(result.invitePath);
       this.lastGeneratedInviteUrl.set(fullUrl);
       this.copyToClipboard(fullUrl);
       this.flashSuccess(
-        `Solicitud aprobada. Enlace de invitación copiado para ${request.email}.`
+        `Solicitud aprobada. Enlace de invitación copiado para ${request.email}.`,
       );
     } catch {
       this.errorMessage.set('No se pudo aprobar la solicitud.');
@@ -320,8 +317,8 @@ export class CrewManagerComponent implements OnInit {
         list.map((entry) =>
           entry.id === request.id
             ? { ...entry, status: AccessRequestStatus.REJECTED }
-            : entry
-        )
+            : entry,
+        ),
       );
       this.flashSuccess(`Solicitud rechazada para ${request.email}.`);
     } catch {
@@ -340,8 +337,8 @@ export class CrewManagerComponent implements OnInit {
         list.map((entry) =>
           entry.id === invite.id
             ? { ...entry, status: AdminInviteStatus.REVOKED }
-            : entry
-        )
+            : entry,
+        ),
       );
       this.flashSuccess(`Invitación revocada para ${invite.email}.`);
     } catch {

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppUser, UserRole, UserStatus } from '@secret-santa/shared-models';
+import { AppUser, UserRole, UserStatus } from '@marxa/auth-domain';
 import { Timestamp } from 'firebase/firestore';
 import {
   CrewDirectoryTabComponent,

@@ -3,18 +3,27 @@ export {
   AccessRequestStatus,
   AdminInviteStatus,
   AuthSessionStatus,
+  UserRole,
+  UserStatus,
+  appUserSchema,
   isAccessRequestSource,
   isAccessRequestStatus,
   isAdminInviteStatus,
-} from './lib/models/access-onboarding.model';
+  isUserRole,
+  isUserStatus,
+} from '@marxa/auth-domain';
 export type {
   AcceptInviteProfileInput,
   AccessRequest,
   AdminInvite,
+  AppAuthSettings,
+  AppUser,
+  AuthUserSnapshot,
   CreatedInviteResult,
   EmailAccessRequestPayload,
   MxdUser,
-} from './lib/models/access-onboarding.model';
+  UpdateUserAdminInput,
+} from '@marxa/auth-domain';
 export {
   AUTH_ENGINE_CONFIG,
   createDefaultAuthEngineConfig,
@@ -23,6 +32,8 @@ export {
 export type { AuthEngineConfig } from './lib/config/auth-engine.tokens';
 export { authAdminGuard } from './lib/guards/auth-admin.guard';
 export { authGuestGuard } from './lib/guards/auth-guest.guard';
+export { AuthService } from './lib/services/auth.service';
+export { UserProfileService } from './lib/services/user-profile.service';
 export { AuthSessionService } from './lib/services/auth-session.service';
 export { AuthRuntimeConfigService } from './lib/services/auth-runtime-config.service';
 export {

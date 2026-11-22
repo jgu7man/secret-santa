@@ -3,11 +3,13 @@ import {
   AccessOnboardingService,
   AccessRequestSource,
   AccessRequestStatus,
+  AppUser,
+  AuthService,
   MxdUser,
+  UserProfileService,
+  UserRole,
+  UserStatus,
 } from '@marxa/auth-engine';
-import { AuthService } from '@secret-santa/shared-core';
-import { UserProfileService } from '@secret-santa/shared-firebase';
-import { AppUser, UserRole, UserStatus } from '@secret-santa/shared-models';
 import { Timestamp } from 'firebase/firestore';
 import { CrewManagerComponent } from './crew-manager.component';
 
@@ -39,7 +41,7 @@ describe('CrewManagerComponent', () => {
 
   const userProfileSpy = jasmine.createSpyObj<UserProfileService>(
     'UserProfileService',
-    ['getAllUsers', 'updateUserAdmin']
+    ['getAllUsers', 'updateUserAdmin'],
   );
 
   const onboardingSpy = jasmine.createSpyObj<AccessOnboardingService>(
@@ -51,7 +53,7 @@ describe('CrewManagerComponent', () => {
       'approveAccessRequest',
       'rejectAccessRequest',
       'revokeInvite',
-    ]
+    ],
   );
 
   const authSpy = {
@@ -100,21 +102,27 @@ describe('CrewManagerComponent', () => {
   });
 
   it('should prevent an administrator from demoting their own admin role', async () => {
-    await component.onRoleChange({ user: sampleUsers[0], rawRole: UserRole.HOST });
+    await component.onRoleChange({
+      user: sampleUsers[0],
+      rawRole: UserRole.HOST,
+    });
 
     expect(userProfileSpy.updateUserAdmin).not.toHaveBeenCalled();
     expect(component.errorMessage()).toContain('propia cuenta');
   });
 
   it('should persist and reflect in the directory when an admin changes another crew member role', async () => {
-    await component.onRoleChange({ user: sampleUsers[1], rawRole: UserRole.HOST });
+    await component.onRoleChange({
+      user: sampleUsers[1],
+      rawRole: UserRole.HOST,
+    });
 
     expect(userProfileSpy.updateUserAdmin).toHaveBeenCalledWith('user-2', {
       role: UserRole.HOST,
     });
-    expect(
-      component.users().find((u) => u.uid === 'user-2')?.role
-    ).toBe(UserRole.HOST);
+    expect(component.users().find((u) => u.uid === 'user-2')?.role).toBe(
+      UserRole.HOST,
+    );
   });
 
   it('should filter the crew directory simultaneously by search text, role, and account status', () => {
@@ -132,14 +140,16 @@ describe('CrewManagerComponent', () => {
   });
 
   it('should show a clear error without corrupting the pending queue when approving a request fails', async () => {
-    onboardingSpy.approveAccessRequest.and.rejectWith(new Error('Network error'));
+    onboardingSpy.approveAccessRequest.and.rejectWith(
+      new Error('Network error'),
+    );
 
     const pendingRequest = component.accessRequests()[0];
     await component.approveRequest(pendingRequest);
 
     expect(component.errorMessage()).toContain('No se pudo aprobar');
     expect(component.accessRequests()[0].status).toBe(
-      AccessRequestStatus.PENDING
+      AccessRequestStatus.PENDING,
     );
     expect(component.pendingRequestsCount()).toBe(1);
   });

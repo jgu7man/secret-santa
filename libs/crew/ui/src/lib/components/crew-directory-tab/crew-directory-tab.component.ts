@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FirestoreTimestampPipe } from '@secret-santa/shared-core';
-import { AppUser, UserRole, UserStatus } from '@secret-santa/shared-models';
+import { AppUser, UserRole, UserStatus } from '@marxa/auth-domain';
 import {
   USER_STATUS_ACTION_BUTTONS,
   USER_STATUS_BADGES,

@@ -1,8 +1,10 @@
 import { Injectable, NgZone, inject } from '@angular/core';
 import {
-  FIREBASE_AUTH,
-  UserProfileService,
-} from '@secret-santa/shared-firebase';
+  AnalyticsAuthMethod,
+  AnalyticsEventName,
+  AnalyticsService,
+} from '@secret-santa/shared-core';
+import { FIREBASE_AUTH } from '@secret-santa/shared-firebase';
 import {
   GoogleAuthProvider,
   User,
@@ -11,8 +13,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { Observable } from 'rxjs';
-import { AnalyticsAuthMethod, AnalyticsEventName } from '../config/analytics.config';
-import { AnalyticsService } from './analytics.service';
+import { UserProfileService } from './user-profile.service';
 
 /**
  * Shared authentication service wrapping Firebase Auth state, Google OAuth flows,

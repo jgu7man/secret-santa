@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { UserRole } from '@marxa/auth-domain';
 import { FIRESTORE_DB } from '@secret-santa/shared-firebase';
-import { UserRole } from '@secret-santa/shared-models';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { provideAuthEngine } from '../config/auth-engine.tokens';
@@ -14,7 +14,7 @@ describe('AuthRuntimeConfigService', () => {
         apiKey: 'test-api-key',
         appId: '1:1:web:test',
       },
-      `runtime-config-spec-${Math.random()}`
+      `runtime-config-spec-${Math.random()}`,
     );
 
     TestBed.configureTestingModule({

@@ -22,13 +22,15 @@ export {
   MESSAGE_DISPLAY_DURATION,
   stripRouteQueryAndHash,
 } from './lib/config/core.constants';
+export { ActiveClassPipe, UI_PILL_TOKENS } from './lib/pipes/active-class.pipe';
+export type { UiPillTokens } from './lib/pipes/active-class.pipe';
+export { FirestoreTimestampPipe } from './lib/pipes/firestore-timestamp.pipe';
 export {
   AnalyticsService,
   isAnalyticsBlockedEnvironment,
   isValidMeasurementId,
   sanitizeAnalyticsPath,
 } from './lib/services/analytics.service';
-export { AuthService } from './lib/services/auth.service';
 export {
   ErrorCategory,
   GlobalErrorHandler,
@@ -36,6 +38,4 @@ export {
   sanitizeErrorMessage,
 } from './lib/services/global-error-handler.service';
 export type { NormalizedAppError } from './lib/services/global-error-handler.service';
-export { FirestoreTimestampPipe } from './lib/pipes/firestore-timestamp.pipe';
-export { ActiveClassPipe, UI_PILL_TOKENS } from './lib/pipes/active-class.pipe';
-export type { UiPillTokens } from './lib/pipes/active-class.pipe';
+

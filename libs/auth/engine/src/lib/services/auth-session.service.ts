@@ -1,10 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { AuthService } from '@secret-santa/shared-core';
-import { UserProfileService } from '@secret-santa/shared-firebase';
-import { UserStatus } from '@secret-santa/shared-models';
-import { AuthSessionStatus, MxdUser } from '../models/access-onboarding.model';
-import { mxdUserSchema } from '../schemas/access-onboarding.schemas';
+import {
+  AuthSessionStatus,
+  AuthUserSnapshot,
+  MxdUser,
+  UserStatus,
+  mxdUserSchema,
+} from '@marxa/auth-domain';
 import { AuthRuntimeConfigService } from './auth-runtime-config.service';
+import { AuthService } from './auth.service';
+import { UserProfileService } from './user-profile.service';
 
 /**
  * Single source of truth for verifying whether the current authenticated user
@@ -41,12 +45,7 @@ export class AuthSessionService {
     return user ? this.toMxdUser(user) : null;
   }
 
-  private toMxdUser(user: {
-    uid: string;
-    email: string | null;
-    displayName: string | null;
-    photoURL: string | null;
-  }): MxdUser {
+  private toMxdUser(user: AuthUserSnapshot): MxdUser {
     return mxdUserSchema.parse({
       uid: user.uid,
       email: user.email ?? undefined,

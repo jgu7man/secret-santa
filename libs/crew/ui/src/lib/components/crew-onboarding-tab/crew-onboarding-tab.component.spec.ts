@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UserRole } from '@secret-santa/shared-models';
+import { UserRole } from '@marxa/auth-domain';
 import {
   CrewOnboardingTabComponent,
   DirectInviteSubmitEvent,

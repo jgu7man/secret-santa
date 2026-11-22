@@ -1,8 +1,8 @@
 import {
   AccessRequestStatus,
   AdminInviteStatus,
-} from '@marxa/auth-engine';
-import { UserStatus } from '@secret-santa/shared-models';
+  UserStatus,
+} from '@marxa/auth-domain';
 
 /** Active tab selection inside `CrewManagerComponent`. */
 export enum CrewTab {

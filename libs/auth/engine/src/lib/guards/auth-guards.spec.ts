@@ -6,11 +6,11 @@ import {
   UrlTree,
   provideRouter,
 } from '@angular/router';
+import { AuthSessionStatus } from '@marxa/auth-domain';
 import { FIRESTORE_DB } from '@secret-santa/shared-firebase';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { createDefaultAuthEngineConfig } from '../config/auth-engine.tokens';
-import { AuthSessionStatus } from '../models/access-onboarding.model';
 import { AuthRuntimeConfigService } from '../services/auth-runtime-config.service';
 import { AuthSessionService } from '../services/auth-session.service';
 import { authAdminGuard } from './auth-admin.guard';
@@ -33,7 +33,7 @@ describe('auth route guards', () => {
         apiKey: 'test-api-key',
         appId: '1:1:web:test',
       },
-      `auth-guards-spec-${Math.random()}`
+      `auth-guards-spec-${Math.random()}`,
     );
 
     TestBed.configureTestingModule({
@@ -54,11 +54,11 @@ describe('auth route guards', () => {
 
   it('should allow access to protected admin routes for authorized sessions', async () => {
     authSessionSpy.verifyOrLogoutAdmin.and.resolveTo(
-      AuthSessionStatus.AUTHORIZED
+      AuthSessionStatus.AUTHORIZED,
     );
 
     const result = await TestBed.runInInjectionContext(() =>
-      authAdminGuard(dummyRoute, dummyState)
+      authAdminGuard(dummyRoute, dummyState),
     );
 
     expect(result).toBeTrue();
@@ -66,11 +66,11 @@ describe('auth route guards', () => {
 
   it('should redirect unauthenticated visitors to the configured login route', async () => {
     authSessionSpy.verifyOrLogoutAdmin.and.resolveTo(
-      AuthSessionStatus.UNAUTHENTICATED
+      AuthSessionStatus.UNAUTHENTICATED,
     );
 
     const result = await TestBed.runInInjectionContext(() =>
-      authAdminGuard(dummyRoute, dummyState)
+      authAdminGuard(dummyRoute, dummyState),
     );
 
     const router = TestBed.inject(Router);
@@ -80,27 +80,27 @@ describe('auth route guards', () => {
 
   it('should redirect unauthorized signed-in users to login with an unauthorized reason notice', async () => {
     authSessionSpy.verifyOrLogoutAdmin.and.resolveTo(
-      AuthSessionStatus.UNAUTHORIZED
+      AuthSessionStatus.UNAUTHORIZED,
     );
 
     const result = await TestBed.runInInjectionContext(() =>
-      authAdminGuard(dummyRoute, dummyState)
+      authAdminGuard(dummyRoute, dummyState),
     );
 
     const router = TestBed.inject(Router);
     expect(result instanceof UrlTree).toBeTrue();
     expect(router.serializeUrl(result as UrlTree)).toBe(
-      '/custom-login?reason=unauthorized'
+      '/custom-login?reason=unauthorized',
     );
   });
 
   it('should skip the login screen and send already-authorized admins straight to the app home', async () => {
     authSessionSpy.verifyOrLogoutAdmin.and.resolveTo(
-      AuthSessionStatus.AUTHORIZED
+      AuthSessionStatus.AUTHORIZED,
     );
 
     const result = await TestBed.runInInjectionContext(() =>
-      authGuestGuard(dummyRoute, dummyState)
+      authGuestGuard(dummyRoute, dummyState),
     );
 
     const router = TestBed.inject(Router);
@@ -110,11 +110,11 @@ describe('auth route guards', () => {
 
   it('should allow unauthenticated visitors to view the login screen', async () => {
     authSessionSpy.verifyOrLogoutAdmin.and.resolveTo(
-      AuthSessionStatus.UNAUTHENTICATED
+      AuthSessionStatus.UNAUTHENTICATED,
     );
 
     const result = await TestBed.runInInjectionContext(() =>
-      authGuestGuard(dummyRoute, dummyState)
+      authGuestGuard(dummyRoute, dummyState),
     );
 
     expect(result).toBeTrue();

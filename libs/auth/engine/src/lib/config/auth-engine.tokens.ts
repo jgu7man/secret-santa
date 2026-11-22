@@ -1,5 +1,5 @@
 import { EnvironmentProviders, InjectionToken, makeEnvironmentProviders } from '@angular/core';
-import { AppAuthSettings, UserRole } from '@secret-santa/shared-models';
+import { AppAuthSettings, UserRole } from '@marxa/auth-domain';
 
 /** White-label configuration governing auth, RBAC, request-access, and invite onboarding flows. */
 export interface AuthEngineConfig extends AppAuthSettings {

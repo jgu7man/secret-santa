@@ -1,11 +1,11 @@
-import { UserRole } from '@secret-santa/shared-models';
 import { Timestamp } from 'firebase/firestore';
 import * as z from 'zod/mini';
 import {
   AccessRequestSource,
   AccessRequestStatus,
   AdminInviteStatus,
-} from '../models/access-onboarding.model';
+} from './access-onboarding.enums';
+import { UserRole } from './user.model';
 
 /** Zod Mini schema validating Firestore `Timestamp` instances. */
 export const firestoreTimestampSchema = z.instanceof(Timestamp);

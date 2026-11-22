@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthSessionStatus } from '../models/access-onboarding.model';
+import { AuthSessionStatus } from '@marxa/auth-domain';
 import { AuthRuntimeConfigService } from '../services/auth-runtime-config.service';
 import { AuthSessionService } from '../services/auth-session.service';
 

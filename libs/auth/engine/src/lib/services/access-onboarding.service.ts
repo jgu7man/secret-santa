@@ -1,7 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { AuthService } from '@secret-santa/shared-core';
+import {
+  AcceptInviteProfileInput,
+  AccessRequest,
+  AccessRequestSource,
+  AccessRequestStatus,
+  AdminInvite,
+  AdminInviteStatus,
+  AppUser,
+  CreatedInviteResult,
+  MxdUser,
+  UserRole,
+  UserStatus,
+  accessRequestSchema,
+  adminInviteSchema,
+  firestoreTimestampSchema,
+} from '@marxa/auth-domain';
 import { FIRESTORE_DB } from '@secret-santa/shared-firebase';
-import { AppUser, UserRole, UserStatus } from '@secret-santa/shared-models';
 import {
   Timestamp,
   collection,
@@ -15,21 +29,7 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { AuthRuntimeConfigService } from './auth-runtime-config.service';
-import {
-  AcceptInviteProfileInput,
-  AccessRequest,
-  AccessRequestSource,
-  AccessRequestStatus,
-  AdminInvite,
-  AdminInviteStatus,
-  CreatedInviteResult,
-  MxdUser,
-} from '../models/access-onboarding.model';
-import {
-  accessRequestSchema,
-  adminInviteSchema,
-  firestoreTimestampSchema,
-} from '../schemas/access-onboarding.schemas';
+import { AuthService } from './auth.service';
 
 const MS_PER_HOUR = 60 * 60 * 1000;
 

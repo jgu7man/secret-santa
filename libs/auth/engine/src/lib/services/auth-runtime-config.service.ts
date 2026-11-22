@@ -1,9 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { AppAuthSettings, appAuthSettingsSchema } from '@marxa/auth-domain';
 import { FIRESTORE_DB } from '@secret-santa/shared-firebase';
-import { AppAuthSettings } from '@secret-santa/shared-models';
 import { doc, getDoc } from 'firebase/firestore';
 import { AUTH_ENGINE_CONFIG, AuthEngineConfig } from '../config/auth-engine.tokens';
-import { appAuthSettingsSchema } from '../schemas/access-onboarding.schemas';
 
 /**
  * Holds the reactive runtime `AuthEngineConfig`, hydrating from Firestore

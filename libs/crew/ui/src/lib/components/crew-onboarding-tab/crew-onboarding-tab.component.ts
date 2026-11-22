@@ -12,9 +12,9 @@ import {
   AccessRequestStatus,
   AdminInvite,
   AdminInviteStatus,
+  UserRole,
 } from '@marxa/auth-engine';
 import { FirestoreTimestampPipe } from '@secret-santa/shared-core';
-import { UserRole } from '@secret-santa/shared-models';
 import {
   ACCESS_REQUEST_STATUS_BADGES,
   ADMIN_INVITE_STATUS_BADGES,

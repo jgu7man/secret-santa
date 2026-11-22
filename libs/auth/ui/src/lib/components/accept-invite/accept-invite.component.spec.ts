@@ -6,8 +6,9 @@ import {
   AdminInviteStatus,
   AuthSessionService,
   MxdUser,
+  UserRole,
+  UserStatus,
 } from '@marxa/auth-engine';
-import { UserRole, UserStatus } from '@secret-santa/shared-models';
 import { Timestamp } from 'firebase/firestore';
 import { AcceptInviteComponent } from './accept-invite.component';
 

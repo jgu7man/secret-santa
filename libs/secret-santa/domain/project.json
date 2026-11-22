@@ -1,0 +1,17 @@
+{
+  "name": "secret-santa-domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/secret-santa/domain/src",
+  "projectType": "library",
+  "tags": ["scope:secret-santa", "type:domain"],
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "tsConfig": "libs/secret-santa/domain/tsconfig.spec.json",
+        "scripts": []
+      }
+    }
+  }
+}
