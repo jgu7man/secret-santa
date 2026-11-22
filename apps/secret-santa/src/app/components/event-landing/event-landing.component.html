@@ -93,11 +93,7 @@
               </svg>
               <span
                 ><span i18n="@@deadlineLabel">Deadline:</span>
-                {{
-                  currentEvent.registrationDeadline
-                    | firestoreTimestamp
-                    | date: "medium"
-                }}</span
+                {{ currentEvent.registrationDeadline | firestoreTimestamp }}</span
               >
             </p>
           }

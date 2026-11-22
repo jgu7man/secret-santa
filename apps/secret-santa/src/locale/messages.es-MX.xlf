@@ -957,6 +957,10 @@
         <source>your@email.com</source>
         <target>tu@correo.com</target>
       </trans-unit>
+      <trans-unit id="statusRegistrationClosed" datatype="html">
+        <source>🔒 Registration Closed</source>
+        <target>🔒 Registro Cerrado</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

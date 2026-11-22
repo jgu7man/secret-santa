@@ -38,7 +38,7 @@
                 <div class="min-w-0">
                   <h2 class="text-xl font-bold break-words">{{ event.name }}</h2>
                   <div class="host-meta text-sm">
-                    <span>{{ event.createdAt | firestoreTimestamp | date }}</span>
+                    <span>{{ event.createdAt | firestoreTimestamp }}</span>
                     <span i18n="@@minAmountDisplay">Min: ${{ event.minAmount }}</span>
                     <span class="host-status" [class.host-status--drawn]="event.status === EventStatus.DRAWN">
                       {{ event.status | eventStatus }}
@@ -76,7 +76,7 @@
                   <div class="min-w-0">
                     <h3 class="text-xl font-bold break-words">{{ event.name }}</h3>
                     <div class="host-meta text-sm">
-                      <span>{{ event.createdAt | firestoreTimestamp | date }}</span>
+                      <span>{{ event.createdAt | firestoreTimestamp }}</span>
                       <span i18n="@@minAmountDisplay">Min: ${{ event.minAmount }}</span>
                       <span class="host-status" [class.host-status--drawn]="event.status === EventStatus.DRAWN">
                         {{ event.status | eventStatus }}

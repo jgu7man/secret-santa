@@ -23,14 +23,14 @@ export const eventSchema = z.object({
   adminToken: z.string(),
   name: z.string(),
   minAmount: z.number(),
-  maxAmount: z.optional(z.number()),
+  maxAmount: z.optional(z.nullable(z.number())),
   revealToHost: z.boolean(),
   isRegistrationOpen: z.boolean(),
   status: z.enum(EventStatus),
   createdAt: z.instanceof(Timestamp),
   ownerId: z.optional(z.nullable(z.string())),
   participantUids: z.optional(z.array(z.string())),
-  registrationDeadline: z.optional(z.instanceof(Timestamp)),
+  registrationDeadline: z.optional(z.nullable(z.instanceof(Timestamp))),
 });
 
 /** Canonical Firestore document shape for a Secret Santa event, inferred from `eventSchema`. */

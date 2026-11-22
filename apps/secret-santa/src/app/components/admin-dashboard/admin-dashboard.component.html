@@ -1,6 +1,8 @@
 @let uiState = ui();
 
-<div class="ss-theme ss-backdrop--dark ss-backdrop--pine admin-page min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+<div
+  class="ss-theme ss-backdrop--dark ss-backdrop--pine admin-page min-h-screen py-8 px-4 sm:px-6 lg:px-8"
+>
   <div class="max-w-4xl mx-auto">
     @if (uiState.isLoading) {
       <div class="text-center py-12">
@@ -15,50 +17,78 @@
     }
 
     @if (uiState.successMessage) {
-      <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg" role="status">
+      <div
+        class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg"
+        role="status"
+      >
         {{ uiState.successMessage }}
       </div>
     }
 
     @if (event(); as currentEvent) {
       @if (!uiState.isLoading) {
-        @let statusBadge = statusBadges[currentEvent.status];
+        @let badge = statusBadge();
 
         <!-- Header -->
         <div class="ss-card ss-card--dark mb-6">
           <div class="mb-4">
-            <a [routerLink]="['/dashboard']" class="admin-back-link flex items-center gap-2 text-sm font-medium">
-              <span>←</span> <span i18n="@@backToDashboard">Back to Dashboard</span>
+            <a
+              [routerLink]="['/dashboard']"
+              class="admin-back-link flex items-center gap-2 text-sm font-medium"
+            >
+              <span>←</span>
+              <span i18n="@@backToDashboard">Back to Dashboard</span>
             </a>
           </div>
-          <div class="flex justify-between flex-col-reverse md:flex-row items-start gap-3 mb-4">
+          <div
+            class="flex justify-between flex-col-reverse md:flex-row items-start gap-3 mb-4"
+          >
             <div class="min-w-0">
-              <h1 class="ss-heading mb-2 break-words">{{ currentEvent.name }}</h1>
-              <p i18n="@@adminDashboardTitle" class="admin-muted">Admin Dashboard 👑</p>
+              <h1 class="ss-heading mb-2 break-words">
+                {{ currentEvent.name }}
+              </h1>
+              <p i18n="@@adminDashboardTitle" class="admin-muted">
+                Admin Dashboard 👑
+              </p>
             </div>
             <div class="text-right">
               <span
                 class="inline-block px-3 py-1 rounded-full text-sm font-semibold"
-                [class]="statusBadge.badgeClass"
+                [class]="badge.badgeClass"
               >
-                {{ statusBadge.label }}
+                {{ badge.label }}
               </span>
             </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <span class="admin-muted" i18n="@@giftRangeLabel">Gift Range:</span>
-              <span class="ml-2 font-semibold">${{ currentEvent.minAmount }}{{ currentEvent.maxAmount ? ' - $' + currentEvent.maxAmount : '+' }}</span>
+              <span class="admin-muted" i18n="@@giftRangeLabel"
+                >Gift Range:</span
+              >
+              <span class="ml-2 font-semibold"
+                >${{ currentEvent.minAmount
+                }}{{
+                  currentEvent.maxAmount ? " - $" + currentEvent.maxAmount : "+"
+                }}</span
+              >
             </div>
             <div>
-              <span class="admin-muted" i18n="@@participantsLabel">Participants:</span>
-              <span class="ml-2 font-semibold">{{ participants().length }}</span>
+              <span class="admin-muted" i18n="@@participantsLabel"
+                >Participants:</span
+              >
+              <span class="ml-2 font-semibold">{{
+                participants().length
+              }}</span>
             </div>
             @if (currentEvent.registrationDeadline) {
               <div>
-                <span class="admin-muted" i18n="@@deadlineLabel">Deadline:</span>
-                <span class="ml-2 font-semibold">{{ currentEvent.registrationDeadline | firestoreTimestamp | date:'medium' }}</span>
+                <span class="admin-muted" i18n="@@deadlineLabel"
+                  >Deadline:</span
+                >
+                <span class="ml-2 font-semibold">{{
+                  currentEvent.registrationDeadline | firestoreTimestamp
+                }}</span>
               </div>
             }
           </div>
@@ -66,21 +96,40 @@
 
         <!-- Action Buttons -->
         <div class="ss-card mb-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-4" i18n="@@actionsTitle">Actions</h2>
+          <h2
+            class="text-xl font-bold text-gray-900 mb-4"
+            i18n="@@actionsTitle"
+          >
+            Actions
+          </h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button type="button" (click)="openModal(AdminDashboardModal.EDIT_EVENT)" class="ss-button-secondary" i18n="@@editEventButton">
+            <button
+              type="button"
+              (click)="openModal(AdminDashboardModal.EDIT_EVENT)"
+              class="ss-button-secondary"
+              i18n="@@editEventButton"
+            >
               ✏️ Edit Event
             </button>
 
-            <button type="button" (click)="copyParticipantLink()" class="ss-button-secondary" i18n="@@copyLinkButton">
+            <button
+              type="button"
+              (click)="copyParticipantLink()"
+              class="ss-button-secondary"
+              i18n="@@copyLinkButton"
+            >
               📋 Copy Participant Link
             </button>
 
             <button
               type="button"
               (click)="toggleRegistration()"
-              [class]="currentEvent.isRegistrationOpen ? 'ss-button-primary' : 'ss-button-secondary'"
+              [class]="
+                currentEvent.isRegistrationOpen
+                  ? 'ss-button-primary'
+                  : 'ss-button-secondary'
+              "
             >
               @if (currentEvent.isRegistrationOpen) {
                 <span i18n="@@closeRegistration">🔒 Close Registration</span>
@@ -90,7 +139,11 @@
             </button>
 
             @if (canRunRaffle()) {
-              <button type="button" (click)="openModal(AdminDashboardModal.CONFIRM_RAFFLE)" class="ss-button-primary">
+              <button
+                type="button"
+                (click)="openModal(AdminDashboardModal.CONFIRM_RAFFLE)"
+                class="ss-button-primary"
+              >
                 @if (currentEvent.status === EventStatus.CREATED) {
                   <span i18n="@@runRaffle">🎲 Run Raffle</span>
                 } @else {
@@ -99,12 +152,22 @@
               </button>
             }
 
-            <button type="button" (click)="navigateToEvent()" class="ss-button-secondary" i18n="@@participateButton">
+            <button
+              type="button"
+              (click)="navigateToEvent()"
+              class="ss-button-secondary"
+              i18n="@@participateButton"
+            >
               🎁 Participate in Event
             </button>
 
             @if (canClaimEvent()) {
-              <button type="button" (click)="claimEvent()" class="ss-button-secondary" i18n="@@claimEventButton">
+              <button
+                type="button"
+                (click)="claimEvent()"
+                class="ss-button-secondary"
+                i18n="@@claimEventButton"
+              >
                 💾 Save to My Events
               </button>
             }
@@ -127,7 +190,9 @@
           />
         }
 
-        @if (uiState.activeModal === AdminDashboardModal.CONFIRM_DELETE_PARTICIPANT) {
+        @if (
+          uiState.activeModal === AdminDashboardModal.CONFIRM_DELETE_PARTICIPANT
+        ) {
           <app-confirm-dialog-modal
             [title]="deleteParticipantTitle"
             [message]="deleteParticipantMessage"
@@ -145,12 +210,24 @@
 
         <!-- Instructions -->
         <div class="ss-card ss-card--dark mt-6 text-sm">
-          <p class="font-semibold mb-2" i18n="@@howItWorksTitle">💡 How it works:</p>
+          <p class="font-semibold mb-2" i18n="@@howItWorksTitle">
+            💡 How it works:
+          </p>
           <ol class="list-decimal list-inside space-y-1">
-            <li i18n="@@howItWorksStep1">Share the participant link with everyone who wants to join</li>
-            <li i18n="@@howItWorksStep2">Once everyone has registered, run the raffle to assign Secret Santa matches</li>
-            <li i18n="@@howItWorksStep3">Participants can then log in to see who they need to buy a gift for</li>
-            <li i18n="@@howItWorksStep4">Use the Reset Link if someone forgets their secret word</li>
+            <li i18n="@@howItWorksStep1">
+              Share the participant link with everyone who wants to join
+            </li>
+            <li i18n="@@howItWorksStep2">
+              Once everyone has registered, run the raffle to assign Secret
+              Santa matches
+            </li>
+            <li i18n="@@howItWorksStep3">
+              Participants can then log in to see who they need to buy a gift
+              for
+            </li>
+            <li i18n="@@howItWorksStep4">
+              Use the Reset Link if someone forgets their secret word
+            </li>
           </ol>
         </div>
       }

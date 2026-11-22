@@ -4,7 +4,7 @@ import {
   formatDateForDateTimeLocal,
   isEventRegistrationOpen,
 } from './event.helpers';
-import { EventStatus } from './event.model';
+import { EventStatus, eventSchema } from './event.model';
 
 describe('Secret Santa event business rules', () => {
   describe('Cuando un invitado consulta si el registro de un evento está abierto', () => {
@@ -73,6 +73,27 @@ describe('Secret Santa event business rules', () => {
     it('should format a Date into local YYYY-MM-DDTHH:mm format for datetime-local inputs', () => {
       const localDate = new Date(2026, 11, 24, 18, 30, 0, 0);
       expect(formatDateForDateTimeLocal(localDate)).toBe('2026-12-24T18:30');
+    });
+  });
+
+  describe('Cuando Firestore devuelve documentos históricos con campos opcionales en null', () => {
+    it('should accept legacy event documents with null maxAmount and registrationDeadline', () => {
+      const parsed = eventSchema.parse({
+        id: 'legacy-evt-1',
+        adminToken: 'tok',
+        name: 'Intercambio 2024',
+        minAmount: 200,
+        maxAmount: null,
+        revealToHost: false,
+        isRegistrationOpen: true,
+        status: EventStatus.CREATED,
+        createdAt: Timestamp.now(),
+        ownerId: 'host-1',
+        registrationDeadline: null,
+      });
+
+      expect(parsed.maxAmount).toBeNull();
+      expect(parsed.registrationDeadline).toBeNull();
     });
   });
 });

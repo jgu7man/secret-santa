@@ -1,4 +1,4 @@
-import { DOCUMENT, DatePipe } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -34,6 +34,7 @@ import {
   ADMIN_EVENT_STATUS_BADGES,
   AdminDashboardModal,
   AdminDashboardUiState,
+  AdminEventBadgeState,
 } from './admin-dashboard-ui.model';
 import { AdminEditEventModalComponent } from './admin-edit-event-modal.component';
 import { AdminParticipantsTableComponent } from './admin-participants-table.component';
@@ -42,7 +43,6 @@ import { AdminRaffleConfirmModalComponent } from './admin-raffle-confirm-modal.c
 @Component({
   selector: 'app-admin-dashboard',
   imports: [
-    DatePipe,
     RouterModule,
     FirestoreTimestampPipe,
     ConfirmDialogModalComponent,
@@ -88,6 +88,15 @@ export class AdminDashboardComponent implements OnInit {
   protected readonly isDrawn = computed(
     () => this.event()?.status === EventStatus.DRAWN,
   );
+  protected readonly statusBadge = computed(() => {
+    const current = this.event();
+    if (!current || current.status === EventStatus.DRAWN) {
+      return this.statusBadges[AdminEventBadgeState.DRAWN];
+    }
+    return current.isRegistrationOpen
+      ? this.statusBadges[AdminEventBadgeState.OPEN]
+      : this.statusBadges[AdminEventBadgeState.REGISTRATION_CLOSED];
+  });
   protected readonly canRunRaffle = computed(() =>
     canRunEventRaffle(this.event(), this.participants().length),
   );

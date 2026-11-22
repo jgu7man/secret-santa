@@ -1,4 +1,4 @@
-import { DOCUMENT, DatePipe } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -44,7 +44,6 @@ import { EventParticipantPreferencesComponent } from './event-participant-prefer
 @Component({
   selector: 'app-event-landing',
   imports: [
-    DatePipe,
     RouterModule,
     FirestoreTimestampPipe,
     ConfirmDialogModalComponent,

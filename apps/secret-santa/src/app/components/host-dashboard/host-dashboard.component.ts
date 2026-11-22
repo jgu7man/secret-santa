@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,7 +22,6 @@ import { ConfirmDialogModalComponent } from '../confirm-dialog-modal/confirm-dia
   selector: 'app-host-dashboard',
   standalone: true,
   imports: [
-    DatePipe,
     RouterModule,
     EventStatusPipe,
     FirestoreTimestampPipe,
