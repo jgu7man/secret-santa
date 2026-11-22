@@ -1,0 +1,17 @@
+{
+  "name": "auth-engine",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/auth/engine/src",
+  "projectType": "library",
+  "tags": ["scope:auth", "type:engine"],
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "tsConfig": "libs/auth/engine/tsconfig.spec.json",
+        "scripts": []
+      }
+    }
+  }
+}

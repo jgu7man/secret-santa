@@ -1,0 +1,95 @@
+<section class="space-y-6">
+  <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-slate-900">Crew y accesos</h2>
+      <p class="text-sm text-slate-600">
+        Administra usuarios, solicitudes de acceso e invitaciones por enlace.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="loadAll()"
+      [disabled]="isLoading()"
+      class="inline-flex items-center justify-center rounded-xl bg-pine-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-pine-700 disabled:opacity-60 transition"
+    >
+      {{ isLoading() ? 'Actualizando...' : 'Actualizar' }}
+    </button>
+  </header>
+
+  @if (errorMessage()) {
+    <div role="alert" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div role="status" class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+      {{ successMessage() }}
+    </div>
+  }
+
+  @let currentTab = activeTab();
+  <div class="inline-flex rounded-xl bg-slate-200/70 p-1 gap-1">
+    <button
+      type="button"
+      (click)="selectTab(CrewTab.DIRECTORY)"
+      class="rounded-lg px-4 py-2 text-xs font-semibold transition"
+      [ngClass]="(currentTab === CrewTab.DIRECTORY) | activeClass"
+    >
+      Directorio ({{ users().length }})
+    </button>
+    <button
+      type="button"
+      (click)="selectTab(CrewTab.ONBOARDING)"
+      class="rounded-lg px-4 py-2 text-xs font-semibold transition inline-flex items-center gap-2"
+      [ngClass]="(currentTab === CrewTab.ONBOARDING) | activeClass"
+    >
+      <span>Solicitudes e Invitaciones</span>
+      @if (pendingRequestsCount() > 0) {
+        <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900">
+          {{ pendingRequestsCount() }}
+        </span>
+      }
+    </button>
+  </div>
+
+  @if (currentTab === CrewTab.DIRECTORY) {
+    <marxa-crew-directory-tab
+      [users]="filteredUsers()"
+      [totalUsersCount]="users().length"
+      [adminCount]="adminCount()"
+      [suspendedCount]="suspendedCount()"
+      [isLoading]="isLoading()"
+      [savingId]="savingId()"
+      [currentUid]="currentUid()"
+      [searchQuery]="searchQuery()"
+      [roleFilter]="roleFilter()"
+      [statusFilter]="statusFilter()"
+      [roles]="roles"
+      [statuses]="statuses"
+      (searchQueryChange)="searchQuery.set($event)"
+      (roleFilterChange)="onRoleFilterChange($event)"
+      (statusFilterChange)="onStatusFilterChange($event)"
+      (roleChange)="onRoleChange($event)"
+      (toggleStatus)="toggleStatus($event)"
+      (saveNotes)="saveNotes($event)"
+    />
+  } @else {
+    <marxa-crew-onboarding-tab
+      [accessRequests]="accessRequests()"
+      [invites]="invites()"
+      [roles]="roles"
+      [defaultTargetRole]="config().defaultTargetRole"
+      [defaultRequiresProfile]="config().requiresProfileCompletionByDefault"
+      [requestAccessRoute]="config().requestAccessRoute"
+      [savingId]="savingId()"
+      [lastGeneratedInviteUrl]="lastGeneratedInviteUrl()"
+      (createDirectInvite)="createDirectInvite($event)"
+      (approveRequest)="approveRequest($event)"
+      (rejectRequest)="rejectRequest($event)"
+      (revokeInvite)="revokeInvite($event)"
+      (copyInviteLink)="copyInviteLink($event)"
+    />
+  }
+</section>
