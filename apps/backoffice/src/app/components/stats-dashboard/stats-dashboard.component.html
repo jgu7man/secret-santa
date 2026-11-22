@@ -1,0 +1,41 @@
+<section class="space-y-6">
+  <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-slate-900">Estadísticas de la plataforma</h2>
+      <p class="text-sm text-slate-600">
+        Resumen operativo de usuarios, eventos de Secret Santa y participación.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      (click)="refresh()"
+      [disabled]="isLoading()"
+      class="inline-flex items-center justify-center rounded-xl bg-pine-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-pine-700 disabled:opacity-60 transition"
+    >
+      {{ isLoading() ? 'Actualizando...' : 'Actualizar métricas' }}
+    </button>
+  </header>
+
+  @if (errorMessage()) {
+    <div role="alert" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (isLoading() && !stats()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      @for (skeleton of [1, 2, 3, 4]; track skeleton) {
+        <div class="h-32 rounded-2xl bg-white border border-slate-200 animate-pulse p-5"></div>
+      }
+    </div>
+  } @else {
+    @if (stats(); as data) {
+      <bo-stats-summary-cards [stats]="data" />
+      <bo-stats-recent-events-table
+        [recentEvents]="data.recentEvents"
+        [openRegistrationEvents]="data.openRegistrationEvents"
+      />
+    }
+  }
+</section>

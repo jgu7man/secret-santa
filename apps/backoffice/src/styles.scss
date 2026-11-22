@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bo-font-sans: "Geist", system-ui, -apple-system, sans-serif;
+  --bo-font-display: "Rethink Sans", var(--bo-font-sans);
+}
+
+body {
+  font-family: var(--bo-font-sans);
+}
+
+h1, h2, h3 {
+  font-family: var(--bo-font-display);
+}
