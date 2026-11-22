@@ -6,11 +6,10 @@ import {
   AuthSessionService,
   AuthSessionStatus,
 } from '@marxa/auth-engine';
-import { AuthService } from '@secret-santa/shared-core';
 
 /**
  * White-label administrator sign-in view.
- * Delegates session verification and unauthorized sign-out to `AuthSessionService`.
+ * Delegates sign-in, session verification, and unauthorized sign-out to `AuthSessionService`.
  */
 @Component({
   selector: 'marxa-auth-login',
@@ -20,15 +19,14 @@ import { AuthService } from '@secret-santa/shared-core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthLoginComponent implements OnInit {
-  private readonly authService = inject(AuthService);
   private readonly authSession = inject(AuthSessionService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  readonly config = inject(AuthRuntimeConfigService).config;
+  protected readonly config = inject(AuthRuntimeConfigService).config;
 
-  readonly isLoading = signal(false);
-  readonly errorMessage = signal('');
-  readonly accessDenied = signal(false);
+  protected readonly isLoading = signal(false);
+  protected readonly errorMessage = signal('');
+  protected readonly accessDenied = signal(false);
 
   ngOnInit(): void {
     const reason = this.route.snapshot.queryParamMap.get('reason');
@@ -37,12 +35,12 @@ export class AuthLoginComponent implements OnInit {
     }
   }
 
-  async loginWithGoogle(): Promise<void> {
+  protected async loginWithGoogle(): Promise<void> {
     this.isLoading.set(true);
     this.errorMessage.set('');
     this.accessDenied.set(false);
     try {
-      await this.authService.loginWithGoogle();
+      await this.authSession.loginWithGoogle();
       const status = await this.authSession.verifyOrLogoutAdmin();
 
       if (status === AuthSessionStatus.AUTHORIZED) {

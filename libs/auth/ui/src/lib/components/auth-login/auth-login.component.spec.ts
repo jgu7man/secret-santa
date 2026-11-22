@@ -1,30 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { AuthSessionService, AuthSessionStatus } from '@marxa/auth-engine';
-import { AuthService } from '@secret-santa/shared-core';
 import { AuthLoginComponent } from './auth-login.component';
 
 describe('AuthLoginComponent', () => {
   let fixture: ComponentFixture<AuthLoginComponent>;
   let component: AuthLoginComponent;
 
-  const authServiceSpy = {
-    loginWithGoogle: jasmine.createSpy('loginWithGoogle').and.resolveTo(),
-  };
-
   const authSessionSpy = {
+    loginWithGoogle: jasmine.createSpy('loginWithGoogle').and.resolveTo(null),
     verifyOrLogoutAdmin: jasmine.createSpy('verifyOrLogoutAdmin'),
   };
 
   beforeEach(async () => {
-    authServiceSpy.loginWithGoogle.calls.reset();
+    authSessionSpy.loginWithGoogle.calls.reset();
     authSessionSpy.verifyOrLogoutAdmin.calls.reset();
 
     await TestBed.configureTestingModule({
       imports: [AuthLoginComponent],
       providers: [
         provideRouter([]),
-        { provide: AuthService, useValue: authServiceSpy },
         { provide: AuthSessionService, useValue: authSessionSpy },
         {
           provide: ActivatedRoute,
@@ -47,10 +42,12 @@ describe('AuthLoginComponent', () => {
       AuthSessionStatus.UNAUTHORIZED
     );
 
-    await component.loginWithGoogle();
+    const button: HTMLButtonElement =
+      fixture.nativeElement.querySelector('button');
+    button.click();
+    await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(component.accessDenied()).toBeTrue();
     const alert = fixture.nativeElement.querySelector('[role="alert"]');
     expect(alert?.textContent).toContain('Acceso restringido');
   });
@@ -62,7 +59,10 @@ describe('AuthLoginComponent', () => {
       AuthSessionStatus.AUTHORIZED
     );
 
-    await component.loginWithGoogle();
+    const button: HTMLButtonElement =
+      fixture.nativeElement.querySelector('button');
+    button.click();
+    await fixture.whenStable();
 
     expect(navSpy).toHaveBeenCalledWith('/stats');
   });
@@ -74,7 +74,6 @@ describe('AuthLoginComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(component.accessDenied()).toBeTrue();
     const alert = fixture.nativeElement.querySelector('[role="alert"]');
     expect(alert?.textContent).toContain('Acceso restringido');
   });

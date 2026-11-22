@@ -1,0 +1,20 @@
+{
+  "name": "shared-core",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/core/src",
+  "projectType": "library",
+  "tags": ["scope:shared", "type:core"],
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ],
+        "tsConfig": "libs/shared/core/tsconfig.spec.json",
+        "scripts": []
+      }
+    }
+  }
+}
