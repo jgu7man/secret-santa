@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Disallow private host, admin, and password reset routes across all locales
+Disallow: /login
+Disallow: /dashboard
+Disallow: /admin/
+Disallow: /event/*/reset/
+Disallow: /en/login
+Disallow: /en/dashboard
+Disallow: /en/admin/
+Disallow: /en/event/*/reset/
+Disallow: /es/login
+Disallow: /es/dashboard
+Disallow: /es/admin/
+Disallow: /es/event/*/reset/
+

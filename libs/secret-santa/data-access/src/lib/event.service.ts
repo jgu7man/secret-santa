@@ -63,7 +63,7 @@ export class EventService {
     };
 
     await setDoc(eventRef, newEvent);
-    localStorage.setItem(`event_${eventId}_token`, adminToken);
+    this.storeAdminToken(eventId, adminToken);
 
     return { eventId, adminToken };
   }
@@ -204,6 +204,11 @@ export class EventService {
   /** Reads a stored admin token from localStorage for a given event. */
   getStoredAdminToken(eventId: string): string | null {
     return localStorage.getItem(`event_${eventId}_token`);
+  }
+
+  /** Persists a verified admin token in localStorage for guest host access. */
+  storeAdminToken(eventId: string, token: string): void {
+    localStorage.setItem(`event_${eventId}_token`, token);
   }
 
   /** Removes a participant and resets an already-drawn event back to `CREATED`. */

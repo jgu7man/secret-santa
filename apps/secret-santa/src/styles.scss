@@ -1,0 +1,32 @@
+@use "secret-santa-theme";
+
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.ss-app-content > :not(router-outlet) {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.ss-app-content > :not(router-outlet) > .min-h-screen {
+  min-block-size: 0;
+  flex: 1 0 auto;
+}
+
+body[data-bmc-widget="hidden"] #bmc-wbtn,
+body[data-bmc-widget="hidden"] #bmc-wbtn + div,
+body[data-bmc-widget="hidden"] #bmc-close-btn,
+body[data-bmc-widget="hidden"] #bmc-iframe,
+body[data-bmc-widget="hidden"] div:has(> #bmc-iframe) {
+  display: none !important;
+  visibility: hidden !important;
+}

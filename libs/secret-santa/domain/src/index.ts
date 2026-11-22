@@ -1,4 +1,10 @@
 export {
+  MIN_RAFFLE_PARTICIPANTS,
+  canRunEventRaffle,
+  formatDateForDateTimeLocal,
+  isEventRegistrationOpen,
+} from './lib/event.helpers';
+export {
   EventStatus,
   eventSchema,
   isEventStatus,
