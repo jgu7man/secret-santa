@@ -1,0 +1,122 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "secret-santa",
+  "projectType": "application",
+  "tags": ["scope:secret-santa", "type:app"],
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
+  "sourceRoot": "apps/secret-santa/src",
+  "prefix": "app",
+  "i18n": {
+    "sourceLocale": {
+      "code": "en-US",
+      "baseHref": "/en/"
+    },
+    "locales": {
+      "es-MX": {
+        "translation": "apps/secret-santa/src/locale/messages.es-MX.xlf",
+        "baseHref": "/es/"
+      }
+    }
+  },
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:application",
+      "options": {
+        "outputPath": "dist/apps/secret-santa",
+        "index": "apps/secret-santa/src/index.html",
+        "browser": "apps/secret-santa/src/main.ts",
+        "polyfills": [
+          "zone.js",
+          "@angular/localize/init"
+        ],
+        "tsConfig": "apps/secret-santa/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "localize": true,
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/secret-santa/public"
+          }
+        ],
+        "styles": [
+          "apps/secret-santa/src/styles.scss"
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "750kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kB",
+              "maximumError": "8kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        },
+        "es-MX": {
+          "localize": [
+            "es-MX"
+          ]
+        }
+      },
+      "defaultConfiguration": "production",
+      "outputs": [
+        "{options.outputPath}"
+      ]
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "secret-santa:build:production"
+        },
+        "development": {
+          "buildTarget": "secret-santa:build:development"
+        },
+        "es-MX": {
+          "buildTarget": "secret-santa:build:development,es-MX"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n"
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ],
+        "tsConfig": "apps/secret-santa/tsconfig.spec.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/secret-santa/public"
+          }
+        ],
+        "styles": [
+          "apps/secret-santa/src/styles.scss"
+        ],
+        "scripts": []
+      }
+    }
+  }
+}

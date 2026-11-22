@@ -47,6 +47,12 @@ Thumbs.db
 .env.*.local
 /src/environments/environment.ts
 /src/environments/environment.prod.ts
-src/app/firebase-config.ts
+libs/shared/firebase/src/lib/firebase-config.ts
 .firebaserc
 .firebase/
+
+
+
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs

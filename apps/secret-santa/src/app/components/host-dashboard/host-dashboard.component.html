@@ -1,0 +1,109 @@
+<div class="ss-theme ss-backdrop--dark ss-backdrop--pine min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+      <h1 class="ss-heading" i18n="@@hostDashboardTitle">Host Dashboard</h1>
+      <a [routerLink]="'/'" class="ss-button-primary inline-flex items-center" i18n="@@createNewEventLink">Create New Event</a>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg text-sm" role="alert">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <!-- Logged In -->
+    @if (user(); as currentUser) {
+      <div class="host-account mb-6">
+        <div class="flex items-center gap-3">
+          @if (currentUser.photoURL) {
+            <img [src]="currentUser.photoURL" alt="" class="w-10 h-10 rounded-full">
+          }
+          <span class="font-medium break-words min-w-0">{{ currentUser.displayName }}</span>
+        </div>
+        <button type="button" (click)="logout()" class="host-link text-sm" i18n="@@logoutButton">Logout</button>
+      </div>
+
+      <!-- Loading -->
+      @if (isLoading()) {
+        <div class="text-center py-12">
+          <p class="host-muted" i18n="@@loadingEventsMessage">Loading your events...</p>
+        </div>
+      } @else {
+        @let ownedEvents = events();
+        @if (ownedEvents.length > 0) {
+          <ul class="ss-card ss-card--dark host-events">
+            @for (event of ownedEvents; track event.id) {
+              <li class="host-event">
+                <div class="min-w-0">
+                  <h2 class="text-xl font-bold break-words">{{ event.name }}</h2>
+                  <div class="host-meta text-sm">
+                    <span>{{ event.createdAt | firestoreTimestamp }}</span>
+                    <span i18n="@@minAmountDisplay">Min: ${{ event.minAmount }}</span>
+                    <span class="host-status" [class.host-status--drawn]="event.status === EventStatus.DRAWN">
+                      {{ event.status | eventStatus }}
+                    </span>
+                  </div>
+                </div>
+                <div class="host-actions">
+                  <button type="button" (click)="goToAdmin(event.id)" class="ss-button-secondary">
+                    <span i18n="@@manageEventAction">Manage</span>
+                  </button>
+                  <button type="button" (click)="goToEvent(event.id)" class="host-link">
+                    <span i18n="@@viewEventAction">View as Participant</span>
+                  </button>
+                  <button type="button" (click)="requestDeleteEvent(event)" class="host-link host-link--danger">
+                    <span i18n="@@deleteEventAction">Delete</span>
+                  </button>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <div class="ss-card text-center">
+            <p class="text-gray-600 mb-4" i18n="@@noEventsFoundMessage">You haven't created any events yet.</p>
+            <a [routerLink]="'/'" class="text-red-600 hover:text-red-800 font-semibold" i18n="@@createFirstEventLink">Create your first event!</a>
+          </div>
+        }
+
+        @let invitedEvents = participatingEvents();
+        @if (invitedEvents.length > 0) {
+          <section class="mt-10">
+            <h2 class="ss-heading text-2xl mb-4" i18n="@@participatingEventsTitle">Events I'm Invited To</h2>
+            <ul class="ss-card ss-card--dark host-events">
+              @for (event of invitedEvents; track event.id) {
+                <li class="host-event">
+                  <div class="min-w-0">
+                    <h3 class="text-xl font-bold break-words">{{ event.name }}</h3>
+                    <div class="host-meta text-sm">
+                      <span>{{ event.createdAt | firestoreTimestamp }}</span>
+                      <span i18n="@@minAmountDisplay">Min: ${{ event.minAmount }}</span>
+                      <span class="host-status" [class.host-status--drawn]="event.status === EventStatus.DRAWN">
+                        {{ event.status | eventStatus }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="host-actions">
+                    <button type="button" (click)="goToEvent(event.id)" class="ss-button-secondary">
+                      <span i18n="@@openExchangeAction">Open Exchange</span>
+                    </button>
+                  </div>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      }
+    }
+
+    @if (pendingDeleteEvent()) {
+      <app-confirm-dialog-modal
+        [title]="deleteEventTitle"
+        [message]="deleteEventMessage()"
+        [confirmLabel]="deleteEventTitle"
+        (confirmAction)="confirmDeleteEvent()"
+        (cancelAction)="cancelDeleteEvent()"
+      />
+    }
+  </div>
+</div>

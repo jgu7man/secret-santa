@@ -1,0 +1,78 @@
+<div
+  class="ss-theme ss-backdrop--dark min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center"
+>
+  <div class="ss-card max-w-md w-full space-y-8">
+    <div class="text-center">
+      <h2 class="ss-heading" i18n="@@adminLoginTitle">Admin Access 👑</h2>
+      <p class="mt-2 text-gray-600" i18n="@@adminLoginSubtitle">
+        Login to manage your event
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+      <div
+        class="bg-red-100 text-red-700 p-4 rounded-lg text-sm"
+        role="alert"
+      >
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <div class="space-y-6">
+      <button
+        type="button"
+        (click)="loginWithGoogle()"
+        [disabled]="isLoading()"
+        class="ss-button-secondary w-full flex justify-center items-center gap-3"
+      >
+        <img
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+          alt=""
+          aria-hidden="true"
+          class="w-5 h-5"
+        />
+        <span i18n="@@loginWithGoogle">Login with Google</span>
+      </button>
+
+      <div class="ss-separator text-sm" i18n="@@orSeparator">Or</div>
+
+      <form [formGroup]="tokenForm" (ngSubmit)="loginWithToken()">
+        <div class="space-y-4">
+          <div>
+            <label
+              for="token"
+              class="block text-sm font-medium text-gray-700"
+              i18n="@@adminTokenLabel"
+              >Admin Token</label
+            >
+            <input
+              type="text"
+              id="token"
+              formControlName="token"
+              class="ss-field mt-1 block w-full"
+              placeholder="Enter your admin token"
+              i18n-placeholder="@@adminTokenPlaceholder"
+            />
+          </div>
+          <button
+            type="submit"
+            [disabled]="tokenForm.invalid || isLoading()"
+            class="ss-button-primary w-full"
+          >
+            <span i18n="@@accessWithToken">Access with Token</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="text-center mt-4">
+      <a
+        [routerLink]="['/event', eventId()]"
+        class="text-sm text-christmas-red hover:text-red-700 font-medium"
+        i18n="@@backToEvent"
+      >
+        ← Back to Event
+      </a>
+    </div>
+  </div>
+</div>

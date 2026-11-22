@@ -1,0 +1,66 @@
+@let events = recentEvents();
+<div class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+  <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+    <div>
+      <h3 class="text-base font-bold text-slate-900">Eventos recientes</h3>
+      <p class="text-xs text-slate-500">
+        Últimos {{ events.length }} eventos registrados en Firestore
+      </p>
+    </div>
+    <span class="text-xs font-medium text-slate-600">
+      {{ openRegistrationEvents() }} con registro abierto
+    </span>
+  </div>
+
+  @if (events.length === 0) {
+    <div class="p-8 text-center text-sm text-slate-500">
+      Aún no existen eventos registrados.
+    </div>
+  } @else {
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200 text-sm">
+        <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <tr>
+            <th scope="col" class="px-6 py-3">Evento</th>
+            <th scope="col" class="px-6 py-3">Estado</th>
+            <th scope="col" class="px-6 py-3">Registro</th>
+            <th scope="col" class="px-6 py-3">Participantes</th>
+            <th scope="col" class="px-6 py-3">Origen</th>
+            <th scope="col" class="px-6 py-3">Creado</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 bg-white">
+          @for (event of events; track event.id) {
+            <tr class="hover:bg-slate-50/70">
+              <td class="px-6 py-4 font-medium text-slate-900">
+                <div>{{ event.name }}</div>
+                <div class="text-xs font-mono text-slate-400">{{ event.id }}</div>
+              </td>
+              <td class="px-6 py-4">
+                @let badge = statusBadges[event.status];
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                  [ngClass]="badge.classes"
+                >
+                  {{ badge.label }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-slate-700">
+                {{ event.isRegistrationOpen ? 'Abierto' : 'Cerrado' }}
+              </td>
+              <td class="px-6 py-4 font-semibold text-slate-900">
+                {{ event.participantCount }}
+              </td>
+              <td class="px-6 py-4 text-slate-600">
+                {{ event.hasOwner ? 'Host autenticado' : 'Invitado' }}
+              </td>
+              <td class="px-6 py-4 text-slate-500">
+                {{ event.createdAtMs ? (event.createdAtMs | date:'medium') : 'Sin fecha' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

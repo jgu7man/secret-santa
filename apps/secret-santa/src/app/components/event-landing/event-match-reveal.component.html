@@ -1,0 +1,68 @@
+@let recipient = assignedParticipant();
+@if (isDrawn() && recipient) {
+  <section class="event-reveal mb-8" aria-labelledby="event-reveal-title">
+    <h2
+      id="event-reveal-title"
+      class="event-welcome"
+      i18n="@@secretSantaAssignment"
+    >
+      You’re giving a gift to
+    </h2>
+    <div class="event-reveal-tag">
+      <p class="ss-heading">{{ recipient.name }}</p>
+    </div>
+    <div class="event-preferences p-4 text-left">
+      <div class="flex items-center gap-2 mb-2">
+        <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <use href="theme/secret-santa-iconos.svg#ss-regalo"></use>
+        </svg>
+        <h3 class="font-semibold" i18n="@@theirPreferencesTitle">
+          Their Gift Preferences:
+        </h3>
+      </div>
+      <div class="space-y-2 text-sm">
+        @if (recipient.preferences.general) {
+          <div>
+            <span class="font-medium" i18n="@@interestsLabel">Interests:</span>
+            <p class="event-muted mt-1">{{ recipient.preferences.general }}</p>
+          </div>
+        }
+        @if (recipient.preferences.sizes) {
+          <div>
+            <span class="font-medium" i18n="@@sizesLabel">Sizes:</span>
+            <p class="event-muted mt-1">{{ recipient.preferences.sizes }}</p>
+          </div>
+        }
+        @if (!recipient.preferences.general && !recipient.preferences.sizes) {
+          <div>
+            <p class="event-muted italic" i18n="@@noPreferencesProvidedMessage">
+              No preferences provided yet
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="event-reveal mb-8">
+    <img
+      class="event-reveal-hat"
+      src="theme/secret-santa-gorro-interrogacion.png"
+      width="1024"
+      height="1536"
+      alt=""
+    />
+    @if (!isDrawn()) {
+      <p class="event-notice event-notice--waiting" i18n="@@waitingForRaffle">
+        ⏳ Waiting for the organizer to run the raffle...
+      </p>
+    } @else {
+      <p
+        class="event-notice event-notice--waiting"
+        i18n="@@assignmentUnavailable"
+      >
+        Your gift assignment is not available yet.
+      </p>
+    }
+  </section>
+}

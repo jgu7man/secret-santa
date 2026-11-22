@@ -1,0 +1,191 @@
+@let uiState = ui();
+
+<div
+  class="ss-theme ss-backdrop--dark ss-backdrop--pine min-h-screen py-8 px-4 sm:px-6"
+>
+  <div class="max-w-md mx-auto">
+    <!-- Navigation -->
+    <div class="mb-6 flex flex-wrap justify-between items-center gap-2">
+      <a [routerLink]="'/'" class="ss-button-secondary event-action">
+        <span i18n="@@homeLink">Home</span>
+      </a>
+
+      <div class="flex gap-2 items-center">
+        @if (!currentParticipant() && isRegistrationOpen()) {
+          <button
+            type="button"
+            (click)="scrollToRegister()"
+            class="ss-button-secondary event-action"
+          >
+            <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="theme/secret-santa-iconos.svg#ss-regalo"></use>
+            </svg>
+            <span i18n="@@goToRegisterButton">Register</span>
+          </button>
+        }
+
+        @if (currentUser()) {
+          <a
+            [routerLink]="'/dashboard'"
+            class="ss-button-secondary event-action"
+          >
+            <span i18n="@@dashboardLink">Dashboard</span>
+          </a>
+        }
+      </div>
+    </div>
+
+    @if (uiState.isLoading) {
+      <div class="text-center py-12">
+        <p class="event-meta justify-center" i18n="@@loadingMessage">
+          Loading...
+        </p>
+      </div>
+    }
+
+    @if (uiState.errorMessage && !uiState.isLoading) {
+      <div class="event-notice event-notice--error mb-4" role="alert">
+        {{ uiState.errorMessage }}
+      </div>
+    }
+
+    @if (uiState.successMessage) {
+      <div class="event-notice event-notice--success mb-4" role="status">
+        {{ uiState.successMessage }}
+      </div>
+    }
+
+    @if (!event() && !uiState.isLoading) {
+      <div class="ss-card text-center">
+        <p class="event-muted" i18n="@@eventNotFound">Event not found</p>
+      </div>
+    }
+
+    @if (event(); as currentEvent) {
+      @if (!uiState.isLoading) {
+        <header class="event-header mb-8">
+          @if (!currentParticipant() && !isDrawn()) {
+            <img
+              class="event-gift"
+              src="theme/secret-santa-caja-regalo-frontal.png"
+              width="1254"
+              height="1254"
+              alt=""
+            />
+          }
+          <h1 class="ss-heading mb-4">{{ currentEvent.name }}</h1>
+          <p class="event-meta">
+            <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="theme/secret-santa-iconos.svg#ss-presupuesto"></use>
+            </svg>
+            <span
+              ><span i18n="@@giftRange">Gift Range:</span> ${{
+                currentEvent.minAmount
+              }}{{
+                currentEvent.maxAmount ? " - $" + currentEvent.maxAmount : "+"
+              }}</span
+            >
+          </p>
+          @if (currentEvent.registrationDeadline && !isDrawn()) {
+            <p class="event-meta">
+              <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="theme/secret-santa-iconos.svg#ss-calendario"></use>
+              </svg>
+              <span
+                ><span i18n="@@deadlineLabel">Deadline:</span>
+                {{ currentEvent.registrationDeadline | firestoreTimestamp }}</span
+              >
+            </p>
+          }
+          @if (isDrawn()) {
+            <p class="event-meta">
+              <svg class="event-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <use
+                  href="theme/secret-santa-iconos.svg#ss-sorteo-realizado"
+                ></use>
+              </svg>
+              <span i18n="@@eventDrawnStatus">Draw completed</span>
+            </p>
+          }
+        </header>
+
+        @if (currentParticipant(); as participant) {
+          <app-event-match-reveal
+            [isDrawn]="isDrawn()"
+            [assignedParticipant]="assignedParticipant()"
+          />
+
+          <div class="event-participant-heading mb-4">
+            <h2 class="event-welcome" i18n="@@welcomeMessage">
+              Welcome, {{ participant.name }}! 👋
+            </h2>
+            <div class="event-actions">
+              @if (!isDrawn()) {
+                <button
+                  type="button"
+                  (click)="requestLeaveEvent()"
+                  class="ss-button-secondary event-action event-action--danger"
+                  i18n="@@leaveEventButton"
+                >
+                  Leave Event
+                </button>
+              }
+              <button
+                type="button"
+                (click)="logout()"
+                class="ss-button-secondary event-action"
+                i18n="@@logoutButtonLanding"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+
+          <app-event-participant-preferences
+            [preferences]="participant.preferences"
+            [isSubmitting]="uiState.isSubmitting"
+            (savePreferences)="onUpdatePreferences($event)"
+          />
+        } @else {
+          <app-event-guest-auth
+            [isRegistrationOpen]="isRegistrationOpen()"
+            [isSubmitting]="uiState.isSubmitting"
+            [isGoogleLinked]="uiState.isGoogleLinked"
+            [currentUser]="currentUser()"
+            [activeTab]="activeTab()"
+            [googlePrefill]="googlePrefill()"
+            (tabChange)="setActiveTab($event)"
+            (registerSubmit)="onRegister($event)"
+            (loginSubmit)="onLogin($event)"
+            (continueWithGoogleRegister)="continueWithGoogleForRegister()"
+            (unlinkGoogle)="unlinkGoogle()"
+            (loginWithGoogle)="loginWithGoogleParticipant()"
+          />
+        }
+      }
+    }
+
+    @if (uiState.showLeaveConfirm) {
+      <app-confirm-dialog-modal
+        [title]="leaveConfirmTitle"
+        [message]="leaveConfirmMessage"
+        [confirmLabel]="leaveConfirmTitle"
+        (confirmAction)="confirmLeaveEvent()"
+        (cancelAction)="cancelLeaveEvent()"
+      />
+    }
+
+    <div class="event-footer mt-12 text-center text-sm pb-8">
+      <p>
+        <span i18n="@@organizerQuestion">Are you the organizer?</span>
+        <a
+          [routerLink]="['/admin', eventId, 'login']"
+          class="event-nav-link ml-1 font-medium"
+          i18n="@@manageEventLink"
+        >
+          Manage Event
+        </a>
+      </p>
+    </div>
+  </div>
+</div>

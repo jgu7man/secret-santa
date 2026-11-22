@@ -1,0 +1,114 @@
+<div
+  [formGroup]="form()"
+  class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4"
+>
+  <div>
+    <h3 class="text-base font-bold text-slate-900">
+      Buy Me a Coffee (Donaciones)
+    </h3>
+    <p class="text-xs text-slate-500">
+      Controla visibilidad, cuenta (<code class="font-mono">slug</code>) y
+      estilo del widget. La URL del script y su SRI se mantienen fijos en código
+      por seguridad.
+    </p>
+  </div>
+
+  <label for="bmc-enabled" class="flex items-start gap-3 cursor-pointer">
+    <input
+      id="bmc-enabled"
+      type="checkbox"
+      formControlName="enabled"
+      class="mt-1 h-4 w-4 rounded border-slate-300 text-pine-700"
+    />
+    <div>
+      <span class="block text-sm font-semibold text-slate-900">
+        Habilitar Buy Me a Coffee
+      </span>
+      <span class="block text-xs text-slate-500">
+        Muestra el botón en la landing y el widget flotante en el resto de
+        vistas.
+      </span>
+    </div>
+  </label>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="lg:col-span-2">
+      <label for="bmc-slug" class="block text-xs font-medium text-slate-700">
+        Slug de cuenta
+      </label>
+      <input
+        id="bmc-slug"
+        type="text"
+        formControlName="slug"
+        placeholder="jgu7man"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label for="bmc-color" class="block text-xs font-medium text-slate-700">
+        Color (Hex)
+      </label>
+      <input
+        id="bmc-color"
+        type="text"
+        formControlName="color"
+        placeholder="#40DCA5"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label
+        for="bmc-position"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Posición
+      </label>
+      <select
+        id="bmc-position"
+        formControlName="position"
+        class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800"
+      >
+        @for (pos of positions; track pos) {
+          <option [value]="pos">{{ pos }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label
+          for="bmc-x-margin"
+          class="block text-xs font-medium text-slate-700"
+        >
+          Margen X
+        </label>
+        <input
+          id="bmc-x-margin"
+          type="number"
+          min="0"
+          max="120"
+          formControlName="xMargin"
+          class="mt-1 w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm text-slate-900"
+        />
+      </div>
+      <div>
+        <label
+          for="bmc-y-margin"
+          class="block text-xs font-medium text-slate-700"
+        >
+          Margen Y
+        </label>
+        <input
+          id="bmc-y-margin"
+          type="number"
+          min="0"
+          max="120"
+          formControlName="yMargin"
+          class="mt-1 w-full rounded-xl border border-slate-300 px-2.5 py-2 text-sm text-slate-900"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,108 @@
+@let currentTab = activeTab();
+<div class="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+  <button
+    type="button"
+    (click)="selectTab(RequestTab.GOOGLE)"
+    class="rounded-lg px-3 py-2 text-xs font-semibold transition"
+    [ngClass]="(currentTab === RequestTab.GOOGLE) | activeClass"
+  >
+    Con cuenta Google
+  </button>
+  <button
+    type="button"
+    (click)="selectTab(RequestTab.EMAIL)"
+    class="rounded-lg px-3 py-2 text-xs font-semibold transition"
+    [ngClass]="(currentTab === RequestTab.EMAIL) | activeClass"
+  >
+    Con correo electrónico
+  </button>
+</div>
+
+@if (currentTab === RequestTab.GOOGLE) {
+  <div class="space-y-4">
+    <div>
+      <label for="google-reason" class="block text-sm font-medium text-slate-700">
+        Motivo o área (opcional)
+      </label>
+      <textarea
+        id="google-reason"
+        rows="2"
+        [formControl]="googleReasonControl"
+        placeholder="Ej. Gestión de eventos y soporte..."
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-pine-700 focus:outline-none focus:ring-2 focus:ring-pine-700/20"
+      ></textarea>
+    </div>
+
+    <button
+      type="button"
+      (click)="submitGoogle()"
+      [disabled]="isSubmitting()"
+      class="w-full flex items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50 disabled:opacity-60 transition"
+    >
+      <img
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+        alt=""
+        class="w-5 h-5"
+      />
+      <span>{{ isSubmitting() ? 'Enviando solicitud...' : 'Solicitar acceso con Google' }}</span>
+    </button>
+  </div>
+} @else {
+  <form [formGroup]="emailForm" (ngSubmit)="submitEmail()" class="space-y-4">
+    <div>
+      <label for="req-name" class="block text-sm font-medium text-slate-700">
+        Nombre completo
+      </label>
+      <input
+        id="req-name"
+        type="text"
+        formControlName="displayName"
+        placeholder="Ej. Ana Pérez"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-pine-700 focus:outline-none focus:ring-2 focus:ring-pine-700/20"
+      />
+    </div>
+
+    <div>
+      <label for="req-email" class="block text-sm font-medium text-slate-700">
+        Correo electrónico
+      </label>
+      <input
+        id="req-email"
+        type="email"
+        formControlName="email"
+        placeholder="nombre@empresa.com"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-pine-700 focus:outline-none focus:ring-2 focus:ring-pine-700/20"
+      />
+    </div>
+
+    <div>
+      <label for="req-reason" class="block text-sm font-medium text-slate-700">
+        Motivo o área (opcional)
+      </label>
+      <textarea
+        id="req-reason"
+        rows="2"
+        formControlName="reason"
+        placeholder="Ej. Necesito consultar estadísticas..."
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-pine-700 focus:outline-none focus:ring-2 focus:ring-pine-700/20"
+      ></textarea>
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="isSubmitting() || emailForm.invalid"
+      class="w-full rounded-xl bg-pine-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-pine-700 disabled:opacity-60 transition"
+    >
+      {{ isSubmitting() ? 'Enviando solicitud...' : 'Enviar solicitud' }}
+    </button>
+  </form>
+}
+
+<div class="text-center pt-2 border-t border-slate-100">
+  <a
+    [routerLink]="loginRoute()"
+    class="text-xs font-medium text-slate-500 hover:text-pine-700 transition"
+  >
+    ¿Ya tienes acceso? Iniciar sesión
+  </a>
+</div>

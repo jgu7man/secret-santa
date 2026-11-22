@@ -11,7 +11,7 @@
   "hosting": [
     {
       "target": "santa-secreto",
-      "public": "dist/secret-santa/hosting",
+      "public": "dist/apps/secret-santa/hosting",
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -56,6 +56,32 @@
         {
           "source": "**",
           "destination": "/es/index.html"
+        }
+      ]
+    },
+    {
+      "target": "santa-secreto-backoffice",
+      "public": "dist/apps/backoffice/browser",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            {
+              "key": "X-Robots-Tag",
+              "value": "noindex, nofollow"
+            }
+          ]
+        }
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
         }
       ]
     }

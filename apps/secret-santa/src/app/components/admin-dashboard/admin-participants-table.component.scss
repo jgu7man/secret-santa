@@ -1,0 +1,11 @@
+.admin-table-link {
+  color: var(--ss-pine-700);
+}
+
+.admin-table-link--danger {
+  color: var(--ss-red-800);
+}
+
+.admin-table-link:hover {
+  text-decoration: underline;
+}

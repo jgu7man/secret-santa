@@ -1,0 +1,51 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-950 via-pine-950 to-slate-900 flex items-center justify-center px-4 py-12">
+  <main class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 p-8 space-y-6">
+    <div class="space-y-2 text-center">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-pine-100 text-pine-900">
+        {{ config().brandName }}
+      </span>
+      <h1 class="text-2xl font-bold text-slate-900">{{ config().appName }}</h1>
+      <p class="text-sm text-slate-600">
+        Acceso exclusivo para administradores autorizados.
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+      <div role="alert" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    @if (accessDenied()) {
+      <div role="alert" class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 space-y-1.5">
+        <p class="font-semibold">Acceso restringido</p>
+        <p>
+          Esta cuenta no tiene permisos de administrador activos. Se cerró la sesión por seguridad.
+        </p>
+      </div>
+    }
+
+    <button
+      type="button"
+      (click)="loginWithGoogle()"
+      [disabled]="isLoading()"
+      class="w-full flex items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pine-700 disabled:opacity-60 transition"
+    >
+      <img
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+        alt=""
+        class="w-5 h-5"
+      />
+      <span>{{ isLoading() ? 'Verificando acceso...' : 'Continuar con Google' }}</span>
+    </button>
+
+    <div class="text-center pt-2 border-t border-slate-100">
+      <a
+        [routerLink]="config().requestAccessRoute"
+        class="text-xs font-medium text-slate-500 hover:text-pine-700 transition"
+      >
+        ¿Necesitas acceso? Solicítalo aquí
+      </a>
+    </div>
+  </main>
+</div>

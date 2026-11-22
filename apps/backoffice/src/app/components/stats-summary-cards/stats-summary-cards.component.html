@@ -1,0 +1,45 @@
+@let data = stats();
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+  <article class="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+      Usuarios registrados
+    </p>
+    <p class="mt-2 text-3xl font-bold text-slate-900">{{ data.totalUsers }}</p>
+    <p class="mt-2 text-xs text-slate-600">
+      {{ data.activeUsers }} activos · {{ data.adminUsers }} admins · {{ data.suspendedUsers }} suspendidos
+    </p>
+  </article>
+
+  <article class="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+      Eventos totales
+    </p>
+    <p class="mt-2 text-3xl font-bold text-slate-900">{{ data.totalEvents }}</p>
+    <p class="mt-2 text-xs text-slate-600">
+      {{ data.drawnEvents }} sorteados · {{ data.openEvents }} pendientes · {{ data.guestEvents }} invitados
+    </p>
+  </article>
+
+  <article class="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+      Participantes
+    </p>
+    <p class="mt-2 text-3xl font-bold text-slate-900">{{ data.totalParticipants }}</p>
+    <p class="mt-2 text-xs text-slate-600">
+      Promedio de {{ data.averageParticipantsPerEvent }} participantes por evento
+    </p>
+  </article>
+
+  <article class="rounded-2xl bg-white border border-slate-200 p-5 shadow-sm">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+      Tasa de sorteo
+    </p>
+    <p class="mt-2 text-3xl font-bold text-pine-700">{{ data.drawCompletionRate }}%</p>
+    <div class="mt-3 h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+      <div
+        class="h-full bg-pine-700 rounded-full transition-all"
+        [style.width.%]="data.drawCompletionRate"
+      ></div>
+    </div>
+  </article>
+</div>

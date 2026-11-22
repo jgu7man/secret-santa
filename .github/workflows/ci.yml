@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Setup example Firebase config
-        run: cp src/app/firebase-config.example.ts src/app/firebase-config.ts
+        run: cp libs/shared/firebase/src/lib/firebase-config.example.ts libs/shared/firebase/src/lib/firebase-config.ts
 
       - name: Typecheck
         run: npx tsc --noEmit
@@ -38,8 +38,11 @@ jobs:
       - name: Build unified hosting bundle
         run: npm run build:hosting
 
+      - name: Build backoffice app
+        run: npm run build:backoffice
+
       - name: Run unit tests
-        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
+        run: npm run test
 
   deploy:
     name: Deploy to Firebase Hosting
@@ -67,7 +70,7 @@ jobs:
         env:
           FIREBASE_WEB_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
           FIREBASE_PROJECT_ID: secret-santa-jgu7man
-          FIREBASE_HOSTING_TARGETS: santa-secreto=santa-secreto
+          FIREBASE_HOSTING_TARGETS: santa-secreto=santa-secreto,santa-secreto-backoffice=santa-secreto-backoffice
         run: node --experimental-strip-types scripts/setup-firebase-ci.ts
 
       - name: Typecheck production config
@@ -76,6 +79,9 @@ jobs:
       - name: Build unified hosting bundle
         run: npm run build:hosting
 
+      - name: Build backoffice app
+        run: npm run build:backoffice
+
       - name: Deploy to Firebase Hosting (santa-secreto)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -83,4 +89,13 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SECRET_SANTA_JGU7MAN }}
           projectId: secret-santa-jgu7man
           target: santa-secreto
+          channelId: live
+
+      - name: Deploy to Firebase Hosting (santa-secreto-backoffice)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SECRET_SANTA_JGU7MAN }}
+          projectId: secret-santa-jgu7man
+          target: santa-secreto-backoffice
           channelId: live

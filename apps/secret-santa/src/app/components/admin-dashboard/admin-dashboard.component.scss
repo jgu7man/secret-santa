@@ -1,0 +1,13 @@
+.admin-page .ss-card--dark {
+  --ss-glass-dark: rgb(6 46 37 / 76%);
+}
+
+.admin-muted,
+.admin-back-link {
+  color: var(--ss-text-muted-on-dark);
+}
+
+.admin-back-link:hover {
+  color: var(--ss-text-on-dark);
+  text-decoration: underline;
+}

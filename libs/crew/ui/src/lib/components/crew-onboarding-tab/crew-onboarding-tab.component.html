@@ -1,0 +1,220 @@
+<div class="space-y-6">
+  <div class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4">
+    <div>
+      <h3 class="text-base font-bold text-slate-900">Invitar por correo directamente</h3>
+      <p class="text-xs text-slate-500">
+        Genera un enlace único de invitación sin esperar una solicitud previa.
+      </p>
+    </div>
+
+    <form [formGroup]="inviteForm" (ngSubmit)="submitDirectInvite()" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+      <div class="md:col-span-5">
+        <label for="direct-invite-email" class="block text-xs font-medium text-slate-700">
+          Correo electrónico autorizado
+        </label>
+        <input
+          id="direct-invite-email"
+          type="email"
+          formControlName="email"
+          placeholder="persona@empresa.com"
+          class="mt-1 w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-pine-700 focus:outline-none"
+        />
+      </div>
+
+      <div class="md:col-span-3">
+        <label for="direct-invite-role" class="block text-xs font-medium text-slate-700">
+          Rol asignado
+        </label>
+        <select
+          id="direct-invite-role"
+          formControlName="targetRole"
+          class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-pine-700 focus:outline-none"
+        >
+          @for (role of roles(); track role) {
+            <option [value]="role">{{ role }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="md:col-span-2 flex items-center gap-2 py-2">
+        <input
+          id="direct-invite-profile"
+          type="checkbox"
+          formControlName="requiresProfileCompletion"
+          class="h-4 w-4 rounded border-slate-300 text-pine-700 focus:ring-pine-700"
+        />
+        <label for="direct-invite-profile" class="text-xs text-slate-700">
+          Pedir perfil
+        </label>
+      </div>
+
+      <div class="md:col-span-2">
+        <button
+          type="submit"
+          [disabled]="inviteForm.invalid || savingId() === 'direct-invite'"
+          class="w-full rounded-xl bg-pine-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-pine-700 disabled:opacity-60 transition"
+        >
+          Generar enlace
+        </button>
+      </div>
+    </form>
+
+    @if (lastGeneratedInviteUrl()) {
+      <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <span class="text-xs font-mono text-emerald-950 break-all">{{ lastGeneratedInviteUrl() }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-200">
+      <h3 class="text-base font-bold text-slate-900">Solicitudes de acceso</h3>
+      <p class="text-xs text-slate-500">
+        Peticiones enviadas desde {{ requestAccessRoute() }}.
+      </p>
+    </div>
+
+    @if (accessRequests().length === 0) {
+      <div class="p-6 text-center text-sm text-slate-500">
+        No hay solicitudes de acceso registradas.
+      </div>
+    } @else {
+      @let activeSavingId = savingId();
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+          <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <tr>
+              <th scope="col" class="px-6 py-3">Solicitante</th>
+              <th scope="col" class="px-6 py-3">Canal</th>
+              <th scope="col" class="px-6 py-3">Motivo</th>
+              <th scope="col" class="px-6 py-3">Estado</th>
+              <th scope="col" class="px-6 py-3 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            @for (req of accessRequests(); track req.id) {
+              @let badge = requestBadges[req.status];
+              <tr class="hover:bg-slate-50/70">
+                <td class="px-6 py-4">
+                  <div class="font-semibold text-slate-900">{{ req.displayName }}</div>
+                  <div class="text-xs text-slate-600">{{ req.email }}</div>
+                </td>
+                <td class="px-6 py-4 text-xs font-mono text-slate-600">{{ req.source }}</td>
+                <td class="px-6 py-4 text-xs text-slate-600">{{ req.reason || '—' }}</td>
+                <td class="px-6 py-4">
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                    [ngClass]="badge.classes"
+                  >
+                    {{ badge.label }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-right whitespace-nowrap space-x-2">
+                  @if (req.status === AccessRequestStatus.PENDING) {
+                    <button
+                      type="button"
+                      (click)="approveRequest.emit(req)"
+                      [disabled]="activeSavingId === req.id"
+                      class="rounded-lg bg-pine-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-pine-700 disabled:opacity-50"
+                    >
+                      Aprobar y generar enlace
+                    </button>
+                    <button
+                      type="button"
+                      (click)="rejectRequest.emit(req)"
+                      [disabled]="activeSavingId === req.id"
+                      class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    >
+                      Rechazar
+                    </button>
+                  } @else {
+                    @let inviteId = req.inviteId;
+                    @if (inviteId) {
+                      <button
+                        type="button"
+                        (click)="copyInviteLink.emit(inviteId)"
+                        class="text-xs font-semibold text-pine-700 hover:underline"
+                      >
+                        Copiar enlace
+                      </button>
+                    }
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <div class="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-200">
+      <h3 class="text-base font-bold text-slate-900">Invitaciones generadas</h3>
+      <p class="text-xs text-slate-500">
+        Historial de enlaces de invitación emitidos y su estado.
+      </p>
+    </div>
+
+    @if (invites().length === 0) {
+      <div class="p-6 text-center text-sm text-slate-500">
+        Aún no se han emitido invitaciones.
+      </div>
+    } @else {
+      @let activeSavingId = savingId();
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+          <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <tr>
+              <th scope="col" class="px-6 py-3">Correo</th>
+              <th scope="col" class="px-6 py-3">Rol</th>
+              <th scope="col" class="px-6 py-3">Estado</th>
+              <th scope="col" class="px-6 py-3">Expira</th>
+              <th scope="col" class="px-6 py-3 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            @for (inv of invites(); track inv.id) {
+              @let badge = inviteBadges[inv.status];
+              <tr class="hover:bg-slate-50/70">
+                <td class="px-6 py-4 font-medium text-slate-900">
+                  <div>{{ inv.email }}</div>
+                  <div class="text-[11px] font-mono text-slate-400">{{ inv.id }}</div>
+                </td>
+                <td class="px-6 py-4 text-xs font-mono text-slate-700">{{ inv.targetRole }}</td>
+                <td class="px-6 py-4">
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                    [ngClass]="badge.classes"
+                  >
+                    {{ badge.label }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-xs text-slate-600">{{ inv.expiresAt | firestoreTimestamp }}</td>
+                <td class="px-6 py-4 text-right whitespace-nowrap space-x-2">
+                  @if (inv.status === AdminInviteStatus.PENDING) {
+                    <button
+                      type="button"
+                      (click)="copyInviteLink.emit(inv.id)"
+                      class="text-xs font-semibold text-pine-700 hover:underline"
+                    >
+                      Copiar enlace
+                    </button>
+                    <button
+                      type="button"
+                      (click)="revokeInvite.emit(inv)"
+                      [disabled]="activeSavingId === inv.id"
+                      class="rounded-lg border border-red-200 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    >
+                      Revocar
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

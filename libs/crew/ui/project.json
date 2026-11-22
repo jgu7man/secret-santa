@@ -1,0 +1,17 @@
+{
+  "name": "crew-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/crew/ui/src",
+  "projectType": "library",
+  "tags": ["scope:crew", "type:ui"],
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "polyfills": ["zone.js", "zone.js/testing"],
+        "tsConfig": "libs/crew/ui/tsconfig.spec.json",
+        "scripts": []
+      }
+    }
+  }
+}
