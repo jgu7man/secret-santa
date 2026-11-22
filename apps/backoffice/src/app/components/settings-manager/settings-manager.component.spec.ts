@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { createDefaultAppRegistryDocument } from '@secret-santa/shared-models';
+import { createDefaultAppRegistryDocument } from '@secret-santa/shared-data-access';
 import { BackofficeConfigService } from '../../services/backoffice-config.service';
 import { SettingsManagerComponent } from './settings-manager.component';
 
@@ -9,11 +9,18 @@ describe('SettingsManagerComponent', () => {
 
   const configServiceSpy = jasmine.createSpyObj<BackofficeConfigService>(
     'BackofficeConfigService',
-    ['loadApp', 'saveApp', 'listReleases', 'createRelease']
+    ['getDefaultApp', 'loadApp', 'saveApp', 'listReleases', 'createRelease']
   );
 
   beforeEach(async () => {
-    const defaults = createDefaultAppRegistryDocument('backoffice');
+    const defaults = createDefaultAppRegistryDocument('backoffice', {
+      name: 'Secret Santa Backoffice',
+      auth: {
+        appName: 'Secret Santa Backoffice',
+        postLoginRedirectUrl: '/stats',
+      },
+    });
+    configServiceSpy.getDefaultApp.and.returnValue(defaults);
     configServiceSpy.loadApp.and.resolveTo(defaults);
     configServiceSpy.listReleases.and.resolveTo([]);
     configServiceSpy.saveApp.and.callFake(async (appId, input) => ({
@@ -45,6 +52,10 @@ describe('SettingsManagerComponent', () => {
       maintenanceMode: true,
       defaultMinAmount: 250,
       postLoginRedirectUrl: '/users',
+      buyMeACoffee: {
+        enabled: true,
+        slug: 'marxa_digital',
+      },
     });
 
     await component.save();
@@ -56,6 +67,10 @@ describe('SettingsManagerComponent', () => {
         defaultMinAmount: 250,
         auth: jasmine.objectContaining({
           postLoginRedirectUrl: '/users',
+        }),
+        buyMeACoffee: jasmine.objectContaining({
+          enabled: true,
+          slug: 'marxa_digital',
         }),
       })
     );

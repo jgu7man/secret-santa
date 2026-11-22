@@ -3,6 +3,7 @@ import {
   Component,
   ErrorHandler,
   LOCALE_ID,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -20,6 +21,7 @@ import {
   AnalyticsService,
 } from '@secret-santa/shared-core';
 import {
+  BuyMeACoffeeService,
   SeoLocale,
   buildBuyMeACoffeeButtonConfig,
   resolveLocaleFromId,
@@ -39,12 +41,19 @@ export class CreateEventComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly buyMeACoffeeService = inject(BuyMeACoffeeService);
   private readonly errorHandler = inject(ErrorHandler);
 
   private readonly activeLocale = resolveLocaleFromId(inject(LOCALE_ID));
   protected readonly isSpanish = this.activeLocale === SeoLocale.ES_MX;
-  protected readonly bmcButton = buildBuyMeACoffeeButtonConfig(
-    this.activeLocale
+  protected readonly showBmcButton = computed(
+    () => this.buyMeACoffeeService.settings().enabled
+  );
+  protected readonly bmcButton = computed(() =>
+    buildBuyMeACoffeeButtonConfig(
+      this.activeLocale,
+      this.buyMeACoffeeService.settings().slug
+    )
   );
 
   protected readonly eventForm = this.fb.group({

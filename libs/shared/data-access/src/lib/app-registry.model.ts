@@ -13,6 +13,12 @@ export enum AppEnvironment {
   PROD = 'PROD',
 }
 
+/** Supported horizontal placement options for the Buy Me a Coffee floating widget. */
+export enum BuyMeACoffeeWidgetPosition {
+  LEFT = 'Left',
+  RIGHT = 'Right',
+}
+
 /** Runtime type guard for `AppEnvironment`. */
 export function isAppEnvironment(value: unknown): value is AppEnvironment {
   return (
@@ -22,6 +28,31 @@ export function isAppEnvironment(value: unknown): value is AppEnvironment {
 }
 
 const nonEmptyString = z.string().check(z.minLength(1));
+const BMC_SLUG_PATTERN = /^[a-zA-Z0-9._-]{1,64}$/;
+const HEX_COLOR_PATTERN = /^#[0-9A-Fa-f]{6}$/;
+
+/** Canonical Zod Mini schema for remotely managed Buy Me a Coffee widget/button settings. */
+export const buyMeACoffeeSettingsSchema = z.object({
+  enabled: z.boolean(),
+  slug: z.string().check(z.regex(BMC_SLUG_PATTERN)),
+  color: z.string().check(z.regex(HEX_COLOR_PATTERN)),
+  position: z.enum(BuyMeACoffeeWidgetPosition),
+  xMargin: z.number().check(z.minimum(0), z.maximum(120)),
+  yMargin: z.number().check(z.minimum(0), z.maximum(120)),
+});
+
+/** Remotely managed Buy Me a Coffee configuration stored inside `apps/{appId}`. */
+export type BuyMeACoffeeSettings = z.infer<typeof buyMeACoffeeSettingsSchema>;
+
+/** Default Buy Me a Coffee settings used when an app document does not specify overrides. */
+export const DEFAULT_BUY_ME_A_COFFEE_SETTINGS: BuyMeACoffeeSettings = {
+  enabled: false,
+  slug: 'jgu7man',
+  color: '#40DCA5',
+  position: BuyMeACoffeeWidgetPosition.RIGHT,
+  xMargin: 18,
+  yMargin: 18,
+};
 
 /** Canonical Zod Mini schema for Firestore `apps/{appId}` documents. */
 export const appRegistryDocumentSchema = z.object({
@@ -36,6 +67,7 @@ export const appRegistryDocumentSchema = z.object({
   announcementEnabled: z.boolean(),
   announcementText: z.string(),
   auth: appAuthSettingsSchema,
+  buyMeACoffee: z.optional(buyMeACoffeeSettingsSchema),
   updatedAt: z.optional(firestoreTimestampSchema),
   updatedBy: z.optional(nonEmptyString),
 });

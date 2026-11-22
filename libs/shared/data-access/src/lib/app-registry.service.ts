@@ -62,15 +62,24 @@ export class AppRegistryService {
     updatedBy: string,
   ): Promise<AppRegistryDocument> {
     const appRef = doc(this.db, APPS_COLLECTION, appId);
-    const payload: AppRegistryDocument = {
+    const payload = appRegistryDocumentSchema.parse({
       id: appId,
       ...input,
       name: input.name.trim(),
       maintenanceMessage: input.maintenanceMessage.trim(),
       announcementText: input.announcementText.trim(),
+      ...(input.buyMeACoffee
+        ? {
+            buyMeACoffee: {
+              ...input.buyMeACoffee,
+              slug: input.buyMeACoffee.slug.trim(),
+              color: input.buyMeACoffee.color.trim(),
+            },
+          }
+        : {}),
       updatedAt: Timestamp.now(),
       updatedBy,
-    };
+    });
     await setDoc(appRef, payload);
     return payload;
   }

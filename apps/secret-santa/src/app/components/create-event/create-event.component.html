@@ -131,26 +131,29 @@
         </button>
       </form>
       <p class="mt-5 text-sm create-note" i18n="@@createEventInfoNote">💡 After creating the event, save the admin link to manage it later!</p>
-      <div class="create-support mt-6 pt-5">
-        <a
-          class="create-bmc-link"
-          [href]="bmcButton.href"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img
-            [src]="bmcButton.imageSrc"
-            [alt]="bmcButton.alt"
-            [attr.width]="bmcButton.width"
-            [attr.height]="bmcButton.height"
-            loading="lazy"
-            decoding="async"
-            referrerpolicy="no-referrer"
-            class="create-bmc-img"
-          />
-          <span class="visually-hidden" i18n="@@opensInNewTab"> (opens in a new tab)</span>
-        </a>
-      </div>
+      @if (showBmcButton()) {
+        @let button = bmcButton();
+        <div class="create-support mt-6 pt-5">
+          <a
+            class="create-bmc-link"
+            [href]="button.href"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              [src]="button.imageSrc"
+              [alt]="button.alt"
+              [attr.width]="button.width"
+              [attr.height]="button.height"
+              loading="lazy"
+              decoding="async"
+              referrerpolicy="no-referrer"
+              class="create-bmc-img"
+            />
+            <span class="visually-hidden" i18n="@@opensInNewTab"> (opens in a new tab)</span>
+          </a>
+        </div>
+      }
     </section>
   </main>
 

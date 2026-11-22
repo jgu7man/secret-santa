@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  ErrorHandler,
   OnInit,
   computed,
   inject,
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UserRole } from '@marxa/auth-domain';
 import {
   ActiveClassPipe,
   FirestoreTimestampPipe,
@@ -18,10 +20,11 @@ import {
   AppRegistryDocument,
   AppRegistryUpdateInput,
   AppRelease,
-  UserRole,
-  createDefaultAppRegistryDocument,
-} from '@secret-santa/shared-models';
+  BuyMeACoffeeWidgetPosition,
+  DEFAULT_BUY_ME_A_COFFEE_SETTINGS,
+} from '@secret-santa/shared-data-access';
 import { BackofficeConfigService } from '../../services/backoffice-config.service';
+import { BuyMeACoffeeSettingsCardComponent } from './buy-me-a-coffee-settings-card.component';
 
 interface ManagedAppOption {
   readonly id: string;
@@ -36,6 +39,7 @@ interface ManagedAppOption {
     ReactiveFormsModule,
     FirestoreTimestampPipe,
     ActiveClassPipe,
+    BuyMeACoffeeSettingsCardComponent,
   ],
   templateUrl: './settings-manager.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,6 +47,7 @@ interface ManagedAppOption {
 export class SettingsManagerComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly configService = inject(BackofficeConfigService);
+  private readonly errorHandler = inject(ErrorHandler);
 
   protected readonly managedApps: ReadonlyArray<ManagedAppOption> = [
     { id: 'backoffice', label: 'Backoffice' },
@@ -87,7 +92,10 @@ export class SettingsManagerComponent implements OnInit {
     announcementText: ['', [Validators.maxLength(1000)]],
     brandName: ['', [Validators.required, Validators.maxLength(120)]],
     appName: ['', [Validators.required, Validators.maxLength(120)]],
-    postLoginRedirectUrl: ['', [Validators.required, Validators.maxLength(200)]],
+    postLoginRedirectUrl: [
+      '',
+      [Validators.required, Validators.maxLength(200)],
+    ],
     loginRoute: ['', [Validators.required, Validators.maxLength(200)]],
     requestAccessRoute: ['', [Validators.required, Validators.maxLength(200)]],
     inviteBasePath: ['', [Validators.required, Validators.maxLength(200)]],
@@ -97,6 +105,29 @@ export class SettingsManagerComponent implements OnInit {
       72,
       [Validators.required, Validators.min(1), Validators.max(720)],
     ],
+    buyMeACoffee: this.fb.nonNullable.group({
+      enabled: [DEFAULT_BUY_ME_A_COFFEE_SETTINGS.enabled],
+      slug: [
+        DEFAULT_BUY_ME_A_COFFEE_SETTINGS.slug,
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9._-]{1,64}$/)],
+      ],
+      color: [
+        DEFAULT_BUY_ME_A_COFFEE_SETTINGS.color,
+        [Validators.required, Validators.pattern(/^#[0-9A-Fa-f]{6}$/)],
+      ],
+      position: [
+        DEFAULT_BUY_ME_A_COFFEE_SETTINGS.position as BuyMeACoffeeWidgetPosition,
+        [Validators.required],
+      ],
+      xMargin: [
+        DEFAULT_BUY_ME_A_COFFEE_SETTINGS.xMargin,
+        [Validators.required, Validators.min(0), Validators.max(120)],
+      ],
+      yMargin: [
+        DEFAULT_BUY_ME_A_COFFEE_SETTINGS.yMargin,
+        [Validators.required, Validators.min(0), Validators.max(120)],
+      ],
+    }),
   });
 
   readonly releaseForm = this.fb.nonNullable.group({
@@ -142,9 +173,10 @@ export class SettingsManagerComponent implements OnInit {
       ]);
       this.patchForm(appDoc);
       this.releases.set(releasesList);
-    } catch {
+    } catch (error: unknown) {
+      this.errorHandler.handleError(error);
       this.errorMessage.set(
-        `No se pudo cargar la configuración de apps/${appId} desde Firestore.`
+        `No se pudo cargar la configuración de apps/${appId} desde Firestore.`,
       );
     } finally {
       this.isLoading.set(false);
@@ -164,7 +196,7 @@ export class SettingsManagerComponent implements OnInit {
   }
 
   resetDefaults(): void {
-    const defaults = createDefaultAppRegistryDocument(this.selectedAppId());
+    const defaults = this.configService.getDefaultApp(this.selectedAppId());
     this.patchForm(defaults);
     this.settingsForm.markAsDirty();
   }
@@ -205,15 +237,24 @@ export class SettingsManagerComponent implements OnInit {
           inviteExpirationHours: raw.inviteExpirationHours,
           allowedAdminRoles: this.allowedAdminRoles(),
         },
+        buyMeACoffee: {
+          enabled: raw.buyMeACoffee.enabled,
+          slug: raw.buyMeACoffee.slug.trim(),
+          color: raw.buyMeACoffee.color.trim(),
+          position: raw.buyMeACoffee.position,
+          xMargin: raw.buyMeACoffee.xMargin,
+          yMargin: raw.buyMeACoffee.yMargin,
+        },
       };
 
       const saved = await this.configService.saveApp(appId, payload);
       this.patchForm(saved);
       this.settingsForm.markAsPristine();
       this.flashSuccess(`Configuración guardada en apps/${appId}.`);
-    } catch {
+    } catch (error: unknown) {
+      this.errorHandler.handleError(error);
       this.errorMessage.set(
-        `No se pudo guardar apps/${appId}. Verifica tus permisos de administrador.`
+        `No se pudo guardar apps/${appId}. Verifica tus permisos de administrador.`,
       );
     } finally {
       this.isSaving.set(false);
@@ -235,7 +276,7 @@ export class SettingsManagerComponent implements OnInit {
         appId,
         version,
         environment,
-        notes
+        notes,
       );
       this.releases.update((list) => [created, ...list]);
       this.releaseForm.reset({
@@ -244,7 +285,8 @@ export class SettingsManagerComponent implements OnInit {
         notes: '',
       });
       this.flashSuccess(`Release ${created.version} registrado en ${appId}.`);
-    } catch {
+    } catch (error: unknown) {
+      this.errorHandler.handleError(error);
       this.errorMessage.set('No se pudo registrar el release.');
     } finally {
       this.isCreatingRelease.set(false);
@@ -272,6 +314,10 @@ export class SettingsManagerComponent implements OnInit {
         appDoc.auth.requiresProfileCompletionByDefault,
       defaultTargetRole: appDoc.auth.defaultTargetRole,
       inviteExpirationHours: appDoc.auth.inviteExpirationHours,
+      buyMeACoffee: {
+        ...DEFAULT_BUY_ME_A_COFFEE_SETTINGS,
+        ...appDoc.buyMeACoffee,
+      },
     });
     this.allowedAdminRoles.set([...appDoc.auth.allowedAdminRoles]);
     this.lastMetadata.set({
