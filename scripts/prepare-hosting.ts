@@ -1,10 +1,22 @@
 import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
-const browserDistDir = join(process.cwd(), 'dist', 'secret-santa', 'browser');
+const browserDistDir = join(
+  process.cwd(),
+  'dist',
+  'apps',
+  'secret-santa',
+  'browser'
+);
 const enDir = join(browserDistDir, 'en-US');
 const esDir = join(browserDistDir, 'es-MX');
-const hostingDir = join(process.cwd(), 'dist', 'secret-santa', 'hosting');
+const hostingDir = join(
+  process.cwd(),
+  'dist',
+  'apps',
+  'secret-santa',
+  'hosting'
+);
 
 if (!existsSync(enDir) || !existsSync(esDir)) {
   throw new Error(

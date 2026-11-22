@@ -11,7 +11,7 @@
   "hosting": [
     {
       "target": "santa-secreto",
-      "public": "dist/secret-santa/hosting",
+      "public": "dist/apps/secret-santa/hosting",
       "ignore": [
         "firebase.json",
         "**/.*",

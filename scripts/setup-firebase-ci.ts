@@ -17,7 +17,7 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
 
 function readNonEmptyString(
   record: Record<string, unknown>,
-  field: string
+  field: string,
 ): string {
   const value = record[field];
   if (typeof value !== 'string') {
@@ -26,7 +26,7 @@ function readNonEmptyString(
   const trimmed = value.trim();
   if (!trimmed || trimmed.startsWith('YOUR_')) {
     throw new Error(
-      `FIREBASE_WEB_CONFIG.${field} must be a real non-placeholder value.`
+      `FIREBASE_WEB_CONFIG.${field} must be a real non-placeholder value.`,
     );
   }
   return trimmed;
@@ -103,7 +103,7 @@ export const auth = getAuth(app);
 function parseHostingTargets(
   rawTargets: string | undefined,
   fallbackTarget: string,
-  fallbackSiteId: string
+  fallbackSiteId: string,
 ): Record<string, string[]> {
   const trimmed = rawTargets?.trim();
   if (!trimmed) {
@@ -118,7 +118,7 @@ function parseHostingTargets(
     const separatorIndex = pair.indexOf('=');
     if (separatorIndex <= 0 || separatorIndex === pair.length - 1) {
       throw new Error(
-        `Invalid FIREBASE_HOSTING_TARGETS entry "${pair}". Expected "target=siteId".`
+        `Invalid FIREBASE_HOSTING_TARGETS entry "${pair}". Expected "target=siteId".`,
       );
     }
 
@@ -126,7 +126,7 @@ function parseHostingTargets(
     const siteId = pair.slice(separatorIndex + 1).trim();
     if (!target || !siteId) {
       throw new Error(
-        `Invalid FIREBASE_HOSTING_TARGETS entry "${pair}". Target and siteId must be non-empty.`
+        `Invalid FIREBASE_HOSTING_TARGETS entry "${pair}". Target and siteId must be non-empty.`,
       );
     }
 
@@ -135,7 +135,7 @@ function parseHostingTargets(
 
   if (Object.keys(targets).length === 0) {
     throw new Error(
-      'FIREBASE_HOSTING_TARGETS must define at least one target=siteId pair.'
+      'FIREBASE_HOSTING_TARGETS must define at least one target=siteId pair.',
     );
   }
 
@@ -158,7 +158,7 @@ function main(): void {
   const rawConfig = process.env['FIREBASE_WEB_CONFIG']?.trim();
   if (!rawConfig) {
     throw new Error(
-      'Missing FIREBASE_WEB_CONFIG environment variable. Set the GitHub Secret FIREBASE_WEB_CONFIG with your Firebase Web App JSON config.'
+      'Missing FIREBASE_WEB_CONFIG environment variable. Set the GitHub Secret FIREBASE_WEB_CONFIG with your Firebase Web App JSON config.',
     );
   }
 
@@ -174,10 +174,18 @@ function main(): void {
   const hostingTargets = parseHostingTargets(
     process.env['FIREBASE_HOSTING_TARGETS'],
     hostingTarget,
-    hostingSiteId
+    hostingSiteId,
   );
 
-  const firebaseConfigPath = join(rootDir, 'src', 'app', 'firebase-config.ts');
+  const firebaseConfigPath = join(
+    rootDir,
+    'libs',
+    'shared',
+    'firebase',
+    'src',
+    'lib',
+    'firebase-config.ts',
+  );
   mkdirSync(dirname(firebaseConfigPath), { recursive: true });
   writeFileSync(firebaseConfigPath, renderFirebaseConfigTs(config), 'utf8');
 
@@ -195,14 +203,14 @@ function main(): void {
   writeFileSync(
     firebasercPath,
     `${JSON.stringify(firebasercPayload, null, 2)}\n`,
-    'utf8'
+    'utf8',
   );
 
   const targetsSummary = Object.entries(hostingTargets)
     .map(([target, sites]) => `${target}->${sites.join('|')}`)
     .join(', ');
   console.log(
-    `Generated CI Firebase config and .firebaserc (project=${projectId}, targets=[${targetsSummary}])`
+    `Generated CI Firebase config and .firebaserc (project=${projectId}, targets=[${targetsSummary}])`,
   );
 }
 

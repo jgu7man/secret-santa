@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Setup example Firebase config
-        run: cp src/app/firebase-config.example.ts src/app/firebase-config.ts
+        run: cp libs/shared/firebase/src/lib/firebase-config.example.ts libs/shared/firebase/src/lib/firebase-config.ts
 
       - name: Typecheck
         run: npx tsc --noEmit
@@ -38,8 +38,11 @@ jobs:
       - name: Build unified hosting bundle
         run: npm run build:hosting
 
+      - name: Build backoffice app
+        run: npm run build:backoffice
+
       - name: Run unit tests
-        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
+        run: npm run test
 
   deploy:
     name: Deploy to Firebase Hosting

@@ -1,0 +1,45 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@secret-santa/shared-firebase": ["libs/shared/firebase/src/index.ts"],
+      "@secret-santa/shared-data-access": [
+        "libs/shared/data-access/src/index.ts"
+      ],
+      "@secret-santa/shared-core": ["libs/shared/core/src/index.ts"],
+      "@secret-santa/domain": ["libs/secret-santa/domain/src/index.ts"],
+      "@secret-santa/data-access": ["libs/secret-santa/data-access/src/index.ts"],
+      "@marxa/auth-domain": ["libs/auth/domain/src/index.ts"],
+      "@marxa/auth-engine": ["libs/auth/engine/src/index.ts"],
+      "@marxa/auth-ui": ["libs/auth/ui/src/index.ts"],
+      "@marxa/crew-ui": ["libs/crew/ui/src/index.ts"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "exclude": ["node_modules", "tmp", "dist"]
+}
