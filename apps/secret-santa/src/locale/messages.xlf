@@ -167,6 +167,48 @@
           <context context-type="sourcefile">src/app/core/config/buy-me-a-coffee.config.ts</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="phaseHintOpen" datatype="html">
+        <source>When everyone has joined (min. 2), close registration to unlock the raffle.</source>
+      </trans-unit>
+      <trans-unit id="phaseHintClosed" datatype="html">
+        <source>Registration is closed. You can now run the raffle to assign who gifts whom.</source>
+      </trans-unit>
+      <trans-unit id="phaseHintDrawn" datatype="html">
+        <source>Raffle ready! Share the link so each participant can see their Secret Santa match.</source>
+      </trans-unit>
+      <trans-unit id="eventOptionsMenuAria" datatype="html">
+        <source>Event options</source>
+      </trans-unit>
+      <trans-unit id="deleteEventMenuAction" datatype="html">
+        <source>🗑️ Delete Event</source>
+      </trans-unit>
+      <trans-unit id="shareInviteGroupTitle" datatype="html">
+        <source>Share Invitation</source>
+      </trans-unit>
+      <trans-unit id="shareWhatsappButton" datatype="html">
+        <source>💬 Share via WhatsApp</source>
+      </trans-unit>
+      <trans-unit id="copyLinkShortButton" datatype="html">
+        <source>📋 Copy Link</source>
+      </trans-unit>
+      <trans-unit id="exchangeFlowGroupTitle" datatype="html">
+        <source>Exchange Flow</source>
+      </trans-unit>
+      <trans-unit id="needMinParticipantsHint" datatype="html">
+        <source>Need at least 2 participants to run the raffle. Reopen registration to add more.</source>
+      </trans-unit>
+      <trans-unit id="closeRegistrationModalTitle" datatype="html">
+        <source>🔒 Close registration?</source>
+      </trans-unit>
+      <trans-unit id="closeRegistrationModalMessage" datatype="html">
+        <source>If you close registration, no one else will be able to join and the button to run the raffle (assigning who gifts whom) will be enabled. You can reopen it later if someone is missing.</source>
+      </trans-unit>
+      <trans-unit id="closeRegistrationConfirmLabel" datatype="html">
+        <source>Yes, close registration</source>
+      </trans-unit>
+      <trans-unit id="whatsappInviteMessage" datatype="html">
+        <source>🎁 You're invited to the "<x id="EVENT_NAME" equiv-text="current.name"/>" Secret Santa! Join here: <x id="INVITE_LINK" equiv-text="link"/></source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

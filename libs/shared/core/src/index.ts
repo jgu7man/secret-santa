@@ -38,4 +38,5 @@ export {
   sanitizeErrorMessage,
 } from './lib/services/global-error-handler.service';
 export type { NormalizedAppError } from './lib/services/global-error-handler.service';
+export { buildWhatsappShareUrl } from './lib/utils/whatsapp-share.util';
 

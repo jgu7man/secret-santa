@@ -1,0 +1,111 @@
+@let phase = phaseState();
+
+<div class="ss-card ss-card--attached-bottom mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:divide-x md:divide-slate-300/60">
+    <!-- Share Group -->
+    <div class="space-y-2.5">
+      <h2
+        class="text-xs font-bold uppercase tracking-wider text-slate-700"
+        i18n="@@shareInviteGroupTitle"
+      >
+        Share Invitation
+      </h2>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <a
+          [href]="whatsappShareUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="ss-button-whatsapp ss-button--compact"
+          i18n="@@shareWhatsappButton"
+        >
+          💬 Share via WhatsApp
+        </a>
+
+        <button
+          type="button"
+          (click)="copyLink.emit()"
+          class="ss-button-secondary ss-button--compact"
+          i18n="@@copyLinkShortButton"
+        >
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Exchange Flow Group -->
+    <div class="space-y-2.5 md:pl-5">
+      <h2
+        class="text-xs font-bold uppercase tracking-wider text-slate-700"
+        i18n="@@exchangeFlowGroupTitle"
+      >
+        Exchange Flow
+      </h2>
+
+      <div class="flex flex-wrap items-center gap-2">
+        @if (phase === AdminEventBadgeState.OPEN) {
+          <button
+            type="button"
+            (click)="requestCloseRegistration.emit()"
+            class="ss-button-primary ss-button--compact"
+            i18n="@@closeRegistration"
+          >
+            🔒 Close Registration
+          </button>
+        } @else if (phase === AdminEventBadgeState.REGISTRATION_CLOSED) {
+          <button
+            type="button"
+            (click)="requestRaffle.emit()"
+            [disabled]="!canRunRaffle()"
+            class="ss-button-primary ss-button--compact"
+            i18n="@@runRaffle"
+          >
+            🎲 Run Raffle
+          </button>
+
+          <button
+            type="button"
+            (click)="reopenRegistration.emit()"
+            class="ss-button-secondary ss-button--compact"
+            i18n="@@openRegistration"
+          >
+            🔓 Open Registration
+          </button>
+        } @else {
+          @if (canRunRaffle()) {
+            <button
+              type="button"
+              (click)="requestRaffle.emit()"
+              class="ss-button-primary ss-button--compact"
+              i18n="@@rerunRaffle"
+            >
+              🎲 Re-run Raffle
+            </button>
+          }
+        }
+
+        <button
+          type="button"
+          (click)="participate.emit()"
+          class="ss-button-secondary ss-button--compact"
+          i18n="@@participateButton"
+        >
+          🎁 Participate in Event
+        </button>
+      </div>
+
+      @if (
+        phase === AdminEventBadgeState.REGISTRATION_CLOSED &&
+        participantCount() < minRaffleParticipants
+      ) {
+        <p class="text-xs font-medium text-amber-900" i18n="@@needMinParticipantsHint">
+          Need at least 2 participants to run the raffle. Reopen registration to add more.
+        </p>
+      } @else {
+        <p class="text-xs text-slate-700">
+          {{ phaseHint() }}
+        </p>
+      }
+    </div>
+  </div>
+</div>

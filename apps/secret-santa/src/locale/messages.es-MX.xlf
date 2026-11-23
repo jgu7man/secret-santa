@@ -961,6 +961,62 @@
         <source>🔒 Registration Closed</source>
         <target>🔒 Registro Cerrado</target>
       </trans-unit>
+      <trans-unit id="phaseHintOpen" datatype="html">
+        <source>When everyone has joined (min. 2), close registration to unlock the raffle.</source>
+        <target>Cuando estén todos (mín. 2), cierra el registro para habilitar el sorteo.</target>
+      </trans-unit>
+      <trans-unit id="phaseHintClosed" datatype="html">
+        <source>Registration is closed. You can now run the raffle to assign who gifts whom.</source>
+        <target>Registro cerrado. Ya puedes realizar el sorteo para asignar quién le regala a quién.</target>
+      </trans-unit>
+      <trans-unit id="phaseHintDrawn" datatype="html">
+        <source>Raffle ready! Share the link so each participant can see their Secret Santa match.</source>
+        <target>¡Sorteo listo! Comparte el enlace para que cada participante vea a quién le tocó regalar.</target>
+      </trans-unit>
+      <trans-unit id="eventOptionsMenuAria" datatype="html">
+        <source>Event options</source>
+        <target>Opciones del evento</target>
+      </trans-unit>
+      <trans-unit id="deleteEventMenuAction" datatype="html">
+        <source>🗑️ Delete Event</source>
+        <target>🗑️ Eliminar Evento</target>
+      </trans-unit>
+      <trans-unit id="shareInviteGroupTitle" datatype="html">
+        <source>Share Invitation</source>
+        <target>Compartir Invitación</target>
+      </trans-unit>
+      <trans-unit id="shareWhatsappButton" datatype="html">
+        <source>💬 Share via WhatsApp</source>
+        <target>💬 Compartir por WhatsApp</target>
+      </trans-unit>
+      <trans-unit id="copyLinkShortButton" datatype="html">
+        <source>📋 Copy Link</source>
+        <target>📋 Copiar Enlace</target>
+      </trans-unit>
+      <trans-unit id="exchangeFlowGroupTitle" datatype="html">
+        <source>Exchange Flow</source>
+        <target>Flujo del Intercambio</target>
+      </trans-unit>
+      <trans-unit id="needMinParticipantsHint" datatype="html">
+        <source>Need at least 2 participants to run the raffle. Reopen registration to add more.</source>
+        <target>Necesitas al menos 2 participantes para sortear. Reabre el registro para agregar más.</target>
+      </trans-unit>
+      <trans-unit id="closeRegistrationModalTitle" datatype="html">
+        <source>🔒 Close registration?</source>
+        <target>🔒 ¿Cerrar registro?</target>
+      </trans-unit>
+      <trans-unit id="closeRegistrationModalMessage" datatype="html">
+        <source>If you close registration, no one else will be able to join and the button to run the raffle (assigning who gifts whom) will be enabled. You can reopen it later if someone is missing.</source>
+        <target>Si cierras el registro, nadie más podrá unirse y se habilitará el botón para hacer el sorteo (asignar quién le regala a quién). Puedes reabrirlo después si faltó alguien.</target>
+      </trans-unit>
+      <trans-unit id="closeRegistrationConfirmLabel" datatype="html">
+        <source>Yes, close registration</source>
+        <target>Sí, cerrar registro</target>
+      </trans-unit>
+      <trans-unit id="whatsappInviteMessage" datatype="html">
+        <source>🎁 You're invited to the "<x id="EVENT_NAME" equiv-text="current.name"/>" Secret Santa! Join here: <x id="INVITE_LINK" equiv-text="link"/></source>
+        <target>🎁 ¡Te invito al intercambio "<x id="EVENT_NAME" equiv-text="current.name"/>"! Regístrate aquí: <x id="INVITE_LINK" equiv-text="link"/></target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
