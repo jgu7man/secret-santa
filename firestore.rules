@@ -100,6 +100,10 @@ rules_version = '2';
 //   - announcementEnabled: bool (required) - App announcement banner toggle
 //   - announcementText: string (required, 0..1000 chars) - App announcement text
 //   - auth: map (required) - Auth & invite runtime configuration
+//   - buyMeACoffee: map (optional) - Buy Me a Coffee widget configuration
+//     ({ enabled: bool, slug: string [1..64], color: string [#RRGGBB], position: 'Left' | 'Right', xMargin: number [0..120], yMargin: number [0..120] })
+//   - footer: map (optional) - Footer branding & contact links configuration
+//     ({ brandName: string [1..80], whatsappNumber: string [0 or 7..15 digits], whatsappDisplay: string [0..30], email: string [0..320], websiteUrl: string [0..2048] })
 //   - updatedAt: timestamp (required) - Last update timestamp
 //   - updatedBy: string (required, 1..320 chars) - UID or identifier of updating admin
 //
@@ -462,6 +466,74 @@ service cloud.firestore {
              auth.allowedAdminRoles.hasOnly(['USER', 'HOST', 'ADMIN']);
     }
 
+    function isValidAppBuyMeACoffee(bmc) {
+      return bmc is map &&
+             bmc.keys().hasAll([
+               'enabled',
+               'slug',
+               'color',
+               'position',
+               'xMargin',
+               'yMargin'
+             ]) &&
+             bmc.keys().hasOnly([
+               'enabled',
+               'slug',
+               'color',
+               'position',
+               'xMargin',
+               'yMargin'
+             ]) &&
+             bmc.enabled is bool &&
+             bmc.slug is string &&
+             bmc.slug.size() >= 1 &&
+             bmc.slug.size() <= 64 &&
+             bmc.slug.matches('^[a-zA-Z0-9._-]{1,64}$') &&
+             bmc.color is string &&
+             bmc.color.size() == 7 &&
+             bmc.color.matches('^#[0-9A-Fa-f]{6}$') &&
+             bmc.position is string &&
+             bmc.position in ['Left', 'Right'] &&
+             bmc.xMargin is number &&
+             bmc.xMargin >= 0 &&
+             bmc.xMargin <= 120 &&
+             bmc.yMargin is number &&
+             bmc.yMargin >= 0 &&
+             bmc.yMargin <= 120;
+    }
+
+    function isValidAppFooter(footer) {
+      return footer is map &&
+             footer.keys().hasAll([
+               'brandName',
+               'whatsappNumber',
+               'whatsappDisplay',
+               'email',
+               'websiteUrl'
+             ]) &&
+             footer.keys().hasOnly([
+               'brandName',
+               'whatsappNumber',
+               'whatsappDisplay',
+               'email',
+               'websiteUrl'
+             ]) &&
+             footer.brandName is string &&
+             footer.brandName.size() >= 1 &&
+             footer.brandName.size() <= 80 &&
+             footer.whatsappNumber is string &&
+             footer.whatsappNumber.size() <= 15 &&
+             footer.whatsappNumber.matches('^([0-9]{7,15})?$') &&
+             footer.whatsappDisplay is string &&
+             footer.whatsappDisplay.size() <= 30 &&
+             footer.email is string &&
+             footer.email.size() <= 320 &&
+             (footer.email.size() == 0 || footer.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')) &&
+             footer.websiteUrl is string &&
+             footer.websiteUrl.size() <= 2048 &&
+             (footer.websiteUrl.size() == 0 || footer.websiteUrl.matches('^https?://[^\\s/$.?#][^\\s]*$'));
+    }
+
     function isValidAppDoc(data, appId) {
       return data.keys().hasAll([
                'id',
@@ -490,6 +562,8 @@ service cloud.firestore {
                'announcementEnabled',
                'announcementText',
                'auth',
+               'buyMeACoffee',
+               'footer',
                'updatedAt',
                'updatedBy'
              ]) &&
@@ -515,6 +589,8 @@ service cloud.firestore {
              data.announcementText is string &&
              data.announcementText.size() <= 1000 &&
              isValidAppAuth(data.auth) &&
+             (!('buyMeACoffee' in data) || isValidAppBuyMeACoffee(data.buyMeACoffee)) &&
+             (!('footer' in data) || isValidAppFooter(data.footer)) &&
              data.updatedAt is timestamp &&
              data.updatedBy is string &&
              data.updatedBy.size() >= 1 &&

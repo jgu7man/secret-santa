@@ -30,6 +30,56 @@ export function isAppEnvironment(value: unknown): value is AppEnvironment {
 const nonEmptyString = z.string().check(z.minLength(1));
 const BMC_SLUG_PATTERN = /^[a-zA-Z0-9._-]{1,64}$/;
 const HEX_COLOR_PATTERN = /^#[0-9A-Fa-f]{6}$/;
+const OPTIONAL_DIGITS_PATTERN = /^(?:[0-9]{7,15})?$/;
+const OPTIONAL_EMAIL_PATTERN = /^(?:[^\s@]+@[^\s@]+\.[^\s@]+)?$/;
+const OPTIONAL_HTTP_URL_PATTERN = /^(?:https?:\/\/[^\s/$.?#].[^\s]*)?$/i;
+
+/** Canonical Zod Mini schema for remotely managed footer branding & contact links. */
+export const footerSettingsSchema = z.object({
+  brandName: nonEmptyString,
+  whatsappNumber: z.string().check(z.regex(OPTIONAL_DIGITS_PATTERN)),
+  whatsappDisplay: z.string().check(z.maxLength(30)),
+  email: z.string().check(z.regex(OPTIONAL_EMAIL_PATTERN)),
+  websiteUrl: z.string().check(z.regex(OPTIONAL_HTTP_URL_PATTERN)),
+});
+
+/** Remotely managed footer branding & contact configuration stored inside `apps/{appId}`. */
+export type FooterSettings = z.infer<typeof footerSettingsSchema>;
+
+/** Default footer contact settings used when an app document does not specify overrides. */
+export const DEFAULT_FOOTER_SETTINGS: FooterSettings = {
+  brandName: 'Marxa Digital',
+  whatsappNumber: '523121805955',
+  whatsappDisplay: '',
+  email: 'jgu7man@gmail.com',
+  websiteUrl: 'https://marxadigital.com',
+};
+
+/**
+ * Resolves the visible label for the WhatsApp contact pill.
+ * Uses `whatsappDisplay` when provided (allowing masks like "Mi WhatsApp"),
+ * otherwise deduces a readable local number from `whatsappNumber`.
+ */
+export function formatFooterWhatsappLabel(
+  whatsappNumber: string,
+  whatsappDisplay?: string
+): string {
+  const customLabel = whatsappDisplay?.trim();
+  if (customLabel) {
+    return customLabel;
+  }
+
+  const digits = whatsappNumber.trim();
+  if (digits.length === 12 && digits.startsWith('52')) {
+    return digits.slice(2);
+  }
+  return digits;
+}
+
+/** Derives a clean display hostname/path from a validated HTTP(S) website URL. */
+export function formatFooterWebsiteLabel(websiteUrl: string): string {
+  return websiteUrl.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+}
 
 /** Canonical Zod Mini schema for remotely managed Buy Me a Coffee widget/button settings. */
 export const buyMeACoffeeSettingsSchema = z.object({
@@ -68,6 +118,7 @@ export const appRegistryDocumentSchema = z.object({
   announcementText: z.string(),
   auth: appAuthSettingsSchema,
   buyMeACoffee: z.optional(buyMeACoffeeSettingsSchema),
+  footer: z.optional(footerSettingsSchema),
   updatedAt: z.optional(firestoreTimestampSchema),
   updatedBy: z.optional(nonEmptyString),
 });

@@ -2,34 +2,42 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ErrorHandler,
   OnInit,
   computed,
   inject,
   signal,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { UserRole } from '@marxa/auth-domain';
 import {
   ActiveClassPipe,
-  FirestoreTimestampPipe,
   MESSAGE_DISPLAY_DURATION,
 } from '@secret-santa/shared-core';
 import {
-  AppEnvironment,
   AppRegistryDocument,
   AppRegistryUpdateInput,
   AppRelease,
   BuyMeACoffeeWidgetPosition,
   DEFAULT_BUY_ME_A_COFFEE_SETTINGS,
+  DEFAULT_FOOTER_SETTINGS,
+  formatFooterWhatsappLabel,
 } from '@secret-santa/shared-data-access';
 import { BackofficeConfigService } from '../../services/backoffice-config.service';
+import { AppReleasesCardComponent } from './app-releases-card.component';
+import { AuthRbacSettingsCardComponent } from './auth-rbac-settings-card.component';
 import { BuyMeACoffeeSettingsCardComponent } from './buy-me-a-coffee-settings-card.component';
-
-interface ManagedAppOption {
-  readonly id: string;
-  readonly label: string;
-}
+import { FooterSettingsCardComponent } from './footer-settings-card.component';
+import { OperationsSettingsCardComponent } from './operations-settings-card.component';
+import {
+  CreateReleasePayload,
+  ManagedAppOption,
+} from './settings-manager-ui.model';
 
 @Component({
   selector: 'bo-settings-manager',
@@ -37,31 +45,27 @@ interface ManagedAppOption {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FirestoreTimestampPipe,
     ActiveClassPipe,
+    AuthRbacSettingsCardComponent,
+    OperationsSettingsCardComponent,
     BuyMeACoffeeSettingsCardComponent,
+    FooterSettingsCardComponent,
+    AppReleasesCardComponent,
   ],
   templateUrl: './settings-manager.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsManagerComponent implements OnInit {
-  private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   private readonly configService = inject(BackofficeConfigService);
   private readonly errorHandler = inject(ErrorHandler);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private successTimerId: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly managedApps: ReadonlyArray<ManagedAppOption> = [
     { id: 'backoffice', label: 'Backoffice' },
     { id: 'secret-santa', label: 'Secret Santa' },
-  ];
-  protected readonly roles: ReadonlyArray<UserRole> = [
-    UserRole.USER,
-    UserRole.HOST,
-    UserRole.ADMIN,
-  ];
-  protected readonly environments: ReadonlyArray<AppEnvironment> = [
-    AppEnvironment.DEV,
-    AppEnvironment.BETA,
-    AppEnvironment.PROD,
   ];
 
   readonly selectedAppId = signal('backoffice');
@@ -77,35 +81,42 @@ export class SettingsManagerComponent implements OnInit {
     'updatedAt' | 'updatedBy'
   > | null>(null);
 
-  readonly settingsForm = this.fb.nonNullable.group({
+  readonly settingsForm = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(120)]],
-    maintenanceMode: [false],
-    maintenanceMessage: ['', [Validators.maxLength(1000)]],
-    allowGuestEventCreation: [true],
-    allowNewRegistrations: [true],
-    defaultMinAmount: [100, [Validators.required, Validators.min(0)]],
-    maxParticipantsPerEvent: [
-      100,
-      [Validators.required, Validators.min(2), Validators.max(1000)],
-    ],
-    announcementEnabled: [false],
-    announcementText: ['', [Validators.maxLength(1000)]],
-    brandName: ['', [Validators.required, Validators.maxLength(120)]],
-    appName: ['', [Validators.required, Validators.maxLength(120)]],
-    postLoginRedirectUrl: [
-      '',
-      [Validators.required, Validators.maxLength(200)],
-    ],
-    loginRoute: ['', [Validators.required, Validators.maxLength(200)]],
-    requestAccessRoute: ['', [Validators.required, Validators.maxLength(200)]],
-    inviteBasePath: ['', [Validators.required, Validators.maxLength(200)]],
-    requiresProfileCompletionByDefault: [false],
-    defaultTargetRole: [UserRole.ADMIN, [Validators.required]],
-    inviteExpirationHours: [
-      72,
-      [Validators.required, Validators.min(1), Validators.max(720)],
-    ],
-    buyMeACoffee: this.fb.nonNullable.group({
+    auth: this.fb.group({
+      brandName: ['', [Validators.required, Validators.maxLength(120)]],
+      appName: ['', [Validators.required, Validators.maxLength(120)]],
+      postLoginRedirectUrl: [
+        '',
+        [Validators.required, Validators.maxLength(200)],
+      ],
+      loginRoute: ['', [Validators.required, Validators.maxLength(200)]],
+      requestAccessRoute: [
+        '',
+        [Validators.required, Validators.maxLength(200)],
+      ],
+      inviteBasePath: ['', [Validators.required, Validators.maxLength(200)]],
+      requiresProfileCompletionByDefault: [false],
+      defaultTargetRole: [UserRole.ADMIN as UserRole, [Validators.required]],
+      inviteExpirationHours: [
+        72,
+        [Validators.required, Validators.min(1), Validators.max(720)],
+      ],
+    }),
+    operations: this.fb.group({
+      maintenanceMode: [false],
+      maintenanceMessage: ['', [Validators.maxLength(1000)]],
+      allowGuestEventCreation: [true],
+      allowNewRegistrations: [true],
+      defaultMinAmount: [100, [Validators.required, Validators.min(0)]],
+      maxParticipantsPerEvent: [
+        100,
+        [Validators.required, Validators.min(2), Validators.max(1000)],
+      ],
+      announcementEnabled: [false],
+      announcementText: ['', [Validators.maxLength(1000)]],
+    }),
+    buyMeACoffee: this.fb.group({
       enabled: [DEFAULT_BUY_ME_A_COFFEE_SETTINGS.enabled],
       slug: [
         DEFAULT_BUY_ME_A_COFFEE_SETTINGS.slug,
@@ -128,12 +139,28 @@ export class SettingsManagerComponent implements OnInit {
         [Validators.required, Validators.min(0), Validators.max(120)],
       ],
     }),
-  });
-
-  readonly releaseForm = this.fb.nonNullable.group({
-    version: ['', [Validators.required, Validators.maxLength(50)]],
-    environment: [AppEnvironment.DEV, [Validators.required]],
-    notes: ['', [Validators.maxLength(2000)]],
+    footer: this.fb.group({
+      brandName: [
+        DEFAULT_FOOTER_SETTINGS.brandName,
+        [Validators.required, Validators.maxLength(80)],
+      ],
+      whatsappNumber: [
+        DEFAULT_FOOTER_SETTINGS.whatsappNumber,
+        [Validators.pattern(/^(?:[0-9]{7,15})?$/)],
+      ],
+      whatsappDisplay: [
+        DEFAULT_FOOTER_SETTINGS.whatsappDisplay,
+        [Validators.maxLength(30)],
+      ],
+      email: [
+        DEFAULT_FOOTER_SETTINGS.email,
+        [Validators.pattern(/^(?:[^\s@]+@[^\s@]+\.[^\s@]+)?$/)],
+      ],
+      websiteUrl: [
+        DEFAULT_FOOTER_SETTINGS.websiteUrl,
+        [Validators.pattern(/^(?:https?:\/\/[^\s/$.?#].[^\s]*)?$/i)],
+      ],
+    }),
   });
 
   readonly lastUpdatedLabel = computed(() => {
@@ -151,6 +178,11 @@ export class SettingsManagerComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    this.destroyRef.onDestroy(() => {
+      if (this.successTimerId !== null) {
+        clearTimeout(this.successTimerId);
+      }
+    });
     await this.loadSelectedApp();
   }
 
@@ -176,7 +208,7 @@ export class SettingsManagerComponent implements OnInit {
     } catch (error: unknown) {
       this.errorHandler.handleError(error);
       this.errorMessage.set(
-        `No se pudo cargar la configuración de apps/${appId} desde Firestore.`,
+        `No se pudo cargar la configuración de apps/${appId} desde Firestore.`
       );
     } finally {
       this.isLoading.set(false);
@@ -216,34 +248,25 @@ export class SettingsManagerComponent implements OnInit {
       const raw = this.settingsForm.getRawValue();
       const payload: AppRegistryUpdateInput = {
         name: raw.name,
-        maintenanceMode: raw.maintenanceMode,
-        maintenanceMessage: raw.maintenanceMessage,
-        allowGuestEventCreation: raw.allowGuestEventCreation,
-        allowNewRegistrations: raw.allowNewRegistrations,
-        defaultMinAmount: raw.defaultMinAmount,
-        maxParticipantsPerEvent: raw.maxParticipantsPerEvent,
-        announcementEnabled: raw.announcementEnabled,
-        announcementText: raw.announcementText,
+        ...raw.operations,
         auth: {
-          brandName: raw.brandName,
-          appName: raw.appName,
-          postLoginRedirectUrl: raw.postLoginRedirectUrl,
-          loginRoute: raw.loginRoute,
-          requestAccessRoute: raw.requestAccessRoute,
-          inviteBasePath: raw.inviteBasePath,
-          requiresProfileCompletionByDefault:
-            raw.requiresProfileCompletionByDefault,
-          defaultTargetRole: raw.defaultTargetRole,
-          inviteExpirationHours: raw.inviteExpirationHours,
+          ...raw.auth,
           allowedAdminRoles: this.allowedAdminRoles(),
         },
         buyMeACoffee: {
-          enabled: raw.buyMeACoffee.enabled,
+          ...raw.buyMeACoffee,
           slug: raw.buyMeACoffee.slug.trim(),
           color: raw.buyMeACoffee.color.trim(),
-          position: raw.buyMeACoffee.position,
-          xMargin: raw.buyMeACoffee.xMargin,
-          yMargin: raw.buyMeACoffee.yMargin,
+        },
+        footer: {
+          brandName: raw.footer.brandName.trim(),
+          whatsappNumber: raw.footer.whatsappNumber.trim(),
+          whatsappDisplay: formatFooterWhatsappLabel(
+            raw.footer.whatsappNumber,
+            raw.footer.whatsappDisplay
+          ),
+          email: raw.footer.email.trim(),
+          websiteUrl: raw.footer.websiteUrl.trim(),
         },
       };
 
@@ -254,36 +277,25 @@ export class SettingsManagerComponent implements OnInit {
     } catch (error: unknown) {
       this.errorHandler.handleError(error);
       this.errorMessage.set(
-        `No se pudo guardar apps/${appId}. Verifica tus permisos de administrador.`,
+        `No se pudo guardar apps/${appId}. Verifica tus permisos de administrador.`
       );
     } finally {
       this.isSaving.set(false);
     }
   }
 
-  async publishRelease(): Promise<void> {
-    if (this.releaseForm.invalid) {
-      this.releaseForm.markAllAsTouched();
-      return;
-    }
-
+  async publishRelease(payload: CreateReleasePayload): Promise<void> {
     const appId = this.selectedAppId();
-    const { version, environment, notes } = this.releaseForm.getRawValue();
     this.isCreatingRelease.set(true);
     this.errorMessage.set('');
     try {
       const created = await this.configService.createRelease(
         appId,
-        version,
-        environment,
-        notes,
+        payload.version,
+        payload.environment,
+        payload.notes
       );
       this.releases.update((list) => [created, ...list]);
-      this.releaseForm.reset({
-        version: '',
-        environment: AppEnvironment.DEV,
-        notes: '',
-      });
       this.flashSuccess(`Release ${created.version} registrado en ${appId}.`);
     } catch (error: unknown) {
       this.errorHandler.handleError(error);
@@ -296,27 +308,35 @@ export class SettingsManagerComponent implements OnInit {
   private patchForm(appDoc: AppRegistryDocument): void {
     this.settingsForm.patchValue({
       name: appDoc.name,
-      maintenanceMode: appDoc.maintenanceMode,
-      maintenanceMessage: appDoc.maintenanceMessage,
-      allowGuestEventCreation: appDoc.allowGuestEventCreation,
-      allowNewRegistrations: appDoc.allowNewRegistrations,
-      defaultMinAmount: appDoc.defaultMinAmount,
-      maxParticipantsPerEvent: appDoc.maxParticipantsPerEvent,
-      announcementEnabled: appDoc.announcementEnabled,
-      announcementText: appDoc.announcementText,
-      brandName: appDoc.auth.brandName,
-      appName: appDoc.auth.appName,
-      postLoginRedirectUrl: appDoc.auth.postLoginRedirectUrl,
-      loginRoute: appDoc.auth.loginRoute,
-      requestAccessRoute: appDoc.auth.requestAccessRoute,
-      inviteBasePath: appDoc.auth.inviteBasePath,
-      requiresProfileCompletionByDefault:
-        appDoc.auth.requiresProfileCompletionByDefault,
-      defaultTargetRole: appDoc.auth.defaultTargetRole,
-      inviteExpirationHours: appDoc.auth.inviteExpirationHours,
+      auth: {
+        brandName: appDoc.auth.brandName,
+        appName: appDoc.auth.appName,
+        postLoginRedirectUrl: appDoc.auth.postLoginRedirectUrl,
+        loginRoute: appDoc.auth.loginRoute,
+        requestAccessRoute: appDoc.auth.requestAccessRoute,
+        inviteBasePath: appDoc.auth.inviteBasePath,
+        requiresProfileCompletionByDefault:
+          appDoc.auth.requiresProfileCompletionByDefault,
+        defaultTargetRole: appDoc.auth.defaultTargetRole,
+        inviteExpirationHours: appDoc.auth.inviteExpirationHours,
+      },
+      operations: {
+        maintenanceMode: appDoc.maintenanceMode,
+        maintenanceMessage: appDoc.maintenanceMessage,
+        allowGuestEventCreation: appDoc.allowGuestEventCreation,
+        allowNewRegistrations: appDoc.allowNewRegistrations,
+        defaultMinAmount: appDoc.defaultMinAmount,
+        maxParticipantsPerEvent: appDoc.maxParticipantsPerEvent,
+        announcementEnabled: appDoc.announcementEnabled,
+        announcementText: appDoc.announcementText,
+      },
       buyMeACoffee: {
         ...DEFAULT_BUY_ME_A_COFFEE_SETTINGS,
         ...appDoc.buyMeACoffee,
+      },
+      footer: {
+        ...DEFAULT_FOOTER_SETTINGS,
+        ...appDoc.footer,
       },
     });
     this.allowedAdminRoles.set([...appDoc.auth.allowedAdminRoles]);
@@ -327,8 +347,12 @@ export class SettingsManagerComponent implements OnInit {
   }
 
   private flashSuccess(message: string): void {
+    if (this.successTimerId !== null) {
+      clearTimeout(this.successTimerId);
+    }
     this.successMessage.set(message);
-    setTimeout(() => {
+    this.successTimerId = setTimeout(() => {
+      this.successTimerId = null;
       if (this.successMessage() === message) {
         this.successMessage.set('');
       }

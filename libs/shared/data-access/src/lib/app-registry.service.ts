@@ -77,6 +77,17 @@ export class AppRegistryService {
             },
           }
         : {}),
+      ...(input.footer
+        ? {
+            footer: {
+              brandName: input.footer.brandName.trim(),
+              whatsappNumber: input.footer.whatsappNumber.trim(),
+              whatsappDisplay: input.footer.whatsappDisplay.trim(),
+              email: input.footer.email.trim(),
+              websiteUrl: input.footer.websiteUrl.trim(),
+            },
+          }
+        : {}),
       updatedAt: Timestamp.now(),
       updatedBy,
     });

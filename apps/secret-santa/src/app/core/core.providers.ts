@@ -24,6 +24,7 @@ import {
 } from './config/core.tokens';
 import { isSeoRouteKey } from './config/seo.config';
 import { BuyMeACoffeeService } from './services/buy-me-a-coffee.service';
+import { FooterConfigService } from './services/footer-config.service';
 import { MetaService } from './services/meta.service';
 
 function getDeepestRouteSnapshot(
@@ -54,6 +55,7 @@ export function provideCore(
       const metaService = inject(MetaService);
       const analyticsService = inject(AnalyticsService);
       const buyMeACoffeeService = inject(BuyMeACoffeeService);
+      const footerConfigService = inject(FooterConfigService);
       const appRegistryService = inject(AppRegistryService);
       const errorHandler = inject(ErrorHandler);
       const destroyRef = inject(DestroyRef);
@@ -65,6 +67,7 @@ export function provideCore(
         .getApp('secret-santa')
         .then((appDoc) => {
           buyMeACoffeeService.applyRemoteSettings(appDoc.buyMeACoffee);
+          footerConfigService.applyRemoteSettings(appDoc.footer);
         })
         .catch((error: unknown) => {
           errorHandler.handleError(error);

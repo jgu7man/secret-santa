@@ -858,8 +858,8 @@
         <target>Santa Secreto</target>
       </trans-unit>
       <trans-unit id="footerCredit" datatype="html">
-        <source> A free tool by <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;ss-footer-brand&quot;&gt;"/>Marxa Digital<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> — We create custom web experiences </source>
-        <target> Una herramienta gratuita de <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;ss-footer-brand&quot;&gt;"/>Marxa Digital<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> — Creamos experiencias web a la medida </target>
+        <source> A free tool by <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;ss-footer-brand&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ footer.brandName }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> — We create custom web experiences </source>
+        <target> Una herramienta gratuita de <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong class=&quot;ss-footer-brand&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ footer.brandName }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> — Creamos experiencias web a la medida </target>
       </trans-unit>
       <trans-unit id="footerWhatsappLabel" datatype="html">
         <source>WhatsApp:</source>

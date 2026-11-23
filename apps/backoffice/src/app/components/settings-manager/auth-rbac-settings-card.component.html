@@ -1,0 +1,195 @@
+<div
+  [formGroup]="form()"
+  class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-5"
+>
+  <div>
+    <h3 class="text-base font-bold text-slate-900">
+      Auth, RBAC y Redirecciones
+    </h3>
+    <p class="text-xs text-slate-500">
+      Parámetros dinámicos consumidos por
+      <code class="font-mono">&#64;marxa/auth-engine</code>.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label
+        for="app-display-name"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Nombre de App (Registro)
+      </label>
+      <input
+        id="app-display-name"
+        type="text"
+        [formControl]="appNameControl()"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+    <div>
+      <label
+        for="auth-brand-name"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Marca (Brand)
+      </label>
+      <input
+        id="auth-brand-name"
+        type="text"
+        formControlName="brandName"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+    <div>
+      <label
+        for="auth-app-name"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Título en Auth UI
+      </label>
+      <input
+        id="auth-app-name"
+        type="text"
+        formControlName="appName"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div>
+      <label
+        for="auth-post-login"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Redirección Post-Login
+      </label>
+      <input
+        id="auth-post-login"
+        type="text"
+        formControlName="postLoginRedirectUrl"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+    <div>
+      <label
+        for="auth-login-route"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Ruta Login
+      </label>
+      <input
+        id="auth-login-route"
+        type="text"
+        formControlName="loginRoute"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+    <div>
+      <label
+        for="auth-request-route"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Ruta Request Access
+      </label>
+      <input
+        id="auth-request-route"
+        type="text"
+        formControlName="requestAccessRoute"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+    <div>
+      <label
+        for="auth-invite-base"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Prefijo Invite
+      </label>
+      <input
+        id="auth-invite-base"
+        type="text"
+        formControlName="inviteBasePath"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+  </div>
+
+  <div
+    class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-slate-100 items-start"
+  >
+    <div>
+      <label
+        for="auth-default-role"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Rol por defecto en Invites
+      </label>
+      <select
+        id="auth-default-role"
+        formControlName="defaultTargetRole"
+        class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800"
+      >
+        @for (role of roles; track role) {
+          <option [value]="role">{{ role }}</option>
+        }
+      </select>
+    </div>
+
+    <div>
+      <label
+        for="auth-invite-hours"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Vigencia de Invite (horas)
+      </label>
+      <input
+        id="auth-invite-hours"
+        type="number"
+        min="1"
+        max="720"
+        formControlName="inviteExpirationHours"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div>
+      <span class="block text-xs font-medium text-slate-700 mb-2">
+        Roles permitidos (RBAC)
+      </span>
+      <div class="flex flex-wrap gap-3">
+        @for (role of roles; track role) {
+          <label
+            [for]="'rbac-role-' + role"
+            class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 cursor-pointer"
+          >
+            <input
+              [id]="'rbac-role-' + role"
+              type="checkbox"
+              [checked]="allowedAdminRoles().includes(role)"
+              (change)="toggleRole.emit(role)"
+              class="h-4 w-4 rounded border-slate-300 text-pine-700"
+            />
+            <span>{{ role }}</span>
+          </label>
+        }
+      </div>
+    </div>
+  </div>
+
+  <label
+    for="auth-requires-profile"
+    class="flex items-center gap-3 cursor-pointer"
+  >
+    <input
+      id="auth-requires-profile"
+      type="checkbox"
+      formControlName="requiresProfileCompletionByDefault"
+      class="h-4 w-4 rounded border-slate-300 text-pine-700"
+    />
+    <span class="text-xs font-semibold text-slate-800">
+      Solicitar completar perfil al aceptar invitación por defecto
+    </span>
+  </label>
+</div>
