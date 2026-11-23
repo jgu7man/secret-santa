@@ -1,0 +1,18 @@
+export const EVENT_LANDING_COPYS = {
+  leaveConfirmTitle: $localize`:@@leaveEventButton:Leave Event`,
+  leaveConfirmMessage: $localize`:@@leaveEventConfirm:Are you sure you want to leave this event? This action cannot be undone.`,
+  eventNotFound: $localize`:@@eventNotFound:Event not found`,
+  loadEventError: $localize`:@@loadEventError:Failed to load event`,
+  registrationClosedError: $localize`:@@registrationClosedError:Registration is currently closed`,
+  registrationSuccess: $localize`:@@registrationSuccess:Registration successful! 🎉`,
+  registrationError: $localize`:@@registrationError:Failed to register. Please try again.`,
+  hostLoginError: $localize`:@@hostLoginError:Could not sign in with Google. Please try again.`,
+  googleNotRegisteredError: $localize`:@@googleNotRegisteredError:No registration found for this Google account in this event.`,
+  loginError: $localize`:@@loginError:Failed to login. Please try again.`,
+  invalidCredentials: $localize`:@@invalidCredentials:Invalid name or secret word`,
+  preferencesUpdated: $localize`:@@preferencesUpdated:Preferences updated successfully!`,
+  updatePreferencesError: $localize`:@@updatePreferencesError:Failed to update preferences`,
+  leaveEventSuccess: $localize`:@@leaveEventSuccess:You have left the event successfully`,
+  leaveEventError: $localize`:@@leaveEventError:Failed to leave event`,
+  logoutSuccess: $localize`:@@logoutSuccess:Logged out successfully`,
+} as const;

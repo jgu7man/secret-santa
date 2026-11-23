@@ -209,6 +209,9 @@
       <trans-unit id="whatsappInviteMessage" datatype="html">
         <source>🎁 You're invited to the "<x id="EVENT_NAME" equiv-text="current.name"/>" Secret Santa! Join here: <x id="INVITE_LINK" equiv-text="link"/></source>
       </trans-unit>
+      <trans-unit id="participantOptionsMenuAria" datatype="html">
+        <source>Participant options</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

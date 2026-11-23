@@ -1,0 +1,43 @@
+<div class="relative inline-block text-left">
+  <button
+    type="button"
+    (click)="toggleMenu()"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="menu"
+    i18n-aria-label="@@participantOptionsMenuAria"
+    aria-label="Participant options"
+    class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-200 transition"
+  >
+    <span aria-hidden="true" class="text-lg leading-none font-bold">⋮</span>
+  </button>
+
+  @if (isOpen()) {
+    <div
+      role="menu"
+      class="absolute right-0 mt-2 w-48 origin-top-right rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl z-30"
+    >
+      <button
+        type="button"
+        role="menuitem"
+        (click)="onLogout()"
+        class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-slate-800 hover:bg-slate-100 transition"
+        i18n="@@logoutButtonLanding"
+      >
+        Logout
+      </button>
+
+      @if (canLeaveEvent()) {
+        <div class="my-1 border-t border-slate-200"></div>
+        <button
+          type="button"
+          role="menuitem"
+          (click)="onLeave()"
+          class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm font-medium text-red-700 hover:bg-red-50 transition"
+          i18n="@@leaveEventButton"
+        >
+          Leave Event
+        </button>
+      }
+    </div>
+  }
+</div>
