@@ -1017,6 +1017,10 @@
         <source>🎁 You're invited to the "<x id="EVENT_NAME" equiv-text="current.name"/>" Secret Santa! Join here: <x id="INVITE_LINK" equiv-text="link"/></source>
         <target>🎁 ¡Te invito al intercambio "<x id="EVENT_NAME" equiv-text="current.name"/>"! Regístrate aquí: <x id="INVITE_LINK" equiv-text="link"/></target>
       </trans-unit>
+      <trans-unit id="participantOptionsMenuAria" datatype="html">
+        <source>Participant options</source>
+        <target>Opciones de participante</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
