@@ -1,4 +1,4 @@
-@let uiState = ui();
+@let uiState = store.ui();
 
 <div
   class="ss-theme ss-backdrop--dark ss-backdrop--pine admin-page min-h-screen py-8 px-4 sm:px-6 lg:px-8"
@@ -25,12 +25,12 @@
       </div>
     }
 
-    @if (event(); as currentEvent) {
+    @if (store.event(); as currentEvent) {
       @if (!uiState.isLoading) {
-        @let badge = statusBadge();
+        @let badge = store.statusBadge();
 
         <!-- Header -->
-        <div class="ss-card ss-card--dark mb-6">
+        <div class="ss-card ss-card--dark ss-card--attached-top">
           <div class="mb-4">
             <a
               [routerLink]="['/dashboard']"
@@ -51,13 +51,23 @@
                 Admin Dashboard 👑
               </p>
             </div>
-            <div class="text-right">
+            <div class="flex items-center gap-2 self-end md:self-start shrink-0">
               <span
                 class="inline-block px-3 py-1 rounded-full text-sm font-semibold"
                 [class]="badge.badgeClass"
               >
                 {{ badge.label }}
               </span>
+
+              <app-admin-event-menu
+                [canClaimEvent]="store.canClaimEvent()"
+                [canDeleteEvent]="store.canDeleteEvent()"
+                (editEvent)="store.openModal(AdminDashboardModal.EDIT_EVENT)"
+                (claimEvent)="store.claimEvent()"
+                (deleteEvent)="
+                  store.openModal(AdminDashboardModal.CONFIRM_DELETE_EVENT)
+                "
+              />
             </div>
           </div>
 
@@ -78,7 +88,7 @@
                 >Participants:</span
               >
               <span class="ml-2 font-semibold">{{
-                participants().length
+                store.participants().length
               }}</span>
             </div>
             @if (currentEvent.registrationDeadline) {
@@ -94,99 +104,48 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="ss-card mb-6">
-          <h2
-            class="text-xl font-bold text-gray-900 mb-4"
-            i18n="@@actionsTitle"
-          >
-            Actions
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button
-              type="button"
-              (click)="openModal(AdminDashboardModal.EDIT_EVENT)"
-              class="ss-button-secondary"
-              i18n="@@editEventButton"
-            >
-              ✏️ Edit Event
-            </button>
-
-            <button
-              type="button"
-              (click)="copyParticipantLink()"
-              class="ss-button-secondary"
-              i18n="@@copyLinkButton"
-            >
-              📋 Copy Participant Link
-            </button>
-
-            <button
-              type="button"
-              (click)="toggleRegistration()"
-              [class]="
-                currentEvent.isRegistrationOpen
-                  ? 'ss-button-primary'
-                  : 'ss-button-secondary'
-              "
-            >
-              @if (currentEvent.isRegistrationOpen) {
-                <span i18n="@@closeRegistration">🔒 Close Registration</span>
-              } @else {
-                <span i18n="@@openRegistration">🔓 Open Registration</span>
-              }
-            </button>
-
-            @if (canRunRaffle()) {
-              <button
-                type="button"
-                (click)="openModal(AdminDashboardModal.CONFIRM_RAFFLE)"
-                class="ss-button-primary"
-              >
-                @if (currentEvent.status === EventStatus.CREATED) {
-                  <span i18n="@@runRaffle">🎲 Run Raffle</span>
-                } @else {
-                  <span i18n="@@rerunRaffle">🎲 Re-run Raffle</span>
-                }
-              </button>
-            }
-
-            <button
-              type="button"
-              (click)="navigateToEvent()"
-              class="ss-button-secondary"
-              i18n="@@participateButton"
-            >
-              🎁 Participate in Event
-            </button>
-
-            @if (canClaimEvent()) {
-              <button
-                type="button"
-                (click)="claimEvent()"
-                class="ss-button-secondary"
-                i18n="@@claimEventButton"
-              >
-                💾 Save to My Events
-              </button>
-            }
-          </div>
-        </div>
+        <!-- Action Bar -->
+        <app-admin-actions-bar
+          [phaseState]="store.phaseState()"
+          [phaseHint]="store.phaseHint()"
+          [eventStatus]="currentEvent.status"
+          [participantCount]="store.participants().length"
+          [canRunRaffle]="store.canRunRaffle()"
+          [whatsappShareUrl]="store.whatsappShareUrl()"
+          (copyLink)="store.copyParticipantLink()"
+          (requestCloseRegistration)="
+            store.openModal(AdminDashboardModal.CONFIRM_CLOSE_REGISTRATION)
+          "
+          (reopenRegistration)="store.reopenRegistration()"
+          (requestRaffle)="store.openModal(AdminDashboardModal.CONFIRM_RAFFLE)"
+          (participate)="store.navigateToEvent()"
+        />
 
         @if (uiState.activeModal === AdminDashboardModal.EDIT_EVENT) {
           <app-admin-edit-event-modal
             [event]="currentEvent"
-            (saveEvent)="updateEvent($event)"
-            (closeModal)="closeModal()"
+            (saveEvent)="store.updateEvent($event)"
+            (closeModal)="store.closeModal()"
+          />
+        }
+
+        @if (
+          uiState.activeModal === AdminDashboardModal.CONFIRM_CLOSE_REGISTRATION
+        ) {
+          <app-confirm-dialog-modal
+            [title]="copys.closeRegistrationTitle"
+            [message]="copys.closeRegistrationMessage"
+            [confirmLabel]="copys.closeRegistrationConfirmLabel"
+            (confirmAction)="store.confirmCloseRegistration()"
+            (cancelAction)="store.closeModal()"
           />
         }
 
         @if (uiState.activeModal === AdminDashboardModal.CONFIRM_RAFFLE) {
           <app-admin-raffle-confirm-modal
-            [isDrawn]="isDrawn()"
-            (confirmRaffle)="runRaffle()"
-            (cancelRaffle)="closeModal()"
+            [isDrawn]="store.isDrawn()"
+            (confirmRaffle)="store.runRaffle()"
+            (cancelRaffle)="store.closeModal()"
           />
         }
 
@@ -194,18 +153,28 @@
           uiState.activeModal === AdminDashboardModal.CONFIRM_DELETE_PARTICIPANT
         ) {
           <app-confirm-dialog-modal
-            [title]="deleteParticipantTitle"
-            [message]="deleteParticipantMessage"
-            (confirmAction)="confirmDeleteParticipant()"
-            (cancelAction)="closeModal()"
+            [title]="copys.deleteParticipantTitle"
+            [message]="copys.deleteParticipantMessage"
+            (confirmAction)="store.confirmDeleteParticipant()"
+            (cancelAction)="store.closeModal()"
+          />
+        }
+
+        @if (uiState.activeModal === AdminDashboardModal.CONFIRM_DELETE_EVENT) {
+          <app-confirm-dialog-modal
+            [title]="copys.deleteEventTitle"
+            [message]="store.deleteEventMessage()"
+            [confirmLabel]="copys.deleteEventTitle"
+            (confirmAction)="store.confirmDeleteEvent()"
+            (cancelAction)="store.closeModal()"
           />
         }
 
         <app-admin-participants-table
-          [participants]="participants()"
-          [canRevealResults]="canRevealResults()"
-          (copyResetLink)="copyResetLink($event)"
-          (deleteParticipant)="requestDeleteParticipant($event)"
+          [participants]="store.participants()"
+          [canRevealResults]="store.canRevealResults()"
+          (copyResetLink)="store.copyResetLink($event)"
+          (deleteParticipant)="store.requestDeleteParticipant($event)"
         />
 
         <!-- Instructions -->
