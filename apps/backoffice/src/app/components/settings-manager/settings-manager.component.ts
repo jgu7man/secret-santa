@@ -64,11 +64,42 @@ export class SettingsManagerComponent implements OnInit {
   private successTimerId: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly managedApps: ReadonlyArray<ManagedAppOption> = [
-    { id: 'backoffice', label: 'Backoffice' },
-    { id: 'secret-santa', label: 'Secret Santa' },
+    {
+      id: 'secret-santa',
+      label: 'Secret Santa',
+      supportsAuthRbac: false,
+      supportsOperations: true,
+      supportsBuyMeACoffee: true,
+      supportsFooter: true,
+    },
+    {
+      id: 'backoffice',
+      label: 'Backoffice',
+      supportsAuthRbac: true,
+      supportsOperations: false,
+      supportsBuyMeACoffee: false,
+      supportsFooter: false,
+    },
   ];
 
-  readonly selectedAppId = signal('backoffice');
+  readonly selectedAppId = signal('secret-santa');
+  readonly selectedAppOption = computed(
+    () =>
+      this.managedApps.find((app) => app.id === this.selectedAppId()) ??
+      this.managedApps[0]
+  );
+  readonly showAuthRbacCard = computed(
+    () => this.selectedAppOption().supportsAuthRbac
+  );
+  readonly showOperationsCard = computed(
+    () => this.selectedAppOption().supportsOperations
+  );
+  readonly showBuyMeACoffeeCard = computed(
+    () => this.selectedAppOption().supportsBuyMeACoffee
+  );
+  readonly showFooterCard = computed(
+    () => this.selectedAppOption().supportsFooter
+  );
   readonly isLoading = signal(true);
   readonly isSaving = signal(false);
   readonly isCreatingRelease = signal(false);
@@ -236,6 +267,9 @@ export class SettingsManagerComponent implements OnInit {
   async save(): Promise<void> {
     if (this.settingsForm.invalid) {
       this.settingsForm.markAllAsTouched();
+      this.errorMessage.set(
+        'Revisa los campos con formato inválido antes de guardar.'
+      );
       return;
     }
 
@@ -253,21 +287,29 @@ export class SettingsManagerComponent implements OnInit {
           ...raw.auth,
           allowedAdminRoles: this.allowedAdminRoles(),
         },
-        buyMeACoffee: {
-          ...raw.buyMeACoffee,
-          slug: raw.buyMeACoffee.slug.trim(),
-          color: raw.buyMeACoffee.color.trim(),
-        },
-        footer: {
-          brandName: raw.footer.brandName.trim(),
-          whatsappNumber: raw.footer.whatsappNumber.trim(),
-          whatsappDisplay: formatFooterWhatsappLabel(
-            raw.footer.whatsappNumber,
-            raw.footer.whatsappDisplay
-          ),
-          email: raw.footer.email.trim(),
-          websiteUrl: raw.footer.websiteUrl.trim(),
-        },
+        ...(this.showBuyMeACoffeeCard()
+          ? {
+              buyMeACoffee: {
+                ...raw.buyMeACoffee,
+                slug: raw.buyMeACoffee.slug.trim(),
+                color: raw.buyMeACoffee.color.trim(),
+              },
+            }
+          : {}),
+        ...(this.showFooterCard()
+          ? {
+              footer: {
+                brandName: raw.footer.brandName.trim(),
+                whatsappNumber: raw.footer.whatsappNumber.trim(),
+                whatsappDisplay: formatFooterWhatsappLabel(
+                  raw.footer.whatsappNumber,
+                  raw.footer.whatsappDisplay
+                ),
+                email: raw.footer.email.trim(),
+                websiteUrl: raw.footer.websiteUrl.trim(),
+              },
+            }
+          : {}),
       };
 
       const saved = await this.configService.saveApp(appId, payload);
@@ -344,6 +386,47 @@ export class SettingsManagerComponent implements OnInit {
       updatedAt: appDoc.updatedAt,
       updatedBy: appDoc.updatedBy,
     });
+    this.syncScopedControls();
+  }
+
+  private syncScopedControls(): void {
+    if (this.showAuthRbacCard()) {
+      this.settingsForm.controls.name.enable({ emitEvent: false });
+      this.settingsForm.controls.auth.enable({ emitEvent: false });
+    } else {
+      this.settingsForm.controls.name.disable({ emitEvent: false });
+      this.settingsForm.controls.auth.disable({ emitEvent: false });
+    }
+
+    if (this.showOperationsCard()) {
+      this.settingsForm.controls.operations.enable({ emitEvent: false });
+    } else {
+      this.settingsForm.controls.operations.disable({ emitEvent: false });
+    }
+
+    if (this.showBuyMeACoffeeCard()) {
+      this.settingsForm.controls.buyMeACoffee.enable({ emitEvent: false });
+    } else {
+      this.settingsForm.controls.buyMeACoffee.disable({ emitEvent: false });
+    }
+
+    if (this.showFooterCard()) {
+      this.settingsForm.controls.footer.enable({ emitEvent: false });
+    } else {
+      this.settingsForm.controls.footer.disable({ emitEvent: false });
+    }
+  }
+
+  dismissError(): void {
+    this.errorMessage.set('');
+  }
+
+  dismissSuccess(): void {
+    if (this.successTimerId !== null) {
+      clearTimeout(this.successTimerId);
+      this.successTimerId = null;
+    }
+    this.successMessage.set('');
   }
 
   private flashSuccess(message: string): void {

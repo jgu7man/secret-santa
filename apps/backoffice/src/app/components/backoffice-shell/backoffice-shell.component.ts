@@ -27,6 +27,7 @@ export class BackofficeShellComponent implements OnInit {
   private readonly router = inject(Router);
 
   readonly currentUser = signal<MxdUser | null>(null);
+  readonly avatarLoadFailed = signal(false);
   readonly navItems: ReadonlyArray<NavItem> = [
     {
       label: 'Estadísticas',
@@ -47,7 +48,12 @@ export class BackofficeShellComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const user = await this.authSession.waitForMxdUser();
+    this.avatarLoadFailed.set(false);
     this.currentUser.set(user);
+  }
+
+  onAvatarError(): void {
+    this.avatarLoadFailed.set(true);
   }
 
   async logout(): Promise<void> {

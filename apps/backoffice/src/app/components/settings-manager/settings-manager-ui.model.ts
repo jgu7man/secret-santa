@@ -8,6 +8,10 @@ import {
 export interface ManagedAppOption {
   readonly id: string;
   readonly label: string;
+  readonly supportsAuthRbac: boolean;
+  readonly supportsOperations: boolean;
+  readonly supportsBuyMeACoffee: boolean;
+  readonly supportsFooter: boolean;
 }
 
 export interface CreateReleasePayload {
