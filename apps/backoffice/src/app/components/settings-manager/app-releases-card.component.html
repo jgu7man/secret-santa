@@ -1,0 +1,101 @@
+<div
+  class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4"
+>
+  <div>
+    <h3 class="text-base font-bold text-slate-900">Releases ({{ appId() }})</h3>
+    <p class="text-xs text-slate-500">
+      Historial en <code class="font-mono">apps/{{ appId() }}/releases</code>.
+    </p>
+  </div>
+
+  <form
+    [formGroup]="releaseForm"
+    (ngSubmit)="onSubmit()"
+    class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end"
+  >
+    <div class="md:col-span-3">
+      <label
+        for="rel-version"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Versión
+      </label>
+      <input
+        id="rel-version"
+        type="text"
+        formControlName="version"
+        placeholder="v1.0.0"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+
+    <div class="md:col-span-2">
+      <label for="rel-env" class="block text-xs font-medium text-slate-700">
+        Entorno
+      </label>
+      <select
+        id="rel-env"
+        formControlName="environment"
+        class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800"
+      >
+        @for (env of environments; track env) {
+          <option [value]="env">{{ env }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="md:col-span-5">
+      <label for="rel-notes" class="block text-xs font-medium text-slate-700">
+        Notas
+      </label>
+      <input
+        id="rel-notes"
+        type="text"
+        formControlName="notes"
+        placeholder="Resumen del despliegue..."
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div class="md:col-span-2">
+      <button
+        type="submit"
+        [disabled]="releaseForm.invalid || isCreating()"
+        class="w-full rounded-xl bg-pine-900 px-4 py-2 text-xs font-semibold text-white hover:bg-pine-700 disabled:opacity-60"
+      >
+        Registrar
+      </button>
+    </div>
+  </form>
+
+  @if (releases().length === 0) {
+    <p class="text-xs text-slate-500">
+      Sin releases registrados aún para {{ appId() }}.
+    </p>
+  } @else {
+    <div class="divide-y divide-slate-100">
+      @for (rel of releases(); track rel.id) {
+        <div
+          class="py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs"
+        >
+          <div>
+            <span class="font-mono font-bold text-slate-900">
+              {{ rel.version }}
+            </span>
+            <span
+              class="ml-2 px-2 py-0.5 rounded-full bg-slate-100 font-semibold text-slate-700"
+            >
+              {{ rel.environment }}
+            </span>
+            <span class="ml-2 text-slate-600">
+              {{ rel.notes || 'Sin notas' }}
+            </span>
+          </div>
+          <div class="text-slate-400">
+            {{ rel.createdAt | firestoreTimestamp }} · {{ rel.createdBy }}
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -43,4 +43,5 @@ export { provideCore } from './core.providers';
 export { adminGuard } from './guards/admin.guard';
 export { hostGuard } from './guards/host.guard';
 export { BuyMeACoffeeService } from './services/buy-me-a-coffee.service';
+export { FooterConfigService } from './services/footer-config.service';
 export { MetaService } from './services/meta.service';

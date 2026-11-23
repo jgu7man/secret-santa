@@ -1,0 +1,98 @@
+<div
+  [formGroup]="form()"
+  class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4"
+>
+  <div>
+    <h3 class="text-base font-bold text-slate-900">
+      Pie de Página y Contacto (Footer)
+    </h3>
+    <p class="text-xs text-slate-500">
+      Personaliza la marca y los enlaces de contacto mostrados en el footer.
+      Deja un canal vacío para ocultarlo.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div>
+      <label
+        for="footer-brand-name"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Marca en crédito
+      </label>
+      <input
+        id="footer-brand-name"
+        type="text"
+        formControlName="brandName"
+        placeholder="Marxa Digital"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label
+        for="footer-whatsapp-number"
+        class="block text-xs font-medium text-slate-700"
+      >
+        WhatsApp (dígitos con lada para wa.me)
+      </label>
+      <input
+        id="footer-whatsapp-number"
+        type="text"
+        formControlName="whatsappNumber"
+        (blur)="fillWhatsappDisplayIfEmpty()"
+        placeholder="523121805955"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label
+        for="footer-whatsapp-display"
+        class="block text-xs font-medium text-slate-700"
+      >
+        WhatsApp (etiqueta opcional)
+      </label>
+      <input
+        id="footer-whatsapp-display"
+        type="text"
+        formControlName="whatsappDisplay"
+        (blur)="fillWhatsappDisplayIfEmpty()"
+        placeholder="Vacío = auto, o ej. Mi WhatsApp"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label
+        for="footer-email"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Correo de contacto
+      </label>
+      <input
+        id="footer-email"
+        type="email"
+        formControlName="email"
+        placeholder="contacto@marxadigital.com"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div class="md:col-span-2">
+      <label
+        for="footer-website-url"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Sitio web (URL completa con https://)
+      </label>
+      <input
+        id="footer-website-url"
+        type="url"
+        formControlName="websiteUrl"
+        placeholder="https://marxadigital.com"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono text-slate-900"
+      />
+    </div>
+  </div>
+</div>

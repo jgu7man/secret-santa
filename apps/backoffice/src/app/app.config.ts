@@ -4,6 +4,7 @@ import { UserRole } from '@marxa/auth-domain';
 import { provideAuthEngine } from '@marxa/auth-engine';
 import {
   BuyMeACoffeeWidgetPosition,
+  DEFAULT_FOOTER_SETTINGS,
   createDefaultAppRegistryDocument,
   provideAppRegistryDefaults,
 } from '@secret-santa/shared-data-access';
@@ -37,6 +38,9 @@ export const appConfig: ApplicationConfig = {
           position: BuyMeACoffeeWidgetPosition.RIGHT,
           xMargin: 18,
           yMargin: 18,
+        },
+        footer: {
+          ...DEFAULT_FOOTER_SETTINGS,
         },
         auth: {
           appName: 'Secret Santa',

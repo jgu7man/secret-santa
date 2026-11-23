@@ -42,19 +42,29 @@ describe('SettingsManagerComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should populate form with loaded app config and save updates', async () => {
-    expect(component.settingsForm.controls.defaultMinAmount.value).toBe(100);
-    expect(component.settingsForm.controls.postLoginRedirectUrl.value).toBe(
-      '/stats'
-    );
+  it('should populate form with loaded app config and save updates across all cards', async () => {
+    expect(
+      component.settingsForm.controls.operations.controls.defaultMinAmount.value
+    ).toBe(100);
+    expect(
+      component.settingsForm.controls.auth.controls.postLoginRedirectUrl.value
+    ).toBe('/stats');
 
     component.settingsForm.patchValue({
-      maintenanceMode: true,
-      defaultMinAmount: 250,
-      postLoginRedirectUrl: '/users',
+      operations: {
+        maintenanceMode: true,
+        defaultMinAmount: 250,
+      },
+      auth: {
+        postLoginRedirectUrl: '/users',
+      },
       buyMeACoffee: {
         enabled: true,
         slug: 'marxa_digital',
+      },
+      footer: {
+        brandName: 'Marxa Studio',
+        email: 'hola@marxadigital.com',
       },
     });
 
@@ -71,6 +81,10 @@ describe('SettingsManagerComponent', () => {
         buyMeACoffee: jasmine.objectContaining({
           enabled: true,
           slug: 'marxa_digital',
+        }),
+        footer: jasmine.objectContaining({
+          brandName: 'Marxa Studio',
+          email: 'hola@marxadigital.com',
         }),
       })
     );

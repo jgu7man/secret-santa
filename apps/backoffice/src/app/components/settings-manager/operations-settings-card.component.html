@@ -1,0 +1,139 @@
+<div
+  [formGroup]="form()"
+  class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4"
+>
+  <h3 class="text-base font-bold text-slate-900">
+    Operación, Límites y Anuncios
+  </h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <label for="ops-maintenance" class="flex items-start gap-3 cursor-pointer">
+      <input
+        id="ops-maintenance"
+        type="checkbox"
+        formControlName="maintenanceMode"
+        class="mt-1 h-4 w-4 rounded border-slate-300 text-pine-700"
+      />
+      <div>
+        <span class="block text-sm font-semibold text-slate-900">
+          Modo mantenimiento
+        </span>
+        <span class="block text-xs text-slate-500">
+          Muestra aviso de mantenimiento en la app.
+        </span>
+      </div>
+    </label>
+
+    <label for="ops-announcement" class="flex items-start gap-3 cursor-pointer">
+      <input
+        id="ops-announcement"
+        type="checkbox"
+        formControlName="announcementEnabled"
+        class="mt-1 h-4 w-4 rounded border-slate-300 text-pine-700"
+      />
+      <div>
+        <span class="block text-sm font-semibold text-slate-900">
+          Mostrar banner de anuncio
+        </span>
+        <span class="block text-xs text-slate-500">
+          Aviso global visible en la aplicación.
+        </span>
+      </div>
+    </label>
+
+    <label
+      for="ops-guest-creation"
+      class="flex items-start gap-3 cursor-pointer"
+    >
+      <input
+        id="ops-guest-creation"
+        type="checkbox"
+        formControlName="allowGuestEventCreation"
+        class="mt-1 h-4 w-4 rounded border-slate-300 text-pine-700"
+      />
+      <span class="text-sm font-semibold text-slate-900">
+        Permitir eventos como invitado
+      </span>
+    </label>
+
+    <label
+      for="ops-new-registrations"
+      class="flex items-start gap-3 cursor-pointer"
+    >
+      <input
+        id="ops-new-registrations"
+        type="checkbox"
+        formControlName="allowNewRegistrations"
+        class="mt-1 h-4 w-4 rounded border-slate-300 text-pine-700"
+      />
+      <span class="text-sm font-semibold text-slate-900">
+        Permitir nuevos registros
+      </span>
+    </label>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label
+        for="maintenance-message"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Mensaje de mantenimiento
+      </label>
+      <input
+        id="maintenance-message"
+        type="text"
+        formControlName="maintenanceMessage"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label
+        for="announcement-text"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Texto del anuncio
+      </label>
+      <input
+        id="announcement-text"
+        type="text"
+        formControlName="announcementText"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label
+        for="default-min-amount"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Monto mínimo predeterminado
+      </label>
+      <input
+        id="default-min-amount"
+        type="number"
+        min="0"
+        formControlName="defaultMinAmount"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+
+    <div>
+      <label
+        for="max-participants"
+        class="block text-xs font-medium text-slate-700"
+      >
+        Máximo de participantes (2–1000)
+      </label>
+      <input
+        id="max-participants"
+        type="number"
+        min="2"
+        max="1000"
+        formControlName="maxParticipantsPerEvent"
+        class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900"
+      />
+    </div>
+  </div>
+</div>
